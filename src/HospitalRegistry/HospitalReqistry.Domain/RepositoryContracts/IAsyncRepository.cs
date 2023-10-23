@@ -41,7 +41,7 @@ namespace HospitalReqistry.Domain.RepositoryContracts
         /// <typeparam name="T">Type of entity to search.</typeparam>
         /// <param name="expression">Expression to search.</param>
         /// <returns>Found entity of the specific type, null - if any entity with passed criteria was not found.</returns>
-        Task<T?> FirstOrDefaultAsync<T>(Expression<Func<T, bool>> expression);
+        Task<T?> FirstOrDefaultAsync<T>(Expression<Func<T, bool>> expression) where T : EntityBase;
 
         /// <summary>
         /// Method for checking if the data source contains the entity.
@@ -49,7 +49,7 @@ namespace HospitalReqistry.Domain.RepositoryContracts
         /// <typeparam name="T">Type of entity to check.</typeparam>
         /// <param name="expression">Expression to check.</param>
         /// <returns>True - if the data source contains the entity, otherwise - false.</returns>
-        Task<bool> ContainsAsync<T>(Expression<Func<T, bool>> expression);
+        Task<bool> ContainsAsync<T>(Expression<Func<T, bool>> expression) where T : EntityBase;
 
         /// <summary>
         /// Method for inserting new entity into the data source.
