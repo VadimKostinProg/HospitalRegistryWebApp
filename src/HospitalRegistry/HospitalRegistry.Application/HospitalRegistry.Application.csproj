@@ -6,4 +6,14 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="ServiceContracts\" />
+    <Folder Include="Services\" />
+    <Folder Include="DTO\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\HospitalReqistry.Domain\HospitalReqistry.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

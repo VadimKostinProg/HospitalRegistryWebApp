@@ -6,4 +6,13 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Repositories\" />
+    <Folder Include="DatabaseContexts\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\HospitalReqistry.Domain\HospitalReqistry.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

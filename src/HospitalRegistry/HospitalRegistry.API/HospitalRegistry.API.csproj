@@ -6,4 +6,14 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\HospitalRegistry.Application\HospitalRegistry.Application.csproj" />
+    <ProjectReference Include="..\HospitalRegistry.Infrastructure\HospitalRegistry.Infrastructure.csproj" />
+    <ProjectReference Include="..\HospitalReqistry.Domain\HospitalReqistry.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
