@@ -35,7 +35,7 @@ public static partial class ConvertExt
             DateOfBirth = doctor.DateOfBirth,
             Specialty = doctor.Specialty,
             Email = doctor.Email,
-            PhoneNumber = "+" + doctor.PhoneNumber.ToString()
+            PhoneNumber = doctor.PhoneNumber
         };
     }
 } 

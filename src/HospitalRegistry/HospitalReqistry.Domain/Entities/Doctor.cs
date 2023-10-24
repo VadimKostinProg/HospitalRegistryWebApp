@@ -29,7 +29,8 @@ namespace HospitalReqistry.Domain.Entities
         public string Email { get; set; } = null!;
 
         [Required]
-        public int PhoneNumber { get; set; }
+        [Phone]
+        public string PhoneNumber { get; set; } = null!;
 
         public virtual ICollection<Schedule> Schedules { get; set; }
 

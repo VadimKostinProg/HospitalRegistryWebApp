@@ -43,7 +43,7 @@ public class DoctorAddRequest
             DateOfBirth = this.DateOfBirth.ToString(),
             Specialty = this.Specialty.ToString(),
             Email = this.Email,
-            PhoneNumber = int.Parse(this.PhoneNumber.Replace("+", "").Replace("-", ""))
+            PhoneNumber = this.PhoneNumber
         };
     }
 }

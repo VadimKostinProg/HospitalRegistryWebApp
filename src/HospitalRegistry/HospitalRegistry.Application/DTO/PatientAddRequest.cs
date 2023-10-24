@@ -36,7 +36,7 @@ public class PatientAddRequest
             Patronymic = this.Patronymic,
             DateOfBirth = this.DateOfBirth.ToShortDateString(),
             Email = this.Email,
-            PhoneNumber = int.Parse(this.PhoneNumber.Replace("+", "").Replace("-", ""))
+            PhoneNumber = this.PhoneNumber
         };
     }
 }

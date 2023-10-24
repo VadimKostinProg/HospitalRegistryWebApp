@@ -31,7 +31,7 @@ public static partial class ConvertExt
             Patronymic = patient.Patronymic,
             DateOfBirth = patient.DateOfBirth,
             Email = patient.Email,
-            PhoneNumber = "+" + patient.PhoneNumber.ToString()
+            PhoneNumber = patient.PhoneNumber
         };
     }
 } 

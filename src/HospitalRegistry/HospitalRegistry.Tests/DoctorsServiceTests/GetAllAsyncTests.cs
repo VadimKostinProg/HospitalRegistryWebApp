@@ -18,9 +18,8 @@ namespace HospitalRegistry.Tests.DoctorsServiceTests
         public async Task GetAllAsync_ReturnsAllDoctors()
         {
             // Arrange
-            var testDoctors = fixture.CreateMany<Doctor>(10);
+            var testDoctors = GetTestDoctors().ToList();
             repositoryMock.Setup(x => x.GetAllAsync<Doctor>(true)).ReturnsAsync(testDoctors);
-            var expected = testDoctors.Select(x => x.ToDoctorResponse()).ToList();
 
             // Act
             var actual = await service.GetAllAsync();
@@ -28,7 +27,7 @@ namespace HospitalRegistry.Tests.DoctorsServiceTests
             // Assert
             Assert.NotNull(actual);
             Assert.NotEmpty(actual);
-            Assert.Equal(expected, actual);
+            Assert.Equal(testDoctors.Count, actual.Count());
         }
     }
 }

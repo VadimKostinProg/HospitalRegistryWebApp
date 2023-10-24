@@ -27,7 +27,7 @@ namespace HospitalRegistry.Tests.DoctorsServiceTests
         public async Task GetByIdAsync_ValidId_ReturnsValidObject()
         {
             // Arrange
-            var doctor = fixture.Create<Doctor>();
+            var doctor = GetTestDoctor();
             var idToPass = doctor.Id;
             repositoryMock.Setup(x => x.GetByIdAsync<Doctor>(idToPass)).ReturnsAsync(doctor);
 
@@ -41,7 +41,7 @@ namespace HospitalRegistry.Tests.DoctorsServiceTests
             Assert.Equal(doctor.Patronymic, response.Patronymic);
             Assert.Equal(doctor.DateOfBirth, response.DateOfBirth);
             Assert.Equal(doctor.Email, response.Email);
-            Assert.Equal("+" + doctor.PhoneNumber.ToString(), response.PhoneNumber);
+            Assert.Equal(doctor.PhoneNumber, response.PhoneNumber);
         }
     }
 }

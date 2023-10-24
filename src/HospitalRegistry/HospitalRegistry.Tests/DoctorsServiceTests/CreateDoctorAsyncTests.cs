@@ -29,6 +29,7 @@ namespace HospitalRegistry.Tests.DoctorsServiceTests
             // Arrange
             var request = fixture.Build<DoctorAddRequest>()
                 .With(x => x.Name, string.Empty)
+                .With(x => x.DateOfBirth, new DateOnly(2000, 1, 1))
                 .Create();
 
             // Assert
@@ -45,6 +46,7 @@ namespace HospitalRegistry.Tests.DoctorsServiceTests
             // Arrange
             var request = fixture.Build<DoctorAddRequest>()
                 .With(x => x.Surname, string.Empty)
+                .With(x => x.DateOfBirth, new DateOnly(2000, 1, 1))
                 .Create();
 
             // Assert
@@ -61,6 +63,7 @@ namespace HospitalRegistry.Tests.DoctorsServiceTests
             // Arrange
             var request = fixture.Build<DoctorAddRequest>()
                 .With(x => x.Patronymic, string.Empty)
+                .With(x => x.DateOfBirth, new DateOnly(2000, 1, 1))
                 .Create();
 
             // Assert
@@ -107,7 +110,7 @@ namespace HospitalRegistry.Tests.DoctorsServiceTests
             Assert.Equal(request.Patronymic, response.Patronymic);
             Assert.Equal(request.DateOfBirth.ToShortDateString(), response.DateOfBirth);
             Assert.Equal(request.Email, response.Email);
-            Assert.Equal(request.PhoneNumber.Replace("+", "").Replace("-", ""), response.PhoneNumber);
+            Assert.Equal(request.PhoneNumber, response.PhoneNumber);
         }
     }
 }

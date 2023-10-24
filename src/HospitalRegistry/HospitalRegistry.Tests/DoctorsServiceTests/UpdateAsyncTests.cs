@@ -28,7 +28,10 @@ namespace HospitalRegistry.Tests.DoctorsServiceTests
         public async Task UpdateAsync_InvalidId_ThrowsKeyNotFoundExcpetion()
         {
             // Arrange
-            DoctorUpdateRequest request = fixture.Create<DoctorUpdateRequest>();
+            DoctorUpdateRequest request = fixture.Build<DoctorUpdateRequest>()
+                .With(x => x.DateOfBirth, new DateOnly(2000, 1, 1))
+                .Create();
+
             repositoryMock.Setup(x => x.ContainsAsync(It.IsAny<Expression<Func<Doctor, bool>>>())).ReturnsAsync(false);
 
             // Assert
@@ -45,7 +48,10 @@ namespace HospitalRegistry.Tests.DoctorsServiceTests
             // Arrange
             var request = fixture.Build<DoctorUpdateRequest>()
                 .With(x => x.Name, string.Empty)
+                .With(x => x.DateOfBirth, new DateOnly(2000, 1, 1))
                 .Create();
+
+            repositoryMock.Setup(x => x.ContainsAsync(It.IsAny<Expression<Func<Doctor, bool>>>())).ReturnsAsync(true);
 
             // Assert
             await Assert.ThrowsAsync<ArgumentException>(async () =>
@@ -61,7 +67,10 @@ namespace HospitalRegistry.Tests.DoctorsServiceTests
             // Arrange
             var request = fixture.Build<DoctorUpdateRequest>()
                 .With(x => x.Surname, string.Empty)
+                .With(x => x.DateOfBirth, new DateOnly(2000, 1, 1))
                 .Create();
+
+            repositoryMock.Setup(x => x.ContainsAsync(It.IsAny<Expression<Func<Doctor, bool>>>())).ReturnsAsync(true);
 
             // Assert
             await Assert.ThrowsAsync<ArgumentException>(async () =>
@@ -77,7 +86,10 @@ namespace HospitalRegistry.Tests.DoctorsServiceTests
             // Arrange
             var request = fixture.Build<DoctorUpdateRequest>()
                 .With(x => x.Patronymic, string.Empty)
+                .With(x => x.DateOfBirth, new DateOnly(2000, 1, 1))
                 .Create();
+
+            repositoryMock.Setup(x => x.ContainsAsync(It.IsAny<Expression<Func<Doctor, bool>>>())).ReturnsAsync(true);
 
             // Assert
             await Assert.ThrowsAsync<ArgumentException>(async () =>
@@ -95,6 +107,8 @@ namespace HospitalRegistry.Tests.DoctorsServiceTests
                 .With(x => x.DateOfBirth, DateOnly.FromDateTime(DateTime.Now))
                 .Create();
 
+            repositoryMock.Setup(x => x.ContainsAsync(It.IsAny<Expression<Func<Doctor, bool>>>())).ReturnsAsync(true);
+
             // Assert
             await Assert.ThrowsAsync<ArgumentException>(async () =>
             {
@@ -111,6 +125,7 @@ namespace HospitalRegistry.Tests.DoctorsServiceTests
                 .With(x => x.DateOfBirth, new DateOnly(2000, 1, 1))
                 .Create();
 
+            repositoryMock.Setup(x => x.ContainsAsync(It.IsAny<Expression<Func<Doctor, bool>>>())).ReturnsAsync(true);
             repositoryMock.Setup(x => x.UpdateAsync(It.IsAny<Doctor>())).Returns(Task.CompletedTask);
 
             // Act
@@ -123,7 +138,7 @@ namespace HospitalRegistry.Tests.DoctorsServiceTests
             Assert.Equal(request.Patronymic, response.Patronymic);
             Assert.Equal(request.DateOfBirth.ToShortDateString(), response.DateOfBirth);
             Assert.Equal(request.Email, response.Email);
-            Assert.Equal(request.PhoneNumber.Replace("+", "").Replace("-", ""), response.PhoneNumber);
+            Assert.Equal(request.PhoneNumber, response.PhoneNumber);
         }
     }
 }
