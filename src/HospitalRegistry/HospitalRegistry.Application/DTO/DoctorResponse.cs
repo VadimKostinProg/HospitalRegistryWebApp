@@ -1,4 +1,5 @@
 using HospitalReqistry.Domain.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace HospitalRegistry.Application.DTO;
 
@@ -11,6 +12,8 @@ public class DoctorResponse
     public string Surname { get; set; }
 
     public string Patronymic { get; set; }
+
+    public string DateOfBirth { get; set; }
 
     public string Specialty { get; set; }
 
@@ -29,6 +32,7 @@ public static partial class ConvertExt
             Name = doctor.Name,
             Surname = doctor.Surname,
             Patronymic = doctor.Patronymic,
+            DateOfBirth = doctor.DateOfBirth,
             Specialty = doctor.Specialty,
             Email = doctor.Email,
             PhoneNumber = "+" + doctor.PhoneNumber.ToString()

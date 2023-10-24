@@ -17,6 +17,10 @@ namespace HospitalReqistry.Domain.Entities
         public string Patronymic { get; set; } = null!;
 
         [Required]
+        [MaxLength(10)]
+        public string DateOfBirth { get; set; } = null!;
+
+        [Required]
         [MaxLength(30)]
         public string Specialty { get; set; } = null!;
 

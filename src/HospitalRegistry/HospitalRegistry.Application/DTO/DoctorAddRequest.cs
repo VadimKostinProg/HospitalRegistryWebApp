@@ -19,6 +19,9 @@ public class DoctorAddRequest
     public string Patronymic { get; set; } = null!;
 
     [Required]
+    public DateOnly DateOfBirth { get; set; }
+
+    [Required]
     [MaxLength(30)]
     public Specialty Specialty { get; set; }
 
@@ -37,6 +40,7 @@ public class DoctorAddRequest
             Name = this.Name,
             Surname = this.Surname,
             Patronymic = this.Patronymic,
+            DateOfBirth = this.DateOfBirth.ToString(),
             Specialty = this.Specialty.ToString(),
             Email = this.Email,
             PhoneNumber = int.Parse(this.PhoneNumber.Replace("+", "").Replace("-", ""))

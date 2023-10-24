@@ -2,15 +2,15 @@ namespace HospitalRegistry.Application.Enums;
 
 public enum Specialty
 {
-    Dermatologists,
-    Cardiologists,
-    Neurologists,
-    Psychiatrists,
-    Ophthalmologists,
-    Urologists,
-    Gastroenterologists,
-    Allergists,
-    Radiologists,
-    Endocrinologists,
+    Dermatologist,
+    Cardiologist,
+    Neurologist,
+    Psychiatrist,
+    Ophthalmologist,
+    Urologist,
+    Gastroenterologist,
+    Allergist,
+    Radiologist,
+    Endocrinologist,
     Surgeon
 }

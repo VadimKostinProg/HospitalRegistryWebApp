@@ -13,6 +13,6 @@ namespace HospitalRegistry.Application.ServiceContracts
         /// </summary>
         /// <param name="specialty">Specialty of doctor to filter.</param>
         /// <returns>Collection IEnumerable of DoctorResponse DTO.</returns>
-        Task<IEnumerable<DoctorAddRequest>> GetBySpecialty(Specialty specialty);
+        Task<IEnumerable<DoctorResponse>> GetBySpecialtyAsync(Specialty specialty);
     }
 }

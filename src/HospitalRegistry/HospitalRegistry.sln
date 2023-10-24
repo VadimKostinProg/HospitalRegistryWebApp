@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HospitalRegistry.API", "HospitalRegistry.API\HospitalRegistry.API.csproj", "{E38A9B60-687C-4629-AC31-896ED355F7B9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HospitalRegistry.API", "HospitalRegistry.API\HospitalRegistry.API.csproj", "{E38A9B60-687C-4629-AC31-896ED355F7B9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HospitalReqistry.Domain", "HospitalReqistry.Domain\HospitalReqistry.Domain.csproj", "{1C7EC92A-A406-4702-B74B-DC9DF9712C57}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HospitalReqistry.Domain", "HospitalReqistry.Domain\HospitalReqistry.Domain.csproj", "{1C7EC92A-A406-4702-B74B-DC9DF9712C57}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HospitalRegistry.Application", "HospitalRegistry.Application\HospitalRegistry.Application.csproj", "{24E7DF88-61F3-475D-9912-1C9A523AEC39}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HospitalRegistry.Application", "HospitalRegistry.Application\HospitalRegistry.Application.csproj", "{24E7DF88-61F3-475D-9912-1C9A523AEC39}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HospitalRegistry.Infrastructure", "HospitalRegistry.Infrastructure\HospitalRegistry.Infrastructure.csproj", "{32E9209B-43EF-4DFE-AC36-5E1C2323666F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HospitalRegistry.Infrastructure", "HospitalRegistry.Infrastructure\HospitalRegistry.Infrastructure.csproj", "{32E9209B-43EF-4DFE-AC36-5E1C2323666F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HospitalRegistry.Tests", "HospitalRegistry.Tests\HospitalRegistry.Tests.csproj", "{529F9657-9DC7-4661-AA23-BDB57848F87F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{32E9209B-43EF-4DFE-AC36-5E1C2323666F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{32E9209B-43EF-4DFE-AC36-5E1C2323666F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{32E9209B-43EF-4DFE-AC36-5E1C2323666F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{529F9657-9DC7-4661-AA23-BDB57848F87F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{529F9657-9DC7-4661-AA23-BDB57848F87F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{529F9657-9DC7-4661-AA23-BDB57848F87F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{529F9657-9DC7-4661-AA23-BDB57848F87F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
