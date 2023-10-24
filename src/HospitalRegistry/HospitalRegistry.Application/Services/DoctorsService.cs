@@ -33,7 +33,7 @@ namespace HospitalRegistry.Application.Services
             if (request.DateOfBirth.CompareTo(DateOnly.FromDateTime(DateTime.Now.AddYears(-18))) > 0)
                 throw new ArgumentException("Doctor must be at least 18 years old.");
 
-            // Add new doctor
+            // Adding new doctor
             var doctor = request.ToDoctor();
             await _repository.AddAsync(doctor);
 
@@ -76,7 +76,7 @@ namespace HospitalRegistry.Application.Services
         {
             // Validating the request
             if (request is null)
-                throw new ArgumentNullException("Doctor to insert is null.");
+                throw new ArgumentNullException("Doctor to update is null.");
 
             if (!(await _repository.ContainsAsync<Doctor>(x => x.Id == request.Id)))
                 throw new KeyNotFoundException("Doctor with passed id does not exist.");
@@ -93,7 +93,7 @@ namespace HospitalRegistry.Application.Services
             if (request.DateOfBirth.CompareTo(DateOnly.FromDateTime(DateTime.Now.AddYears(-18))) > 0)
                 throw new ArgumentException("Doctor must be at least 18 years old.");
 
-            // Add new doctor
+            // Updating the doctor
             var doctor = request.ToDoctor();
             await _repository.UpdateAsync(doctor);
 
