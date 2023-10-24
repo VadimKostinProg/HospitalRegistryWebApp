@@ -80,4 +80,10 @@ public class RepositoryBase : IAsyncRepository
 
         return true;
     }
+
+    public virtual async Task<int> DeleteRange<T>(IEnumerable<T> entities) where T : EntityBase
+    {
+        Context.Set<T>().RemoveRange(entities);
+        return await Context.SaveChangesAsync();
+    }
 }

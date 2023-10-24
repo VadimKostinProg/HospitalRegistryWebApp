@@ -72,5 +72,13 @@ namespace HospitalReqistry.Domain.RepositoryContracts
         /// <param name="id">Guid of entity to delete.</param>
         /// <returns>True - if deleting was successfull, otherwise - false.</returns>
         Task<bool> DeleteAsync<T>(Guid id) where T : EntityBase;
+
+        /// <summary>
+        /// Method for deleting the collection of the entities.
+        /// </summary>
+        /// <typeparam name="T">Type of entity to delete.</typeparam>
+        /// <param name="entities">Collection of the entities to delete.</param>
+        /// <returns>Amount of deleted entities.</returns>
+        Task<int> DeleteRange<T>(IEnumerable<T> entities) where T : EntityBase;
     }
 }
