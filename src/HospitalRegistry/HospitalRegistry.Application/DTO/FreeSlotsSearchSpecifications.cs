@@ -22,7 +22,7 @@ namespace HospitalRegistry.Application.DTO
         /// <summary>
         /// Specialty of the doctor to search free slots.
         /// </summary>
-        public Specialty Specialty { get; set; }
+        public Specialty? Specialty { get; set; }
 
         /// <summary>
         /// Doctors id to search free slots.
