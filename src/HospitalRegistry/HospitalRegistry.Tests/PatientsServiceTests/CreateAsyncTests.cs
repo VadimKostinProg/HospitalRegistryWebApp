@@ -1,19 +1,17 @@
-﻿using AutoFixture;
+using AutoFixture;
 using HospitalRegistry.Application.DTO;
 using HospitalReqistry.Domain.Entities;
 using Moq;
 
-namespace HospitalRegistry.Tests.DoctorsServiceTests
-{
-    public class CreateDoctorAsyncTests : DoctorsServiceTestsBase
-    {
-        public CreateDoctorAsyncTests() : base() { }
+namespace HospitalRegistry.Tests.PatientsServiceTests;
 
+public class CreateAsyncTests : PatientsServiceTestsBase
+{
         [Fact]
         public async Task CreateAsync_NullPassed_ThrowsArgumentNullException()
         {
             // Arrange
-            DoctorAddRequest request = null;
+            PatientAddRequest request = null;
 
             // Assert
             await Assert.ThrowsAsync<ArgumentNullException>(async () =>
@@ -27,7 +25,7 @@ namespace HospitalRegistry.Tests.DoctorsServiceTests
         public async Task CreateAsync_InvalidName_ThrowsArgumentException()
         {
             // Arrange
-            var request = fixture.Build<DoctorAddRequest>()
+            var request = fixture.Build<PatientAddRequest>()
                 .With(x => x.Name, string.Empty)
                 .With(x => x.DateOfBirth, new DateOnly(2000, 1, 1))
                 .Create();
@@ -44,7 +42,7 @@ namespace HospitalRegistry.Tests.DoctorsServiceTests
         public async Task CreateAsync_InvalidSurname_ThrowsArgumentException()
         {
             // Arrange
-            var request = fixture.Build<DoctorAddRequest>()
+            var request = fixture.Build<PatientAddRequest>()
                 .With(x => x.Surname, string.Empty)
                 .With(x => x.DateOfBirth, new DateOnly(2000, 1, 1))
                 .Create();
@@ -61,7 +59,7 @@ namespace HospitalRegistry.Tests.DoctorsServiceTests
         public async Task CreateAsync_InvalidPatronymic_ThrowsArgumentException()
         {
             // Arrange
-            var request = fixture.Build<DoctorAddRequest>()
+            var request = fixture.Build<PatientAddRequest>()
                 .With(x => x.Patronymic, string.Empty)
                 .With(x => x.DateOfBirth, new DateOnly(2000, 1, 1))
                 .Create();
@@ -75,11 +73,11 @@ namespace HospitalRegistry.Tests.DoctorsServiceTests
         }
 
         [Fact]
-        public async Task CreateAsync_AgeLessThan18_ThrowsArgumentException()
+        public async Task CreateAsync_IncorrectDateOfBirth_ThrowsArgumentException()
         {
             // Arrange
-            var request = fixture.Build<DoctorAddRequest>()
-                .With(x => x.DateOfBirth, DateOnly.FromDateTime(DateTime.Now))
+            var request = fixture.Build<PatientAddRequest>()
+                .With(x => x.DateOfBirth, DateOnly.FromDateTime(DateTime.Now.AddYears(2)))
                 .Create();
 
             // Assert
@@ -94,11 +92,11 @@ namespace HospitalRegistry.Tests.DoctorsServiceTests
         public async Task CreateAsync_ValidRequest_SuccessfullCreation()
         {
             // Arrange
-            var request = fixture.Build<DoctorAddRequest>()
+            var request = fixture.Build<PatientAddRequest>()
                 .With(x => x.DateOfBirth, new DateOnly(2000, 1, 1))
                 .Create();
 
-            repositoryMock.Setup(x => x.AddAsync(It.IsAny<Doctor>())).Returns(Task.CompletedTask);
+            repositoryMock.Setup(x => x.AddAsync(It.IsAny<Patient>())).Returns(Task.CompletedTask);
 
             // Act
             var response = await service.CreateAsync(request);
@@ -112,5 +110,4 @@ namespace HospitalRegistry.Tests.DoctorsServiceTests
             Assert.Equal(request.Email, response.Email);
             Assert.Equal(request.PhoneNumber, response.PhoneNumber);
         }
-    }
 }
