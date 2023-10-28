@@ -19,14 +19,14 @@ namespace HospitalRegistry.Application.ServiceContracts
         /// </summary>
         /// <param name="patientId">Id of the patient to read history.</param>
         /// <returns>Collection IENumerable of appointment DTO.</returns>
-        Task<IEnumerable<AppointmentResponse>> GetAppointmentsHistoryOfPatient(Guid patientId);
+        Task<IEnumerable<AppointmentResponse>> GetAppointmentsHistoryOfPatientAsync(Guid patientId);
 
         /// <summary>
         /// Method for reading the complited appointments history of the doctor.
         /// </summary>
         /// <param name="doctorId">Id of the doctor to read history.</param>
         /// <returns>Collection IENumerable of appointment DTO.</returns>
-        Task<IEnumerable<AppointmentResponse>> GetAppointmentsHistoryOfDoctor(Guid doctorId);
+        Task<IEnumerable<AppointmentResponse>> GetAppointmentsHistoryOfDoctorAsync(Guid doctorId);
 
         /// <summary>
         /// Method for reading scheduled appointments of the person on the specific date.
@@ -34,7 +34,7 @@ namespace HospitalRegistry.Application.ServiceContracts
         /// <param name="patientId">Id of person to read scheduled appointments.</param>
         /// <param name="date">Date to read scheduled appointments on.</param>
         /// <returns>Collection IENumerable of appointment DTO.</returns>
-        Task<IEnumerable<AppointmentResponse>> GetScheduledAppoitnmentsOfPatient(Guid patientId, DateOnly date);
+        Task<IEnumerable<AppointmentResponse>> GetScheduledAppoitnmentsOfPatientAsync(Guid patientId, DateOnly date);
 
         /// <summary>
         /// Method for reading scheduled appointments of the doctor on the specific date.
@@ -42,7 +42,7 @@ namespace HospitalRegistry.Application.ServiceContracts
         /// <param name="doctorId">Id of doctor to read scheduled appointments.</param>
         /// <param name="date">Date to read scheduled appointments on.</param>
         /// <returns>Collection IENumerable of appointment DTO.</returns>
-        Task<IEnumerable<AppointmentResponse>> GetScheduledAppoitnmentsOfDoctor(Guid doctorId, DateOnly date);
+        Task<IEnumerable<AppointmentResponse>> GetScheduledAppoitnmentsOfDoctorAsync(Guid doctorId, DateOnly date);
         
         /// <summary>
         /// Method for setting new appointment.

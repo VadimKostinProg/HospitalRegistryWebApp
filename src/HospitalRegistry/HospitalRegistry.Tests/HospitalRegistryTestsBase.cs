@@ -136,4 +136,43 @@ public abstract class HospitalRegistryTestsBase
             Name = fixture.Create<string>()
         };
     }
+
+    public IEnumerable<Appointment> GetTestScheduledAppointments(Guid doctorId, Guid patinetId, DateOnly startDate, TimeOnly startTime)
+    {
+        for (DateOnly date = startDate; date <= startDate.AddDays(2); date = date.AddDays(1))
+        {
+            yield return new Appointment()
+            {
+                Id = Guid.NewGuid(),
+                DateAndTime = date.ToDateTime(startTime),
+                DoctorId = doctorId,
+                PatientId = patinetId,
+                ExtraClinicalData = fixture.Create<string>(),
+                Status = AppointmentStatus.Scheduled.ToString()
+            };
+        }
+    }
+
+    public IEnumerable<Appointment> GetTestCompletedAppointments(Doctor doctor, Patient patient, Diagnosis diagnosis, TimeOnly startTime, TimeOnly endTime)
+    {
+        var date = new DateOnly(2023, 10, 23);
+
+        for (TimeOnly time = startTime; time <= endTime; time = time.AddHours(1))
+        {
+            yield return new Appointment()
+            {
+                Id = Guid.NewGuid(),
+                DateAndTime = date.ToDateTime(time),
+                DoctorId = doctor.Id,
+                PatientId = patient.Id,
+                ExtraClinicalData = fixture.Create<string>(),
+                DiagnosisId = diagnosis.Id,
+                Status = AppointmentStatus.Completed.ToString(),
+                Conclusion = fixture.Create<string>(),
+                Doctor = doctor,
+                Patient = patient,
+                Diagnosis = diagnosis
+            };
+        }
+    }
 }

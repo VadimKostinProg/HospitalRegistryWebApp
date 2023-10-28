@@ -127,24 +127,54 @@ public class AppointmentsService : IAppointmentsService
         return slots;
     }
 
-    public Task<IEnumerable<AppointmentResponse>> GetAppointmentsHistoryOfPatient(Guid patientId)
+    public async Task<IEnumerable<AppointmentResponse>> GetAppointmentsHistoryOfPatientAsync(Guid patientId)
+    {
+        var patient = await _repository.GetByIdAsync<Patient>(patientId);
+
+        if (patient is null) 
+            throw new KeyNotFoundException("Patient with such Id does not exist.");
+
+        return patient.Appointments
+            .Where(appointment => appointment.Status == AppointmentStatus.Completed.ToString())
+            .Select(appointment => new AppointmentResponse
+            {
+                Id = appointment.Id,
+                DateAndTime = appointment.DateAndTime,
+                Doctor = appointment.Doctor.ToDoctorResponse(),
+                Patient = appointment.Patient.ToPatientResponse(),
+                AppointmentType = GetAppointment(appointment),
+                ExtraClinicalData = appointment.ExtraClinicalData,
+                Diagnosis = appointment.Diagnosis?.Name,
+                Status = (AppointmentStatus)Enum.Parse<AppointmentStatus>(appointment.Status),
+                Conclusion = appointment.Conclusion
+            })
+            .ToList();
+    }
+
+    public Task<IEnumerable<AppointmentResponse>> GetAppointmentsHistoryOfDoctorAsync(Guid doctorId)
     {
         throw new NotImplementedException();
     }
 
-    public Task<IEnumerable<AppointmentResponse>> GetAppointmentsHistoryOfDoctor(Guid doctorId)
+    public Task<IEnumerable<AppointmentResponse>> GetScheduledAppoitnmentsOfPatientAsync(Guid patientId, DateOnly date)
     {
         throw new NotImplementedException();
     }
 
-    public Task<IEnumerable<AppointmentResponse>> GetScheduledAppoitnmentsOfPatient(Guid patientId, DateOnly date)
+    public Task<IEnumerable<AppointmentResponse>> GetScheduledAppoitnmentsOfDoctorAsync(Guid doctorId, DateOnly date)
     {
         throw new NotImplementedException();
     }
 
-    public Task<IEnumerable<AppointmentResponse>> GetScheduledAppoitnmentsOfDoctor(Guid doctorId, DateOnly date)
+    private AppointmentType GetAppointment(Appointment appointment)
     {
-        throw new NotImplementedException();
+        var appointmentType = appointment.Doctor.Schedules
+            .FirstOrDefault(x => x.TimeSlot.DayOfWeek % 7 == (int)appointment.DateAndTime.DayOfWeek &&
+            x.TimeSlot.StartTime == appointment.DateAndTime.ToString("hh:mm"))
+            ?.AppointmentType;
+
+        return appointmentType is null ? AppointmentType.HealthVisit : 
+            (AppointmentType)Enum.Parse<AppointmentType>(appointmentType);
     }
 
     public Task SetAppointmentAsync(AppointmentSetRequest request)

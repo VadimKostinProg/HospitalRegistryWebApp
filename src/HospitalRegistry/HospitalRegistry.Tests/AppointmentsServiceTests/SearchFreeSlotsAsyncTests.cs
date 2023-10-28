@@ -143,4 +143,35 @@ public class SearchFreeSlotsAsyncTests : AppointmentsServiceTestsBase
         Assert.True(response.Min(x => x.Date) >= specifications.StartDate);
         Assert.True(response.Max(x => x.Date) <= specifications.EndDate);
     }
+    
+    [Fact]
+    public async Task SearchFreeSlotsAsync_DoctorIdIsPassedAndAppointmentsAlreadyExists_ReturnsFreeSlotsByDoctor()
+    {
+        // Arrange
+        var doctor = GetTestDoctor().ToDoctorResponse();
+        
+        FreeSlotsSearchSpecifications specifications = new()
+        {
+            StartDate = DateOnly.FromDateTime(DateTime.Now),
+            EndDate = DateOnly.FromDateTime(DateTime.Now.AddDays(2)),
+            AppointmentType = AppointmentType.Consultation,
+            DoctorId = doctor.Id
+        };
+
+        doctorsServiceMock.Setup(x => x.GetByIdAsync(doctor.Id))
+            .ReturnsAsync(doctor);
+        schedulesServiceMock.Setup(x => x.GetScheduleByDoctorAsync(doctor.Id, null))
+            .ReturnsAsync(GetTestScheduleDTO(doctor.Id));
+        repositoryMock.Setup(x => x.GetFilteredAsync(It.IsAny<Expression<Func<Appointment, bool>>>(), true))
+            .ReturnsAsync(GetTestScheduledAppointments(doctor.Id, Guid.NewGuid(), specifications.StartDate, new TimeOnly(12, 00)));
+        
+        // Act
+        var response = await service.SearchFreeSlotsAsync(specifications);
+        
+        // Assert
+        Assert.NotNull(response);
+        Assert.True(response.All(x => x.DoctorId == specifications.DoctorId));
+        Assert.True(response.Min(x => x.Date) >= specifications.StartDate);
+        Assert.True(response.Max(x => x.Date) <= specifications.EndDate);
+    }
 }
