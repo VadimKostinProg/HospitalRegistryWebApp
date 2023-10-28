@@ -85,7 +85,7 @@ public class SetAsyncTests : SchedulesServiceTestsBase
             .With(x => x.DateOfBirth, "01.01.2000")
             .With(x => x.Appointments, new List<Appointment>())
             .Create();
-        var newSchedule = GetTestCrossedTimeSlotDTO(doctorId).ToList();
+        var newSchedule = GetTestCrossedTimeSlotsDTO().ToList();
         var scheduleSetRequest = fixture.Build<ScheduleDTO>()
             .With(x => x.DoctorId, doctorId)
             .With(x => x.Schedule, newSchedule)

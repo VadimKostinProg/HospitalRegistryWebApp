@@ -3,11 +3,11 @@ using HospitalRegistry.Application.Enums;
 
 namespace HospitalRegistry.Application.DTO;
 
-public class FreeSlotResponse : TimeSlotDTO
+public class AppointmentSlotResponse : TimeSlotDTO
 {
     public DateOnly Date { get; set; }
 
     public Specialty Specialty { get; set; }
     
-    public Guid DoctorsId { get; set; }
+    public Guid DoctorId { get; set; }
 }

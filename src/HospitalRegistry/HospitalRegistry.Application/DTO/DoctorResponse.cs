@@ -1,5 +1,6 @@
 using HospitalReqistry.Domain.Entities;
 using System.ComponentModel.DataAnnotations;
+using HospitalRegistry.Application.Enums;
 
 namespace HospitalRegistry.Application.DTO;
 
@@ -15,7 +16,7 @@ public class DoctorResponse
 
     public string DateOfBirth { get; set; }
 
-    public string Specialty { get; set; }
+    public Specialty Specialty { get; set; }
 
     public string Email { get; set; }
 
@@ -33,7 +34,7 @@ public static partial class ConvertExt
             Surname = doctor.Surname,
             Patronymic = doctor.Patronymic,
             DateOfBirth = doctor.DateOfBirth,
-            Specialty = doctor.Specialty,
+            Specialty = (Specialty)Enum.Parse<Specialty>(doctor.Specialty),
             Email = doctor.Email,
             PhoneNumber = doctor.PhoneNumber
         };

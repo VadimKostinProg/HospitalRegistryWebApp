@@ -137,7 +137,7 @@ namespace HospitalRegistry.Tests.DoctorsServiceTests
             Assert.Equal(request.Surname, response.Surname);
             Assert.Equal(request.Patronymic, response.Patronymic);
             Assert.Equal(request.DateOfBirth.ToShortDateString(), response.DateOfBirth);
-            Assert.Equal(request.Specialty.ToString(), response.Specialty);
+            Assert.Equal(request.Specialty, response.Specialty);
             Assert.Equal(request.Email, response.Email);
             Assert.Equal(request.PhoneNumber, response.PhoneNumber);
         }

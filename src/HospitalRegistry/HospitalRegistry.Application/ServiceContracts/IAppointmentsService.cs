@@ -12,7 +12,7 @@ namespace HospitalRegistry.Application.ServiceContracts
         /// </summary>
         /// <param name="specifications">Filter specifications to search free slots.</param>
         /// <returns>Collection IEnumerable of found free slots DTO.</returns>
-        Task<IEnumerable<FreeSlotResponse>> SearchFreeSlotsAsync(FreeSlotsSearchSpecifications specifications);
+        Task<IEnumerable<AppointmentSlotResponse>> SearchFreeSlotsAsync(FreeSlotsSearchSpecifications specifications);
 
         /// <summary>
         /// Method for reading the complited appointments history of the patient.

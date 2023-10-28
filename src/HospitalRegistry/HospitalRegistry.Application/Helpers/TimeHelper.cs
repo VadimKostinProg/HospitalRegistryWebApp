@@ -10,4 +10,11 @@ public static class TimeHelper
                ((timeSlot1.StartTime > timeSlot2.StartTime && timeSlot1.StartTime < timeSlot2.EndTime) ||
                 (timeSlot1.EndTime > timeSlot2.StartTime && timeSlot1.EndTime < timeSlot2.EndTime));
     }
+
+    public static bool DateTimeMatchesTimeOnly(DateTime dateTime, TimeOnly timeOnly)
+    {
+        return dateTime.Hour == timeOnly.Hour && 
+               dateTime.Minute == timeOnly.Minute &&
+               dateTime.Second == timeOnly.Second;
+    }
 }
