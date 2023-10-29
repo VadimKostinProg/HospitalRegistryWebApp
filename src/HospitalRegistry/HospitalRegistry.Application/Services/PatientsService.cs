@@ -16,7 +16,7 @@ public class PatientsService : IPatientsService
     
     public async Task<IEnumerable<PatientResponse>> GetAllAsync()
     {
-        var patients = await _repository.GetAllAsync<Patient>();
+        var patients = await _repository.GetFilteredAsync<Patient>(x => !x.IsDeleted);
 
         return patients.Select(x => x.ToPatientResponse()).ToList();
     }
@@ -86,9 +86,52 @@ public class PatientsService : IPatientsService
 
     public async Task DeleteAsync(Guid id)
     {
-        var result = await _repository.DeleteAsync<Patient>(id);
+        var patient = await _repository.GetByIdAsync<Patient>(id);
 
-        if (!result)
+        if (patient is null)
             throw new KeyNotFoundException("Patient with such id does not exist.");
+
+        if (!patient.IsDeleted)
+            throw new ArgumentException("Patient is already deleted.");
+
+        patient.IsDeleted = true;
+        await _repository.UpdateAsync(patient);
+    }
+
+    public async Task RecoverAsync(Guid id)
+    {
+        var patient = await _repository.GetByIdAsync<Patient>(id);
+
+        if (patient is null)
+            throw new KeyNotFoundException("Patient with such id does not exist.");
+
+        if (patient.IsDeleted)
+            throw new ArgumentException("Patient has been not deleted for recovering.");
+
+        patient.IsDeleted = false;
+        await _repository.UpdateAsync(patient);
+    }
+
+    public async Task<IEnumerable<PatientResponse>> GetFilteredAsync(UserSpecifications specifications)
+    {
+        if (specifications == null)
+            throw new ArgumentNullException("Specifications to filter are null.");
+
+        if (string.IsNullOrEmpty(specifications.Name))
+            throw new ArgumentException("Patients name cannot be blank.");
+
+        if (string.IsNullOrEmpty(specifications.Surname))
+            throw new ArgumentException("Patients surname cannot be blank.");
+
+        if (string.IsNullOrEmpty(specifications.Patronymic))
+            throw new ArgumentException("Patients patronymic cannot be blank.");
+
+        var patients = await _repository
+            .GetFilteredAsync<Patient>(x => x.Name == specifications.Name &&
+                                            x.Surname == specifications.Surname &&
+                                            x.Patronymic == specifications.Patronymic &&
+                                            x.IsDeleted == specifications.IsDeleted);
+
+        return patients.Select(x => x.ToPatientResponse()).ToList();
     }
 }

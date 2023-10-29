@@ -31,6 +31,8 @@ namespace HospitalReqistry.Domain.Entities
         [Required]
         [Phone]
         public string PhoneNumber { get; set; } = null!;
+        
+        public bool IsDeleted { get; set; } = false;
 
         public virtual ICollection<Schedule> Schedules { get; set; }
 

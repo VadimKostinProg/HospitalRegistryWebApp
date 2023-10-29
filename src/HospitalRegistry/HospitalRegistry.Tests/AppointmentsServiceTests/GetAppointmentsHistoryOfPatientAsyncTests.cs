@@ -33,7 +33,6 @@ public class GetAppointmentsHistoryOfPatientAsyncTests : AppointmentsServiceTest
             Id = Guid.NewGuid(),
             Name = fixture.Create<string>(),
         };
-        doctor.Schedules = GetTestSchedules(doctor.Id).ToList();
 
         var appointments = GetTestCompletedAppointments(doctor, patient, diagnosis, new TimeOnly(12, 0), new TimeOnly(14, 0));
         patient.Appointments = appointments.ToList();

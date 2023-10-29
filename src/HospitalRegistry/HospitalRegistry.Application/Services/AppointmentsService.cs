@@ -142,7 +142,7 @@ public class AppointmentsService : IAppointmentsService
                 DateAndTime = appointment.DateAndTime,
                 Doctor = appointment.Doctor.ToDoctorResponse(),
                 Patient = patient.ToPatientResponse(),
-                AppointmentType = GetAppointmentType(appointment),
+                AppointmentType = (AppointmentType)Enum.Parse<AppointmentType>(appointment.AppointmentType),
                 ExtraClinicalData = appointment.ExtraClinicalData,
                 Diagnosis = appointment.Diagnosis?.Name,
                 Status = (AppointmentStatus)Enum.Parse<AppointmentStatus>(appointment.Status),
@@ -166,7 +166,7 @@ public class AppointmentsService : IAppointmentsService
                 DateAndTime = appointment.DateAndTime,
                 Doctor = doctor.ToDoctorResponse(),
                 Patient = appointment.Patient.ToPatientResponse(),
-                AppointmentType = GetAppointmentType(appointment),
+                AppointmentType = (AppointmentType)Enum.Parse<AppointmentType>(appointment.AppointmentType),
                 ExtraClinicalData = appointment.ExtraClinicalData,
                 Diagnosis = appointment.Diagnosis?.Name,
                 Status = (AppointmentStatus)Enum.Parse<AppointmentStatus>(appointment.Status),
@@ -183,17 +183,6 @@ public class AppointmentsService : IAppointmentsService
     public Task<IEnumerable<AppointmentResponse>> GetScheduledAppoitnmentsOfDoctorAsync(Guid doctorId, DateOnly date)
     {
         throw new NotImplementedException();
-    }
-
-    private AppointmentType GetAppointmentType(Appointment appointment)
-    {
-        var appointmentType = appointment.Doctor.Schedules
-            .FirstOrDefault(x => x.TimeSlot.DayOfWeek % 7 == (int)appointment.DateAndTime.DayOfWeek &&
-            x.TimeSlot.StartTime == appointment.DateAndTime.ToString("hh:mm"))
-            ?.AppointmentType;
-
-        return appointmentType is null ? AppointmentType.HealthVisit : 
-            (AppointmentType)Enum.Parse<AppointmentType>(appointmentType);
     }
 
     public Task SetAppointmentAsync(AppointmentSetRequest request)

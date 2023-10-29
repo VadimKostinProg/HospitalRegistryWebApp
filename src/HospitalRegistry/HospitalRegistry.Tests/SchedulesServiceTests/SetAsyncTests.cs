@@ -120,7 +120,7 @@ public class SetAsyncTests : SchedulesServiceTestsBase
             .Create();
         repositoryMock.Setup(x => x.GetByIdAsync<Doctor>(doctorId))
             .ReturnsAsync(doctor);
-        repositoryMock.Setup(x => x.DeleteRange(testSchedule))
+        repositoryMock.Setup(x => x.DeleteRangeAsync(testSchedule))
             .ReturnsAsync(testSchedule.Count());
         repositoryMock.Setup(x => x.FirstOrDefaultAsync(It.IsAny<Expression<Func<TimeSlot, bool>>>()))
             .ReturnsAsync(null as TimeSlot);

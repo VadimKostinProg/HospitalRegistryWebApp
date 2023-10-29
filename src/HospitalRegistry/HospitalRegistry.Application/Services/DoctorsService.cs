@@ -42,15 +42,40 @@ namespace HospitalRegistry.Application.Services
 
         public async Task DeleteAsync(Guid id)
         {
-            var result = await _repository.DeleteAsync<Doctor>(id);
+            var doctor = await _repository.GetByIdAsync<Doctor>(id);
 
-            if (!result)
+            if (doctor is null)
                 throw new KeyNotFoundException("Doctor with such id does not exists.");
+
+            if (!doctor.IsDeleted)
+                throw new ArgumentException("Doctor is already deleted.");
+
+            // Deleting doctors schedule
+            var scheduleSlots = doctor.Schedules;
+            await _repository.DeleteRangeAsync(scheduleSlots);
+
+            // Firing the doctor
+            doctor.IsDeleted = true;
+            await _repository.UpdateAsync(doctor);
+        }
+
+        public async Task RecoverAsync(Guid doctorId)
+        {
+            var doctor = await _repository.GetByIdAsync<Doctor>(doctorId);
+
+            if (doctor is null)
+                throw new KeyNotFoundException("Doctor with such id does not exists.");
+
+            if (!doctor.IsDeleted)
+                throw new ArgumentException("Doctor has been not deleted for recovering.");
+
+            doctor.IsDeleted = false;
+            await _repository.UpdateAsync(doctor);
         }
 
         public async Task<IEnumerable<DoctorResponse>> GetAllAsync()
         {
-            var doctors = await _repository.GetAllAsync<Doctor>();
+            var doctors = await _repository.GetFilteredAsync<Doctor>(x => !x.IsDeleted);
 
             return doctors.Select(x => x.ToDoctorResponse()).ToList();
         }
@@ -98,6 +123,29 @@ namespace HospitalRegistry.Application.Services
             await _repository.UpdateAsync(doctor);
 
             return doctor.ToDoctorResponse();
+        }
+
+        public async Task<IEnumerable<DoctorResponse>> GetFilteredAsync(UserSpecifications specifications)
+        {
+            if (specifications == null) 
+                throw new ArgumentNullException("Specifications to filter are null.");
+
+            if (string.IsNullOrEmpty(specifications.Name))
+                throw new ArgumentException("Doctors name cannot be blank.");
+
+            if (string.IsNullOrEmpty(specifications.Surname))
+                throw new ArgumentException("Doctors surname cannot be blank.");
+
+            if (string.IsNullOrEmpty(specifications.Patronymic))
+                throw new ArgumentException("Doctors patronymic cannot be blank.");
+
+            var doctors = await _repository
+                .GetFilteredAsync<Doctor>(x => x.Name == specifications.Name &&
+                                               x.Surname == specifications.Surname &&
+                                               x.Patronymic == specifications.Patronymic &&
+                                               x.IsDeleted == specifications.IsDeleted);
+
+            return doctors.Select(x => x.ToDoctorResponse()).ToList();
         }
     }
 }

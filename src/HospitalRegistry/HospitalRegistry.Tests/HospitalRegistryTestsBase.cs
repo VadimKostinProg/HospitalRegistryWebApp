@@ -32,7 +32,7 @@ public abstract class HospitalRegistryTestsBase
             PhoneNumber = fixture.Create<string>(),
         };
     }
-    
+
     public IEnumerable<Patient> GetTestPatients(int count = 10)
     {
         for (int i = 0; i < count; i++)
@@ -54,7 +54,7 @@ public abstract class HospitalRegistryTestsBase
             PhoneNumber = fixture.Create<string>()
         };
     }
-    
+
     public IEnumerable<Schedule> GetTestSchedules(Guid doctorId, int startHour = 10, int endHour = 15)
     {
         for (int i = startHour; i <= endHour; i++)
@@ -121,7 +121,7 @@ public abstract class HospitalRegistryTestsBase
             Schedule = GetTestTimeSlotsDTO().ToList()
         };
     }
-    
+
     public IEnumerable<Diagnosis> GetDiagnoses(int count = 10)
     {
         for (int i = 0; i < count; i++)
@@ -147,6 +147,7 @@ public abstract class HospitalRegistryTestsBase
                 DateAndTime = date.ToDateTime(startTime),
                 DoctorId = doctorId,
                 PatientId = patinetId,
+                AppointmentType = AppointmentType.Consultation.ToString(),
                 ExtraClinicalData = fixture.Create<string>(),
                 Status = AppointmentStatus.Scheduled.ToString()
             };
@@ -165,6 +166,7 @@ public abstract class HospitalRegistryTestsBase
                 DateAndTime = date.ToDateTime(time),
                 DoctorId = doctor.Id,
                 PatientId = patient.Id,
+                AppointmentType = AppointmentType.Consultation.ToString(),
                 ExtraClinicalData = fixture.Create<string>(),
                 DiagnosisId = diagnosis.Id,
                 Status = AppointmentStatus.Completed.ToString(),

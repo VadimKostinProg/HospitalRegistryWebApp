@@ -28,6 +28,8 @@ namespace HospitalReqistry.Domain.Entities
         [Phone]
         public string PhoneNumber { get; set; } = null!;
 
+        public bool IsDeleted { get; set; } = false;
+
         public virtual ICollection<Appointment> Appointments { get; set; }
     }
 }

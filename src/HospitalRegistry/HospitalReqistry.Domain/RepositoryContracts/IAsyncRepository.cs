@@ -79,6 +79,6 @@ namespace HospitalReqistry.Domain.RepositoryContracts
         /// <typeparam name="T">Type of entity to delete.</typeparam>
         /// <param name="entities">Collection of the entities to delete.</param>
         /// <returns>Amount of deleted entities.</returns>
-        Task<int> DeleteRange<T>(IEnumerable<T> entities) where T : EntityBase;
+        Task<int> DeleteRangeAsync<T>(IEnumerable<T> entities) where T : EntityBase;
     }
 }

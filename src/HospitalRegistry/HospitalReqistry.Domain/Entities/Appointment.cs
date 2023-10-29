@@ -14,6 +14,10 @@ namespace HospitalReqistry.Domain.Entities
         [Required]
         public Guid PatientId { get; set; }
 
+        [Required] 
+        [MaxLength(15)]
+        public string AppointmentType { get; set; } = null!;
+
         public Guid? DiagnosisId { get; set; }
 
         [MaxLength(70)]

@@ -89,7 +89,7 @@ public class SchedulesService : ISchedulesService
                 .Where(x => x.TimeSlot.DayOfWeek == dayOfWeek)
                 .ToList();
 
-            await _repository.DeleteRange(schedulesToDelete);
+            await _repository.DeleteRangeAsync(schedulesToDelete);
         }
     }
 
