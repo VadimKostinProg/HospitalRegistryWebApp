@@ -141,8 +141,8 @@ public class AppointmentsService : IAppointmentsService
                 Id = appointment.Id,
                 DateAndTime = appointment.DateAndTime,
                 Doctor = appointment.Doctor.ToDoctorResponse(),
-                Patient = appointment.Patient.ToPatientResponse(),
-                AppointmentType = GetAppointment(appointment),
+                Patient = patient.ToPatientResponse(),
+                AppointmentType = GetAppointmentType(appointment),
                 ExtraClinicalData = appointment.ExtraClinicalData,
                 Diagnosis = appointment.Diagnosis?.Name,
                 Status = (AppointmentStatus)Enum.Parse<AppointmentStatus>(appointment.Status),
@@ -151,9 +151,28 @@ public class AppointmentsService : IAppointmentsService
             .ToList();
     }
 
-    public Task<IEnumerable<AppointmentResponse>> GetAppointmentsHistoryOfDoctorAsync(Guid doctorId)
+    public async Task<IEnumerable<AppointmentResponse>> GetAppointmentsHistoryOfDoctorAsync(Guid doctorId)
     {
-        throw new NotImplementedException();
+        var doctor = await _repository.GetByIdAsync<Doctor>(doctorId);
+
+        if (doctor is null)
+            throw new KeyNotFoundException("Doctor with such id does not exits.");
+
+        return doctor.Appointments
+            .Where(appointment => appointment.Status == AppointmentStatus.Completed.ToString())
+            .Select(appointment => new AppointmentResponse()
+            {
+                Id = appointment.Id,
+                DateAndTime = appointment.DateAndTime,
+                Doctor = doctor.ToDoctorResponse(),
+                Patient = appointment.Patient.ToPatientResponse(),
+                AppointmentType = GetAppointmentType(appointment),
+                ExtraClinicalData = appointment.ExtraClinicalData,
+                Diagnosis = appointment.Diagnosis?.Name,
+                Status = (AppointmentStatus)Enum.Parse<AppointmentStatus>(appointment.Status),
+                Conclusion = appointment.Conclusion
+            })
+            .ToList();
     }
 
     public Task<IEnumerable<AppointmentResponse>> GetScheduledAppoitnmentsOfPatientAsync(Guid patientId, DateOnly date)
@@ -166,7 +185,7 @@ public class AppointmentsService : IAppointmentsService
         throw new NotImplementedException();
     }
 
-    private AppointmentType GetAppointment(Appointment appointment)
+    private AppointmentType GetAppointmentType(Appointment appointment)
     {
         var appointmentType = appointment.Doctor.Schedules
             .FirstOrDefault(x => x.TimeSlot.DayOfWeek % 7 == (int)appointment.DateAndTime.DayOfWeek &&
