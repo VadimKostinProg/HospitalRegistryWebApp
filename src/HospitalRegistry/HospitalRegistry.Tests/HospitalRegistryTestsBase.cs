@@ -137,7 +137,7 @@ public abstract class HospitalRegistryTestsBase
         };
     }
 
-    public IEnumerable<Appointment> GetTestScheduledAppointments(Guid doctorId, Guid patinetId, DateOnly startDate, TimeOnly startTime)
+    public IEnumerable<Appointment> GetTestScheduledAppointments(Guid doctorId, Guid patietId, DateOnly startDate, TimeOnly startTime)
     {
         for (DateOnly date = startDate; date <= startDate.AddDays(2); date = date.AddDays(1))
         {
@@ -146,10 +146,29 @@ public abstract class HospitalRegistryTestsBase
                 Id = Guid.NewGuid(),
                 DateAndTime = date.ToDateTime(startTime),
                 DoctorId = doctorId,
-                PatientId = patinetId,
+                PatientId = patietId,
                 AppointmentType = AppointmentType.Consultation.ToString(),
                 ExtraClinicalData = fixture.Create<string>(),
                 Status = AppointmentStatus.Scheduled.ToString()
+            };
+        }
+    }
+    
+    public IEnumerable<Appointment> GetTestScheduledAppointments(Doctor doctor, Patient patient, DateOnly date, TimeOnly startTime)
+    {
+        for (TimeOnly time = startTime; time <= startTime.AddHours(4); time = time.AddHours(1))
+        {
+            yield return new Appointment()
+            {
+                Id = Guid.NewGuid(),
+                DateAndTime = date.ToDateTime(time),
+                DoctorId = doctor.Id,
+                PatientId = patient.Id,
+                AppointmentType = AppointmentType.Consultation.ToString(),
+                ExtraClinicalData = fixture.Create<string>(),
+                Status = AppointmentStatus.Scheduled.ToString(),
+                Doctor = doctor,
+                Patient = patient
             };
         }
     }

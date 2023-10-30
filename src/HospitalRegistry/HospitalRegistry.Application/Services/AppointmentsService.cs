@@ -175,9 +175,38 @@ public class AppointmentsService : IAppointmentsService
             .ToList();
     }
 
-    public Task<IEnumerable<AppointmentResponse>> GetScheduledAppoitnmentsOfPatientAsync(Guid patientId, DateOnly date)
+    public async Task<IEnumerable<AppointmentResponse>> GetScheduledAppoitnmentsOfPatientAsync(Guid patientId, DateOnly date)
     {
-        throw new NotImplementedException();
+        var patient = await _repository.GetByIdAsync<Patient>(patientId);
+
+        if (patient is null)
+            throw new KeyNotFoundException("Patient with such id does not exist.");
+
+        if (patient.IsDeleted)
+            throw new ArgumentException("Patient is deleted.");
+
+        if (date < DateOnly.FromDateTime(DateTime.UtcNow))
+            throw new ArgumentException("Scheduled appointments can be accessed only for present and future days.");
+
+        var dateAndTime = date.ToDateTime(new TimeOnly(0, 0));
+
+        var appointments =
+            await _repository.GetFilteredAsync<Appointment>(x =>
+                x.PatientId == patientId && 
+                x.Status == AppointmentStatus.Scheduled.ToString() &&
+                x.DateAndTime >= dateAndTime);
+
+        return appointments.Select(appointment => new AppointmentResponse()
+            {
+                Id = appointment.Id,
+                DateAndTime = appointment.DateAndTime,
+                Doctor = appointment.Doctor.ToDoctorResponse(),
+                Patient = appointment.Patient.ToPatientResponse(),
+                AppointmentType = (AppointmentType)Enum.Parse<AppointmentType>(appointment.AppointmentType),
+                ExtraClinicalData = appointment.ExtraClinicalData,
+                Status = (AppointmentStatus)Enum.Parse<AppointmentStatus>(appointment.Status)
+            })
+            .ToList();
     }
 
     public Task<IEnumerable<AppointmentResponse>> GetScheduledAppoitnmentsOfDoctorAsync(Guid doctorId, DateOnly date)
