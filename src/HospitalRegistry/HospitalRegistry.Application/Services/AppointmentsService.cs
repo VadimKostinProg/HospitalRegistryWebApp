@@ -243,9 +243,40 @@ public class AppointmentsService : IAppointmentsService
             .ToList();
     }
 
-    public Task SetAppointmentAsync(AppointmentSetRequest request)
+    public async Task SetAppointmentAsync(AppointmentSetRequest request)
     {
-        throw new NotImplementedException();
+        // Validating request
+        if (request == null)
+            throw new ArgumentNullException("Appointment to set is null.");
+
+        if (request.DateAndTime <= DateTime.UtcNow)
+            throw new ArgumentException("Date and time must be more than now.");
+
+        var doctor = await _repository.GetByIdAsync<Doctor>(request.DoctorId);
+
+        if (doctor is null)
+            throw new KeyNotFoundException("Doctor with such id does not exist.");
+
+        if (doctor.IsDeleted)
+            throw new ArgumentException("Doctor is deleted.");
+        
+        var patient = await _repository.GetByIdAsync<Patient>(request.PatientId);
+
+        if (patient is null)
+            throw new KeyNotFoundException("Patient with such id does not exist.");
+
+        if (patient.IsDeleted)
+            throw new ArgumentException("Patient is deleted.");
+
+        // Adding new appointment
+        var appointment = new Appointment()
+        {
+            DateAndTime = request.DateAndTime,
+            DoctorId = request.DoctorId,
+            PatientId = request.PatientId,
+            ExtraClinicalData = request.ExtraClinicalData
+        };
+        await _repository.AddAsync(appointment);
     }
 
     public Task CompleteAppointmentAsync(AppointmentCompleteRequest request)
