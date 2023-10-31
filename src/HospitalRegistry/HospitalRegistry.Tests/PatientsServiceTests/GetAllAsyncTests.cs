@@ -1,5 +1,6 @@
 using HospitalReqistry.Domain.Entities;
 using Moq;
+using System.Linq.Expressions;
 
 namespace HospitalRegistry.Tests.PatientsServiceTests;
 
@@ -10,9 +11,9 @@ public class GetAllAsyncTests : PatientsServiceTestsBase
     {
         // Arrange
         var patients = GetTestPatients();
-        repositoryMock.Setup(x => x.GetAllAsync<Patient>(true))
-            .ReturnsAsync(patients);
-        
+        repositoryMock.Setup(x => x.GetFilteredAsync<Patient>(It.IsAny<Expression<Func<Patient, bool>>>(), true))
+                .ReturnsAsync(patients);
+
         // Act
         var response = await service.GetAllAsync();
         

@@ -5,6 +5,7 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -19,7 +20,8 @@ namespace HospitalRegistry.Tests.DoctorsServiceTests
         {
             // Arrange
             var testDoctors = GetTestDoctors().ToList();
-            repositoryMock.Setup(x => x.GetAllAsync<Doctor>(true)).ReturnsAsync(testDoctors);
+            repositoryMock.Setup(x => x.GetFilteredAsync<Doctor>(It.IsAny<Expression<Func<Doctor, bool>>>(), true))
+                .ReturnsAsync(testDoctors);
 
             // Act
             var actual = await service.GetAllAsync();
