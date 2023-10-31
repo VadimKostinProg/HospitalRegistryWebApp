@@ -5,7 +5,7 @@ namespace HospitalRegistry.Application.ServiceContracts
     /// <summary>
     /// Service for managing the appointments.
     /// </summary>
-    public interface IAppointmentsService
+    public interface IAppointmentsService : IRecoverable
     {
         /// <summary>
         /// Method for searching the free slots for appointments.
@@ -61,12 +61,6 @@ namespace HospitalRegistry.Application.ServiceContracts
         /// </summary>
         /// <param name="appointmentId">Id of the appointment to cancel.</param>
         Task CancelAppointmentAsync(Guid appointmentId);
-
-        /// <summary>
-        /// Method for recovering the canceled appointment.
-        /// </summary>
-        /// <param name="appointmentId">Id of appointment to recover.</param>
-        Task RecoverAppointmentAsync(Guid appointmentId);
 
         /// <summary>
         /// Method for clearing all canceled appointments.

@@ -140,9 +140,10 @@ public class SetAppointmentAsyncTests : AppointmentsServiceTestsBase
         repositoryMock.Setup(x => x.GetByIdAsync<Patient>(It.IsAny<Guid>()))
             .ReturnsAsync(patient);
         
-        // Act
+        // Assert
         Assert.Null(await Record.ExceptionAsync(async () =>
         {
+            // Act
             await service.SetAppointmentAsync(request);
         }));
     }

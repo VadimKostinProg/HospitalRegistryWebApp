@@ -279,9 +279,37 @@ public class AppointmentsService : IAppointmentsService
         await _repository.AddAsync(appointment);
     }
 
-    public Task CompleteAppointmentAsync(AppointmentCompleteRequest request)
+    public async Task CompleteAppointmentAsync(AppointmentCompleteRequest request)
     {
-        throw new NotImplementedException();
+        // Validating request
+        if (request is null)
+            throw new ArgumentNullException("Appointment to complete is null.");
+
+        var appointment = await _repository.GetByIdAsync<Appointment>(request.Id);
+
+        if (appointment is null)
+            throw new KeyNotFoundException("Appointment with such id does not exist.");
+
+        if (appointment.Status == AppointmentStatus.Completed.ToString())
+            throw new ArgumentException("Appointment is already completed.");
+
+        if (appointment.Status == AppointmentStatus.Canceled.ToString())
+            throw new ArgumentException("Cannot compltete canceled appointment.");
+
+        var diagnosis = await _repository.GetByIdAsync<Diagnosis>(request.DiagnosisId);
+
+        if (diagnosis is null)
+            throw new KeyNotFoundException("Diagnosis with such id does not exist.");
+
+        if (string.IsNullOrEmpty(request.Conclusion))
+            throw new ArgumentNullException("Conclusion cannot be blank.");
+        
+        // Completing appointment
+        appointment.DiagnosisId = request.DiagnosisId;
+        appointment.Conclusion = request.Conclusion;
+        appointment.Status = AppointmentStatus.Completed.ToString();
+
+        await _repository.UpdateAsync(appointment);
     }
 
     public Task CancelAppointmentAsync(Guid appointmentId)
@@ -289,7 +317,7 @@ public class AppointmentsService : IAppointmentsService
         throw new NotImplementedException();
     }
 
-    public Task RecoverAppointmentAsync(Guid appointmentId)
+    public Task RecoverAsync(Guid id)
     {
         throw new NotImplementedException();
     }
