@@ -364,8 +364,11 @@ public class AppointmentsService : IAppointmentsService
         await _repository.UpdateAsync(appointment);
     }
 
-    public Task ClearAllCanceledAppointmentsAsync()
+    public async Task ClearAllCanceledAppointmentsAsync()
     {
-        throw new NotImplementedException();
+        var canceledAppointments =
+            await _repository.GetFilteredAsync<Appointment>(x => x.Status == AppointmentStatus.Canceled.ToString());
+
+        await _repository.DeleteRangeAsync(canceledAppointments);
     }
 }
