@@ -269,6 +269,11 @@ public class AppointmentsService : IAppointmentsService
         if (patient.IsDeleted)
             throw new ArgumentException("Patient is deleted.");
 
+        if (await _repository.ContainsAsync<Appointment>(x => x.DateAndTime == request.DateAndTime &&
+                                                              x.DoctorId == request.DoctorId &&
+                                                              x.Status == AppointmentStatus.Scheduled.ToString()))
+            throw new ArgumentException("Another appointmnet has been already set on this time.");
+
         // Adding new appointment
         var appointment = new Appointment()
         {
@@ -348,6 +353,7 @@ public class AppointmentsService : IAppointmentsService
             throw new ArgumentException($"Cannot recover appointment that is more than {maxDelay} minutes late from schedule.");
 
         if (await _repository.ContainsAsync<Appointment>(x => x.DateAndTime == appointment.DateAndTime &&
+                                                              x.DoctorId == appointment.DoctorId &&
                                                               x.Status == AppointmentStatus.Scheduled.ToString()))
             throw new ArgumentException("Another appointmnet has been already set on this time.");
 

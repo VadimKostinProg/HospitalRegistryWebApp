@@ -2,6 +2,7 @@ using AutoFixture;
 using HospitalRegistry.Application.DTO;
 using HospitalReqistry.Domain.Entities;
 using Moq;
+using System.Linq.Expressions;
 
 namespace HospitalRegistry.Tests.AppointmentsServiceTests;
 
@@ -124,6 +125,33 @@ public class SetAppointmentAsyncTests : AppointmentsServiceTestsBase
     }
 
     [Fact]
+    public async Task SetAppointmnetAsync_AnotherAppointmnetHasBeenSetOnThisTime_ThrowsArgumentException()
+    {
+        // Arrange
+        var patient = GetTestPatient();
+        var doctor = GetTestDoctor();
+        var request = fixture.Build<AppointmentSetRequest>()
+            .With(x => x.DateAndTime, DateTime.UtcNow.AddDays(2))
+            .With(x => x.DoctorId, doctor.Id)
+            .With(x => x.PatientId, patient.Id)
+            .Create();
+
+        repositoryMock.Setup(x => x.GetByIdAsync<Doctor>(It.IsAny<Guid>()))
+            .ReturnsAsync(doctor);
+        repositoryMock.Setup(x => x.GetByIdAsync<Patient>(It.IsAny<Guid>()))
+            .ReturnsAsync(patient);
+        repositoryMock.Setup(x => x.ContainsAsync(It.IsAny<Expression<Func<Appointment, bool>>>()))
+            .ReturnsAsync(true);
+
+        // Assert
+        await Assert.ThrowsAsync<ArgumentException>(async () =>
+        {
+            // Act
+            await service.SetAppointmentAsync(request);
+        });
+    }
+
+    [Fact]
     public async Task SetAppointmentAsync_ValidObject_SuccessfullSettingAppointment()
     {
         // Arrange
@@ -139,7 +167,9 @@ public class SetAppointmentAsyncTests : AppointmentsServiceTestsBase
             .ReturnsAsync(doctor);
         repositoryMock.Setup(x => x.GetByIdAsync<Patient>(It.IsAny<Guid>()))
             .ReturnsAsync(patient);
-        
+        repositoryMock.Setup(x => x.ContainsAsync(It.IsAny<Expression<Func<Appointment, bool>>>()))
+            .ReturnsAsync(false);
+
         // Assert
         Assert.Null(await Record.ExceptionAsync(async () =>
         {
