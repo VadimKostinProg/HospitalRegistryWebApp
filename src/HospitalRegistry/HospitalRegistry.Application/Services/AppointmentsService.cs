@@ -1,3 +1,4 @@
+using HospitalRegistry.Application.Constants;
 using HospitalRegistry.Application.DTO;
 using HospitalRegistry.Application.Enums;
 using HospitalRegistry.Application.Helpers;
@@ -331,9 +332,28 @@ public class AppointmentsService : IAppointmentsService
         await _repository.UpdateAsync(appointment);
     }
 
-    public Task RecoverAsync(Guid id)
+    public async Task RecoverAsync(Guid id)
     {
-        throw new NotImplementedException();
+        // Validating request
+        var appointment = await _repository.GetByIdAsync<Appointment>(id);
+
+        if (appointment is null)
+            throw new KeyNotFoundException("Appointment with such id does not exist.");
+
+        if (appointment.Status != AppointmentStatus.Canceled.ToString())
+            throw new ArgumentException("Appointment is not canceled to recover.");
+
+        int maxDelay = AppointmentsConfiguration.MaxAppointmentRecoveringLateness;
+        if (appointment.DateAndTime.AddMinutes(maxDelay) < DateTime.UtcNow)
+            throw new ArgumentException($"Cannot recover appointment that is more than {maxDelay} minutes late from schedule.");
+
+        if (await _repository.ContainsAsync<Appointment>(x => x.DateAndTime == appointment.DateAndTime &&
+                                                              x.Status == AppointmentStatus.Scheduled.ToString()))
+            throw new ArgumentException("Another appointmnet has been already set on this time.");
+
+        // Recovering appointment
+        appointment.Status = AppointmentStatus.Scheduled.ToString();
+        await _repository.UpdateAsync(appointment);
     }
 
     public Task ClearAllCanceledAppointmentsAsync()
