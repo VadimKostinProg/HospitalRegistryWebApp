@@ -98,7 +98,9 @@ public class AppointmentsService : IAppointmentsService
     // Method for checking if appointment for timeSlot already exists
     private bool AppointmnetAlreadyExistsForTimeSlot(List<Appointment> appointments, AppointmentSlotResponse timeSlot) =>
         appointments.Any(x =>
-            x.DateAndTime == timeSlot.Date.ToDateTime(timeSlot.StartTime) && x.DoctorId == timeSlot.DoctorId);
+            x.DateAndTime == timeSlot.Date.ToDateTime(timeSlot.StartTime) && 
+            x.DoctorId == timeSlot.DoctorId && 
+            x.Status == AppointmentStatus.Scheduled.ToString());
     
     // Method for filling free slot with doctors schedule and passed dates.
     private List<AppointmentSlotResponse> FillScheduleForDates(ScheduleDTO schedule, DateOnly startDate, DateOnly endDate, Specialty specialty)
