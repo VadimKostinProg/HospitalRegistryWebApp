@@ -25,7 +25,7 @@ public class GetByIdAsyncTests : DiagnosesServiceTestsBase
     public async Task GetByIdAsync_ValidId_ReturnsObject()
     {
         // Arrange
-        var diagnosis = GetDiagnosis();
+        var diagnosis = GetTestDiagnosis();
         var idToPass = diagnosis.Id;
         repositoryMock.Setup(x => x.GetByIdAsync<Diagnosis>(idToPass))
             .ReturnsAsync(diagnosis);

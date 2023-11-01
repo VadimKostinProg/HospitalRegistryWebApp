@@ -312,9 +312,23 @@ public class AppointmentsService : IAppointmentsService
         await _repository.UpdateAsync(appointment);
     }
 
-    public Task CancelAppointmentAsync(Guid appointmentId)
+    public async Task CancelAppointmentAsync(Guid appointmentId)
     {
-        throw new NotImplementedException();
+        // Validating request
+        var appointment = await _repository.GetByIdAsync<Appointment>(appointmentId);
+
+        if (appointment is null)
+            throw new KeyNotFoundException("Appointment with such id does not exist.");
+
+        if (appointment.Status == AppointmentStatus.Canceled.ToString())
+            throw new ArgumentException("Appointment has already been canceled.");
+
+        if (appointment.Status == AppointmentStatus.Completed.ToString())
+            throw new ArgumentException("Cannot cancel already completed appointment");
+
+        // Canceling appointment
+        appointment.Status = AppointmentStatus.Canceled.ToString();
+        await _repository.UpdateAsync(appointment);
     }
 
     public Task RecoverAsync(Guid id)

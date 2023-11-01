@@ -45,7 +45,7 @@ public class CompleteAppointmentAsyncTests : AppointmentsServiceTestsBase
         // Arrange
         var doctor = GetTestDoctor();
         var patient = GetTestPatient();
-        var diagnosis = GetDiagnosis();
+        var diagnosis = GetTestDiagnosis();
         var appointment = GetTestCompletedAppointments(doctor, patient, diagnosis, new TimeOnly(12, 0), new TimeOnly(14, 0)).First();
         var request = fixture.Build<AppointmentCompleteRequest>()
             .With(x => x.Id, appointment.Id)
@@ -120,7 +120,7 @@ public class CompleteAppointmentAsyncTests : AppointmentsServiceTestsBase
             .With(x => x.Id, appointment.Id)
             .With(x => x.Conclusion, string.Empty)
             .Create();
-        var diagnosis = GetDiagnosis();
+        var diagnosis = GetTestDiagnosis();
 
         repositoryMock.Setup(x => x.GetByIdAsync<Appointment>(appointment.Id))
             .ReturnsAsync(appointment);
@@ -141,7 +141,7 @@ public class CompleteAppointmentAsyncTests : AppointmentsServiceTestsBase
         // Arrange
         var doctor = GetTestDoctor();
         var patient = GetTestPatient();
-        var diagnosis = GetDiagnosis();
+        var diagnosis = GetTestDiagnosis();
         var appointment = GetTestScheduledAppointments(doctor, patient, DateOnly.FromDateTime(DateTime.UtcNow.AddDays(2)), new TimeOnly(12, 0)).First();
         var request = fixture.Build<AppointmentCompleteRequest>()
             .With(x => x.Id, appointment.Id)

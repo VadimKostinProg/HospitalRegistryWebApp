@@ -122,13 +122,13 @@ public abstract class HospitalRegistryTestsBase
         };
     }
 
-    public IEnumerable<Diagnosis> GetDiagnoses(int count = 10)
+    public IEnumerable<Diagnosis> GetTestDiagnoses(int count = 10)
     {
         for (int i = 0; i < count; i++)
-            yield return GetDiagnosis();
+            yield return GetTestDiagnosis();
     }
 
-    public Diagnosis GetDiagnosis()
+    public Diagnosis GetTestDiagnosis()
     {
         return new Diagnosis()
         {
