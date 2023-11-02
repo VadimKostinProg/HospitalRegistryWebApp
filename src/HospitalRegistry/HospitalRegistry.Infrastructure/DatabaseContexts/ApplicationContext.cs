@@ -1,9 +1,10 @@
 ﻿using HospitalReqistry.Domain.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace HospitalRegistry.Infrastructure.DatabaseContexts
 {
-    public class ApplicationContext : DbContext
+    public class ApplicationContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid>
     {
         public DbSet<TimeSlot> TimeSlots { get; set; }
         public DbSet<Doctor> Doctors { get; set; }
