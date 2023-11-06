@@ -1,6 +1,6 @@
 ﻿namespace HospitalRegistry.Application.DTO
 {
-    public class AuthorizationResponse
+    public class AuthenticationResponse
     {
         public Guid UserId { get; set; }
         public string Role { get; set; }

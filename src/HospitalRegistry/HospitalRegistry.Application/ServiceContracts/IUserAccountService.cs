@@ -5,24 +5,36 @@ namespace HospitalRegistry.Application.ServiceContracts
     /// <summary>
     /// Service for user authentification.
     /// </summary>
-    public interface IUserAuthService
+    public interface IUserAccountService
     {
         /// <summary>
         /// Method for registering doctors and users accounts.
         /// </summary>
         /// <param name="register">Register infotmation.</param>
         /// <returns>Response of authorization with token.</returns>
-        Task<AuthorizationResponse> RegisterAsync(RegisterDTO register);
+        Task<AuthenticationResponse> RegisterAsync(RegisterDTO register);
+
+        /// <summary>
+        /// Method for creating new admin or receptionist account.
+        /// </summary>
+        /// <param name="user">Admins credentianls.</param>
+        Task CreateUser(CreateUserDTO user);
 
         /// <summary>
         /// Method for sign in user.
         /// </summary>
         /// <param name="login">User login credentials.</param>
         /// <returns>Response of authorization with token.</returns>
-        Task<AuthorizationResponse> LoginAsync(LoginDTO login);
+        Task<AuthenticationResponse> LoginAsync(LoginDTO login);
 
         /// <summary>
-        /// Method for logout user.
+        /// Method for deleting user accounts(does not delete records of doctors and patients). 
+        /// </summary>
+        /// <param name="accountId">Id of account to delete.</param>
+        Task DeleteAccount(Guid accountId);
+
+        /// <summary>
+        /// Method for logout current user.
         /// </summary>
         Task LogoutAsync();
     }

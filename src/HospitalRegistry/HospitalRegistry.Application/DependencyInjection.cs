@@ -13,6 +13,8 @@ namespace HospitalRegistry.Application
             services.AddScoped<IDiagnosesService, DiagnosesService>();
             services.AddScoped<ISchedulesService, SchedulesService>();
             services.AddScoped<IAppointmentsService, AppointmentsService>();
+            services.AddScoped<IJwtService, JwtService>();
+            services.AddScoped<IUserAccountService, UserAccountService>();
 
             return services;
         }
