@@ -5,7 +5,7 @@ namespace HospitalRegistry.Application.ServiceContracts
     /// <summary>
     /// Service for user authentification.
     /// </summary>
-    public interface IUserAccountService
+    public interface IUserAccountsService
     {
         /// <summary>
         /// Method for registering doctors and users accounts.

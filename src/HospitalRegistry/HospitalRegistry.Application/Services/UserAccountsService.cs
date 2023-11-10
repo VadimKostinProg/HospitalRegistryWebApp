@@ -7,14 +7,14 @@ using Microsoft.AspNetCore.Identity;
 
 namespace HospitalRegistry.Application.Services
 {
-    public class UserAccountService : IUserAccountService
+    public class UserAccountsService : IUserAccountsService
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IJwtService _jwtService;
         private readonly IAsyncRepository _repository;
 
-        public UserAccountService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IJwtService jwtService, IAsyncRepository repository)
+        public UserAccountsService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IJwtService jwtService, IAsyncRepository repository)
         {
             _userManager = userManager;
             _signInManager = signInManager;

@@ -22,6 +22,8 @@ builder.Services.AddDbContext<ApplicationContext>(options =>
 builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
 {
     options.User.RequireUniqueEmail = true;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
 })
     .AddEntityFrameworkStores<ApplicationContext>()
     .AddDefaultTokenProviders()
@@ -29,6 +31,9 @@ builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
     .AddRoleStore<RoleStore<ApplicationRole, ApplicationContext, Guid>>();
 
 builder.Services.AddControllers();
+
+builder.Services.AddApiVersioning();
+
 builder.Services.AddInfrastructure();
 builder.Services.AddApplication();
 
