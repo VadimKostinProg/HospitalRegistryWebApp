@@ -2,6 +2,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace HospitalRegistry.Application.DTO;
 
+/// <summary>
+/// DTO to set new appointment request.
+/// </summary>
 public class AppointmentSetRequest
 {
     [Required]

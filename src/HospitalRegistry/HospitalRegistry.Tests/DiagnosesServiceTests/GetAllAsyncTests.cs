@@ -1,4 +1,5 @@
 using AutoFixture;
+using HospitalRegistry.Application.DTO;
 using HospitalReqistry.Domain.Entities;
 using Moq;
 
@@ -10,12 +11,16 @@ public class GetAllAsyncTests : DiagnosesServiceTestsBase
     public async Task GetAllAsync_ReturnsAllDiagnoses()
     {
         // Arrange
-        var diagnoses = GetTestDiagnoses().AsQueryable();
+        var diagnoses = GetTestDiagnoses().ToList();
+        var query = diagnoses.AsQueryable();
         repositoryMock.Setup(x => x.GetAllAsync<Diagnosis>(true))
-            .ReturnsAsync(diagnoses);
+            .ReturnsAsync(query);
+        var specifications = new Specifications();
+        specificationsServiceMock.Setup(x => x.ApplySpecifications(query, specifications))
+            .Returns(query);
 
         // Act
-        var actual = await service.GetAllAsync();
+        var actual = await service.GetAllAsync(specifications);
         
         // Assert
         Assert.NotNull(actual);

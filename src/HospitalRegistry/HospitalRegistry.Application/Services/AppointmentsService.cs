@@ -4,6 +4,7 @@ using HospitalRegistry.Application.Enums;
 using HospitalRegistry.Application.ServiceContracts;
 using HospitalReqistry.Domain.Entities;
 using HospitalReqistry.Domain.RepositoryContracts;
+using Microsoft.EntityFrameworkCore;
 
 namespace HospitalRegistry.Application.Services;
 
@@ -12,12 +13,38 @@ public class AppointmentsService : IAppointmentsService
     private readonly IAsyncRepository _repository;
     private readonly IDoctorsService _doctorsService;
     private readonly ISchedulesService _schedulesService;
+    private readonly ISpecificationsService _specificationsService;
 
-    public AppointmentsService(IAsyncRepository repository, IDoctorsService doctorsService, ISchedulesService schedulesService)
+    public AppointmentsService(IAsyncRepository repository, IDoctorsService doctorsService,
+        ISchedulesService schedulesService, ISpecificationsService specificationsService)
     {
         _repository = repository;
         _doctorsService = doctorsService;
         _schedulesService = schedulesService;
+        _specificationsService = specificationsService;
+    }
+
+    public async Task<IEnumerable<AppointmentResponse>> GetAppointmnetsList(Specifications specifications)
+    {
+        var query = await _repository.GetAllAsync<Appointment>();
+
+        query = _specificationsService.ApplySpecifications(query, specifications);
+
+        var appointments = await query.ToListAsync();
+
+        return appointments.Select(appointment => new AppointmentResponse
+        {
+            Id = appointment.Id,
+            DateAndTime = appointment.DateAndTime,
+            Doctor = appointment.Doctor.ToDoctorResponse(),
+            Patient = appointment.Patient.ToPatientResponse(),
+            AppointmentType = (AppointmentType)Enum.Parse<AppointmentType>(appointment.AppointmentType),
+            ExtraClinicalData = appointment.ExtraClinicalData,
+            Diagnosis = appointment.Diagnosis?.Name,
+            Status = (AppointmentStatus)Enum.Parse<AppointmentStatus>(appointment.Status),
+            Conclusion = appointment.Conclusion
+        })
+        .ToList();
     }
 
     public async Task<IEnumerable<AppointmentSlotResponse>> SearchFreeSlotsAsync(FreeSlotsSearchSpecifications specifications)
@@ -34,17 +61,17 @@ public class AppointmentsService : IAppointmentsService
 
         // List for free slots
         var freeSlots = new List<AppointmentSlotResponse>();
-        
+
         // List for doctors on which the search will be performed
         var doctors = new List<DoctorResponse>();
-        
+
         if (specifications.DoctorId is not null)    // If doctors id is passed, search will be perform only for passed doctor
         {
             var doctor = await _doctorsService.GetByIdAsync(specifications.DoctorId.Value);
-            
+
             if (doctor is null)
                 throw new KeyNotFoundException("Doctor with such Id does not exist.");
-            
+
             doctors.Add(doctor);
         }
         else if (specifications.Specialty is not null)  // If specialty is passed, isntead of doctors id, search will be perform for all doctors of passed specialty
@@ -53,13 +80,13 @@ public class AppointmentsService : IAppointmentsService
             doctors.AddRange(doctorsFiltered);
         }
         else throw new ArgumentNullException("Doctors specialty and doctors Id cannot be blank both. Pass at least one of the parameters.");
-        
+
         // Finding free slots for doctors
         foreach (var doctor in doctors)
         {
             var freeSlotsOfDoctot =
                 await GetFreeSlotsForDoctor(doctor, specifications.StartDate, specifications.EndDate, specifications.AppointmentType);
-                
+
             freeSlots.AddRange(freeSlotsOfDoctot);
         }
 
@@ -68,39 +95,39 @@ public class AppointmentsService : IAppointmentsService
             .ThenBy(x => x.StartTime)
             .ToList();
     }
-    
+
     // Method for getting free slots for doctor between passed days for passed appointment type.
     private async Task<IEnumerable<AppointmentSlotResponse>> GetFreeSlotsForDoctor(DoctorResponse doctor, DateOnly startDate, DateOnly endDate, AppointmentType appointmentType)
     {
         // Convert DateOnly to DateTime format
         var startDateTime = new DateTime(startDate.Year, startDate.Month, startDate.Day);
         var endDateTime = new DateTime(endDate.Year, endDate.Month, endDate.Day);
-        
+
         // Get all appointments for passed dates
-        var appointments = 
-            (await _repository.GetFilteredAsync<Appointment>(x => 
+        var appointments =
+            (await _repository.GetFilteredAsync<Appointment>(x =>
                 x.DateAndTime >= startDateTime && x.DateAndTime <= endDateTime))
             .ToList();
 
         // Get schedule of the doctor
         var schedule = await _schedulesService.GetScheduleByDoctorAsync(doctor.Id);
-        
+
         // Filling slots as all range of schedule slots between dates.
         var allSlots = FillScheduleForDates(schedule, startDate, endDate, doctor.Specialty);
-        
+
         // Filtering only free slots
         var freeSlots = allSlots.Where(x => !AppointmnetAlreadyExistsForTimeSlot(appointments, x));
-        
+
         return freeSlots;
     }
 
     // Method for checking if appointment for timeSlot already exists
     private bool AppointmnetAlreadyExistsForTimeSlot(List<Appointment> appointments, AppointmentSlotResponse timeSlot) =>
         appointments.Any(x =>
-            x.DateAndTime == timeSlot.Date.ToDateTime(timeSlot.StartTime) && 
-            x.DoctorId == timeSlot.DoctorId && 
+            x.DateAndTime == timeSlot.Date.ToDateTime(timeSlot.StartTime) &&
+            x.DoctorId == timeSlot.DoctorId &&
             x.Status == AppointmentStatus.Scheduled.ToString());
-    
+
     // Method for filling free slot with doctors schedule and passed dates.
     private List<AppointmentSlotResponse> FillScheduleForDates(ScheduleDTO schedule, DateOnly startDate, DateOnly endDate, Specialty specialty)
     {
@@ -121,7 +148,7 @@ public class AppointmentsService : IAppointmentsService
                     Specialty = specialty,
                     DoctorId = schedule.DoctorId
                 };
-                
+
                 slots.Add(appointmentSlot);
             }
         }
@@ -133,7 +160,7 @@ public class AppointmentsService : IAppointmentsService
     {
         var patient = await _repository.GetByIdAsync<Patient>(patientId);
 
-        if (patient is null) 
+        if (patient is null)
             throw new KeyNotFoundException("Patient with such Id does not exist.");
 
         return patient.Appointments
@@ -194,20 +221,20 @@ public class AppointmentsService : IAppointmentsService
 
         var appointments =
             await _repository.GetFilteredAsync<Appointment>(x =>
-                x.PatientId == patientId && 
+                x.PatientId == patientId &&
                 x.Status == AppointmentStatus.Scheduled.ToString() &&
                 x.DateAndTime >= dateAndTime);
 
         return appointments.Select(appointment => new AppointmentResponse()
-            {
-                Id = appointment.Id,
-                DateAndTime = appointment.DateAndTime,
-                Doctor = appointment.Doctor.ToDoctorResponse(),
-                Patient = patient.ToPatientResponse(),
-                AppointmentType = (AppointmentType)Enum.Parse<AppointmentType>(appointment.AppointmentType),
-                ExtraClinicalData = appointment.ExtraClinicalData,
-                Status = (AppointmentStatus)Enum.Parse<AppointmentStatus>(appointment.Status)
-            })
+        {
+            Id = appointment.Id,
+            DateAndTime = appointment.DateAndTime,
+            Doctor = appointment.Doctor.ToDoctorResponse(),
+            Patient = patient.ToPatientResponse(),
+            AppointmentType = (AppointmentType)Enum.Parse<AppointmentType>(appointment.AppointmentType),
+            ExtraClinicalData = appointment.ExtraClinicalData,
+            Status = (AppointmentStatus)Enum.Parse<AppointmentStatus>(appointment.Status)
+        })
             .ToList();
     }
 
@@ -228,20 +255,20 @@ public class AppointmentsService : IAppointmentsService
 
         var appointments =
             await _repository.GetFilteredAsync<Appointment>(x =>
-                x.DoctorId == doctorId && 
+                x.DoctorId == doctorId &&
                 x.Status == AppointmentStatus.Scheduled.ToString() &&
                 x.DateAndTime >= dateAndTime);
 
         return appointments.Select(appointment => new AppointmentResponse()
-            {
-                Id = appointment.Id,
-                DateAndTime = appointment.DateAndTime,
-                Doctor = doctor.ToDoctorResponse(),
-                Patient = appointment.Patient.ToPatientResponse(),
-                AppointmentType = (AppointmentType)Enum.Parse<AppointmentType>(appointment.AppointmentType),
-                ExtraClinicalData = appointment.ExtraClinicalData,
-                Status = (AppointmentStatus)Enum.Parse<AppointmentStatus>(appointment.Status)
-            })
+        {
+            Id = appointment.Id,
+            DateAndTime = appointment.DateAndTime,
+            Doctor = doctor.ToDoctorResponse(),
+            Patient = appointment.Patient.ToPatientResponse(),
+            AppointmentType = (AppointmentType)Enum.Parse<AppointmentType>(appointment.AppointmentType),
+            ExtraClinicalData = appointment.ExtraClinicalData,
+            Status = (AppointmentStatus)Enum.Parse<AppointmentStatus>(appointment.Status)
+        })
             .ToList();
     }
 
@@ -261,7 +288,7 @@ public class AppointmentsService : IAppointmentsService
 
         if (doctor.IsDeleted)
             throw new ArgumentException("Doctor is deleted.");
-        
+
         var patient = await _repository.GetByIdAsync<Patient>(request.PatientId);
 
         if (patient is null)
@@ -310,7 +337,7 @@ public class AppointmentsService : IAppointmentsService
 
         if (string.IsNullOrEmpty(request.Conclusion))
             throw new ArgumentNullException("Conclusion cannot be blank.");
-        
+
         // Completing appointment
         appointment.DiagnosisId = request.DiagnosisId;
         appointment.Conclusion = request.Conclusion;

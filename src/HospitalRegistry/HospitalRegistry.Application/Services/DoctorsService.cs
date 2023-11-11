@@ -3,16 +3,19 @@ using HospitalRegistry.Application.Enums;
 using HospitalRegistry.Application.ServiceContracts;
 using HospitalReqistry.Domain.Entities;
 using HospitalReqistry.Domain.RepositoryContracts;
+using Microsoft.EntityFrameworkCore;
 
 namespace HospitalRegistry.Application.Services
 {
     public class DoctorsService : IDoctorsService
     {
         private readonly IAsyncRepository _repository;
+        private readonly ISpecificationsService _specificationsService;
 
-        public DoctorsService(IAsyncRepository repository)
+        public DoctorsService(IAsyncRepository repository, ISpecificationsService specificationsService)
         {
             _repository = repository;
+            _specificationsService = specificationsService;
         }
 
         public async Task<DoctorResponse> CreateAsync(DoctorAddRequest request)
@@ -73,11 +76,15 @@ namespace HospitalRegistry.Application.Services
             await _repository.UpdateAsync(doctor);
         }
 
-        public async Task<IEnumerable<DoctorResponse>> GetAllAsync()
+        public async Task<IEnumerable<DoctorResponse>> GetAllAsync(Specifications specifications)
         {
-            var doctors = await _repository.GetFilteredAsync<Doctor>(x => !x.IsDeleted);
+            var query = await _repository.GetFilteredAsync<Doctor>(x => !x.IsDeleted);
 
-            return doctors.Select(x => x.ToDoctorResponse()).ToList();
+            query = _specificationsService.ApplySpecifications(query, specifications);
+
+            var doctors = await query.Select(x => x.ToDoctorResponse()).ToListAsync();
+
+            return doctors;
         }
 
         public async Task<DoctorResponse> GetByIdAsync(Guid id)
@@ -123,29 +130,6 @@ namespace HospitalRegistry.Application.Services
             await _repository.UpdateAsync(doctor);
 
             return doctor.ToDoctorResponse();
-        }
-
-        public async Task<IEnumerable<DoctorResponse>> GetFilteredAsync(UserSpecifications specifications)
-        {
-            if (specifications == null) 
-                throw new ArgumentNullException("Specifications to filter are null.");
-
-            if (string.IsNullOrEmpty(specifications.Name))
-                throw new ArgumentException("Doctors name cannot be blank.");
-
-            if (string.IsNullOrEmpty(specifications.Surname))
-                throw new ArgumentException("Doctors surname cannot be blank.");
-
-            if (string.IsNullOrEmpty(specifications.Patronymic))
-                throw new ArgumentException("Doctors patronymic cannot be blank.");
-
-            var doctors = await _repository
-                .GetFilteredAsync<Doctor>(x => x.Name == specifications.Name &&
-                                               x.Surname == specifications.Surname &&
-                                               x.Patronymic == specifications.Patronymic &&
-                                               x.IsDeleted == specifications.IsDeleted);
-
-            return doctors.Select(x => x.ToDoctorResponse()).ToList();
         }
     }
 }

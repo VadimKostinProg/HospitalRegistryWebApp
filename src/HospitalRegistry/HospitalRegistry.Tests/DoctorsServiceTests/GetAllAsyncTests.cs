@@ -8,6 +8,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace HospitalRegistry.Tests.DoctorsServiceTests
 {
@@ -19,12 +20,16 @@ namespace HospitalRegistry.Tests.DoctorsServiceTests
         public async Task GetAllAsync_ReturnsAllDoctors()
         {
             // Arrange
-            var testDoctors = GetTestDoctors().AsQueryable();
+            var testDoctors = GetTestDoctors().ToList();
+            var query = testDoctors.AsQueryable();
             repositoryMock.Setup(x => x.GetFilteredAsync<Doctor>(It.IsAny<Expression<Func<Doctor, bool>>>(), true))
-                .ReturnsAsync(testDoctors);
+                .ReturnsAsync(query);
+            var specifications = new Specifications();
+            specificationsServiceMock.Setup(x => x.ApplySpecifications(query, specifications))
+                .Returns(query);
 
             // Act
-            var actual = await service.GetAllAsync();
+            var actual = await service.GetAllAsync(specifications);
 
             // Assert
             Assert.NotNull(actual);

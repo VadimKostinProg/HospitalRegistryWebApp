@@ -8,15 +8,6 @@ namespace HospitalRegistry.Application.ServiceContracts
     /// </summary>
     public interface IDoctorsService : ICRUDService<DoctorAddRequest, DoctorUpdateRequest, DoctorResponse>, IRecoverable
     {
-
-        /// <summary>
-        /// Method for reading filtered doctors.
-        /// </summary>
-        /// <param name="specifications">Specifications to filter doctors.</param>
-        /// <returns>Collection IEnumerable of doctor response DTO.</returns>
-        Task<IEnumerable<DoctorResponse>> GetFilteredAsync(UserSpecifications specifications);
-
-
         /// <summary>
         /// Method to get all doctors filtered by specialty.
         /// </summary>

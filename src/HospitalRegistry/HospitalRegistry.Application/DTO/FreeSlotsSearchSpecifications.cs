@@ -2,6 +2,9 @@
 
 namespace HospitalRegistry.Application.DTO
 {
+    /// <summary>
+    /// DTO for specifications to search free slots of appointment request.
+    /// </summary>
     public class FreeSlotsSearchSpecifications
     {
         /// <summary>

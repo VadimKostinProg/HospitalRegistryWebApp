@@ -2,7 +2,7 @@
 
 namespace HospitalRegistry.Application.DTO
 {
-    public class CreateUserDTO
+    public class CreateAccountDTO
     {
         [Required]
         public string Name { get; set; } = null!;

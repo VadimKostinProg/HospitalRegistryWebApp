@@ -2,6 +2,9 @@
 
 namespace HospitalRegistry.Application.DTO
 {
+    /// <summary>
+    /// DTO for login request.
+    /// </summary>
     public class LoginDTO
     {
         [Required]

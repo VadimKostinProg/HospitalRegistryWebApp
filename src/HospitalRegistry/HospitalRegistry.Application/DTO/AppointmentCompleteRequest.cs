@@ -2,6 +2,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace HospitalRegistry.Application.DTO;
 
+/// <summary>
+/// DTO for complete of specific appointment request.
+/// </summary>
 public class AppointmentCompleteRequest
 {
     [Required]

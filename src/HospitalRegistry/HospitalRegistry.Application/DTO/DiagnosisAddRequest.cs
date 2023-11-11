@@ -3,6 +3,9 @@ using HospitalReqistry.Domain.Entities;
 
 namespace HospitalRegistry.Application.DTO;
 
+/// <summary>
+/// DTO for creating new diagnosis request.
+/// </summary>
 public class DiagnosisAddRequest
 {
     [Required]

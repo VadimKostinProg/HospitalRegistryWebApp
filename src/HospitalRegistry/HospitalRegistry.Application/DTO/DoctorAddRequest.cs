@@ -4,6 +4,9 @@ using HospitalReqistry.Domain.Entities;
 
 namespace HospitalRegistry.Application.DTO;
 
+/// <summary>
+/// DTO for creating new doctor record request.
+/// </summary>
 public class DoctorAddRequest
 {
     [Required]

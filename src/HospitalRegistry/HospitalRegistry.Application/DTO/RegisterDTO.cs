@@ -2,7 +2,10 @@
 
 namespace HospitalRegistry.Application.DTO
 {
-    public class RegisterDTO : CreateUserDTO
+    /// <summary>
+    /// DTO for register request.
+    /// </summary>
+    public class RegisterDTO : CreateAccountDTO
     {
         [Required]
         public Guid UserId { get; set; }

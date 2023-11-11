@@ -2,6 +2,9 @@ using HospitalRegistry.Application.Enums;
 
 namespace HospitalRegistry.Application.DTO;
 
+/// <summary>
+/// DTO for appointment general information response.
+/// </summary>
 public class AppointmentResponse
 {
     public Guid Id { get; set; }

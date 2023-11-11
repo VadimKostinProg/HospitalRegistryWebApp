@@ -3,6 +3,9 @@ using HospitalReqistry.Domain.Entities;
 
 namespace HospitalRegistry.Application.DTO;
 
+/// <summary>
+/// DTO for updating doctor information request.
+/// </summary>
 public class DoctorUpdateRequest : DoctorAddRequest
 {
     [Required]

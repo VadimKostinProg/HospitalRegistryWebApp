@@ -8,6 +8,13 @@ namespace HospitalRegistry.Application.ServiceContracts
     public interface IAppointmentsService : IRecoverable
     {
         /// <summary>
+        /// Method for reading appointment list with applyed specifications.
+        /// </summary>
+        /// <param name="specifications">Specifications to filter, sort, search and paginate list.</param>
+        /// <returns>Collection IEnumerable of appointments list with applyed specifications.</returns>
+        Task<IEnumerable<AppointmentResponse>> GetAppointmnetsList(Specifications specifications);
+
+        /// <summary>
         /// Method for searching the free slots for appointments.
         /// </summary>
         /// <param name="specifications">Filter specifications to search free slots.</param>

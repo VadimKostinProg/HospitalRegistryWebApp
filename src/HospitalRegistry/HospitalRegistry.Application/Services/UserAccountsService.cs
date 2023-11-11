@@ -4,6 +4,7 @@ using HospitalRegistry.Application.ServiceContracts;
 using HospitalReqistry.Domain.Entities;
 using HospitalReqistry.Domain.RepositoryContracts;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace HospitalRegistry.Application.Services
 {
@@ -13,16 +14,72 @@ namespace HospitalRegistry.Application.Services
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IJwtService _jwtService;
         private readonly IAsyncRepository _repository;
+        private readonly ISpecificationsService _specificationsService;
 
-        public UserAccountsService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IJwtService jwtService, IAsyncRepository repository)
+        public UserAccountsService(UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
+            IJwtService jwtService,
+            IAsyncRepository repository,
+            ISpecificationsService specificationsService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _jwtService = jwtService;
             _repository = repository;
+            _specificationsService = specificationsService;
         }
 
-        public async Task CreateUser(CreateUserDTO user)
+        public async Task<IEnumerable<AccountResponse>> GetAccountsList(Specifications specifications)
+        {
+            var query = _userManager.Users;
+
+            query = _specificationsService.ApplySpecifications(query, specifications);
+
+            var accounts = await query.ToListAsync();
+
+            List<AccountResponse> accountsList = new List<AccountResponse>();
+
+            foreach (var account in accounts)
+            {
+                var role = (await _userManager.GetRolesAsync(account)).First();
+
+                string fullName = string.Empty;
+                Guid? userId = null;
+
+                switch (role)
+                {
+                    case UserRoles.Admin:
+                    case UserRoles.Receptionist:
+                        fullName = account.FullName;
+                        break;
+                    case UserRoles.Doctor:
+                        var doctor = account.Doctor;
+                        fullName = string.Join(' ', doctor.Surname, doctor.Name, doctor.Patronymic);
+                        userId = doctor.Id;
+                        break;
+                    case UserRoles.Patient:
+                        var patient = account.Doctor;
+                        fullName = string.Join(' ', patient.Surname, patient.Name, patient.Patronymic);
+                        userId = patient.Id;
+                        break;
+                }
+
+                var accountResponse = new AccountResponse()
+                {
+                    Id = account.Id,
+                    FullName = fullName,
+                    Email = account.Email,
+                    Role = role,
+                    UserId = userId,
+                };
+
+                accountsList.Add(accountResponse);
+            }
+
+            return accountsList;
+        }
+
+        public async Task CreateAccount(CreateAccountDTO user)
         {
             if (user.Role != UserRoles.Admin && user.Role != UserRoles.Receptionist)
             {
@@ -67,7 +124,7 @@ namespace HospitalRegistry.Application.Services
 
         public async Task<AuthenticationResponse> LoginAsync(LoginDTO login)
         {
-            var result = await _signInManager.PasswordSignInAsync(login.Email, login.Password, 
+            var result = await _signInManager.PasswordSignInAsync(login.Email, login.Password,
                 isPersistent: false, lockoutOnFailure: true);
 
             if (result.Succeeded)

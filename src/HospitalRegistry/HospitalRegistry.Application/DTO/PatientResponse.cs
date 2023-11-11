@@ -2,6 +2,9 @@ using HospitalReqistry.Domain.Entities;
 
 namespace HospitalRegistry.Application.DTO;
 
+/// <summary>
+/// DTO for patinet information response.
+/// </summary>
 public class PatientResponse
 {
     public Guid Id { get; set; }

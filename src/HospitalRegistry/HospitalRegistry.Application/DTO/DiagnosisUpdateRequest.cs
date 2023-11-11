@@ -3,6 +3,9 @@ using HospitalReqistry.Domain.Entities;
 
 namespace HospitalRegistry.Application.DTO;
 
+/// <summary>
+/// DTO for updating name of existant diagnosis request.
+/// </summary>
 public class DiagnosisUpdateRequest : DiagnosisAddRequest
 {
     [Required]

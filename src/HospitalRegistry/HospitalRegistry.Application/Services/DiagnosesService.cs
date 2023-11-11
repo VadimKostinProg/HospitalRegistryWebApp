@@ -2,23 +2,30 @@ using HospitalRegistry.Application.DTO;
 using HospitalRegistry.Application.ServiceContracts;
 using HospitalReqistry.Domain.Entities;
 using HospitalReqistry.Domain.RepositoryContracts;
+using Microsoft.EntityFrameworkCore;
 
 namespace HospitalRegistry.Application.Services
 {
     public class DiagnosesService : IDiagnosesService
     {
         private readonly IAsyncRepository _repository;
+        private readonly ISpecificationsService _specificationsService;
 
-        public DiagnosesService(IAsyncRepository repository)
+        public DiagnosesService(IAsyncRepository repository, ISpecificationsService specificationsService)
         {
             _repository = repository;
+            _specificationsService = specificationsService;
         }
 
-        public async Task<IEnumerable<DiagnosisResponse>> GetAllAsync()
+        public async Task<IEnumerable<DiagnosisResponse>> GetAllAsync(Specifications specifications)
         {
-            var diagnoses = await _repository.GetAllAsync<Diagnosis>();
+            var query = await _repository.GetAllAsync<Diagnosis>();
 
-            return diagnoses.Select(x => x.ToDiagnosisResponse()).ToList();
+            query = _specificationsService.ApplySpecifications(query, specifications);
+
+            var diagnoses = await query.Select(x => x.ToDiagnosisResponse()).ToListAsync();
+
+            return diagnoses;
         }
 
         public async Task<DiagnosisResponse> GetByIdAsync(Guid id)

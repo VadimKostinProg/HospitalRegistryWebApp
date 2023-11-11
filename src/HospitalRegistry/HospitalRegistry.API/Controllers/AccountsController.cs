@@ -20,9 +20,9 @@ namespace HospitalRegistry.API.Controllers
 
         [HttpPost]
         [Authorize(Roles = UserRoles.Admin)]
-        public async Task<ActionResult<string>> CreateUser([FromBody] CreateUserDTO createUserRequest)
+        public async Task<ActionResult<string>> CreateUser([FromBody] CreateAccountDTO createUserRequest)
         {
-            await _userAccountsService.CreateUser(createUserRequest);
+            await _userAccountsService.CreateAccount(createUserRequest);
 
             return Ok("User has been successfully created.");
         }

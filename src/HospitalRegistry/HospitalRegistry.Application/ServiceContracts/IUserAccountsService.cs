@@ -8,6 +8,13 @@ namespace HospitalRegistry.Application.ServiceContracts
     public interface IUserAccountsService
     {
         /// <summary>
+        /// Method for reading accounts list with applying specifications.
+        /// </summary>
+        /// <param name="specifications">Specifications to filter, sort, search and paginate accounts.</param>
+        /// <returns>Collection IEnumerable of AccountResponse objects.</returns>
+        Task<IEnumerable<AccountResponse>> GetAccountsList(Specifications specifications);
+
+        /// <summary>
         /// Method for registering doctors and users accounts.
         /// </summary>
         /// <param name="register">Register infotmation.</param>
@@ -18,7 +25,7 @@ namespace HospitalRegistry.Application.ServiceContracts
         /// Method for creating new admin or receptionist account.
         /// </summary>
         /// <param name="user">Admins credentianls.</param>
-        Task CreateUser(CreateUserDTO user);
+        Task CreateAccount(CreateAccountDTO user);
 
         /// <summary>
         /// Method for sign in user.

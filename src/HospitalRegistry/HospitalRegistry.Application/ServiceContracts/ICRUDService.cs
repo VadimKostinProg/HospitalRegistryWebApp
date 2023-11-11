@@ -1,4 +1,6 @@
-﻿namespace HospitalRegistry.Application.ServiceContracts
+﻿using HospitalRegistry.Application.DTO;
+
+namespace HospitalRegistry.Application.ServiceContracts
 {
     /// <summary>
     /// Service for CRUD operations.
@@ -11,8 +13,9 @@
         /// <summary>
         /// Method for reading all objects.
         /// </summary>
+        /// <param name="specifications">Specifications to filter, sort, search and paginate objects.</param>
         /// <returns>Collection IEnumerable of response DTO.</returns>
-        Task<IEnumerable<TResponse>> GetAllAsync();
+        Task<IEnumerable<TResponse>> GetAllAsync(Specifications specifications);
 
         /// <summary>
         /// Method for reading single object by its id.

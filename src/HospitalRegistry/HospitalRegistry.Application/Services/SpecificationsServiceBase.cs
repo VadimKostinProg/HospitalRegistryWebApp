@@ -6,7 +6,7 @@ namespace HospitalRegistry.Application.Services
 {
     public abstract class SpecificationsServiceBase : ISpecificationsService
     {
-        public virtual IQueryable<T> ApplySpecifications<T>(IQueryable<T> query, Specifications specifications) where T : EntityBase
+        public virtual IQueryable<T> ApplySpecifications<T>(IQueryable<T> query, Specifications specifications)
         {
             query = ApplyFiltering(query, specifications);
             query = ApplySorting(query, specifications);
@@ -16,9 +16,9 @@ namespace HospitalRegistry.Application.Services
             return query;
         }
 
-        protected abstract IQueryable<T> ApplyFiltering<T>(IQueryable<T> query, Specifications specifications) where T : EntityBase;
-        protected abstract IQueryable<T> ApplySorting<T>(IQueryable<T> query, Specifications specifications) where T : EntityBase;
-        protected abstract IQueryable<T> ApplySearching<T>(IQueryable<T> query, Specifications specifications) where T : EntityBase;
-        protected abstract IQueryable<T> ApplyPagination<T>(IQueryable<T> query, Specifications specifications) where T : EntityBase;
+        protected abstract IQueryable<T> ApplyFiltering<T>(IQueryable<T> query, Specifications specifications);
+        protected abstract IQueryable<T> ApplySorting<T>(IQueryable<T> query, Specifications specifications);
+        protected abstract IQueryable<T> ApplySearching<T>(IQueryable<T> query, Specifications specifications);
+        protected abstract IQueryable<T> ApplyPagination<T>(IQueryable<T> query, Specifications specifications);
     }
 }

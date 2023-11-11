@@ -4,6 +4,9 @@ using HospitalReqistry.Domain.Entities;
 
 namespace HospitalRegistry.Application.DTO;
 
+/// <summary>
+/// DTO for information of the time slot.
+/// </summary>
 public class TimeSlotDTO
 {
     [Required]

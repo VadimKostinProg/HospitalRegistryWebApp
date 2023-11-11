@@ -15,7 +15,6 @@ namespace HospitalRegistry.Application.ServiceContracts
         /// <param name="query">Query to apply specifications.</param>
         /// <param name="specifications">Specifications of searching, pagination, sorting and filtering to apply.</param>
         /// <returns>Query of enities with applyed specifications.</returns>
-        IQueryable<T> ApplySpecifications<T>(IQueryable<T> query, Specifications specifications)
-            where T : EntityBase;
+        IQueryable<T> ApplySpecifications<T>(IQueryable<T> query, Specifications specifications);
     }
 }

@@ -2,23 +2,30 @@ using HospitalRegistry.Application.DTO;
 using HospitalRegistry.Application.ServiceContracts;
 using HospitalReqistry.Domain.Entities;
 using HospitalReqistry.Domain.RepositoryContracts;
+using Microsoft.EntityFrameworkCore;
 
 namespace HospitalRegistry.Application.Services;
 
 public class PatientsService : IPatientsService
 {
     private readonly IAsyncRepository _repository;
+    private readonly ISpecificationsService _specificationsService;
 
-    public PatientsService(IAsyncRepository repository)
+    public PatientsService(IAsyncRepository repository, ISpecificationsService specificationsService)
     {
         _repository = repository;
+        _specificationsService = specificationsService;
     }
     
-    public async Task<IEnumerable<PatientResponse>> GetAllAsync()
+    public async Task<IEnumerable<PatientResponse>> GetAllAsync(Specifications specifications)
     {
-        var patients = await _repository.GetFilteredAsync<Patient>(x => !x.IsDeleted);
+        var query = await _repository.GetFilteredAsync<Patient>(x => !x.IsDeleted);
 
-        return patients.Select(x => x.ToPatientResponse()).ToList();
+        query = _specificationsService.ApplySpecifications(query, specifications);
+
+        var patients = await query.Select(x => x.ToPatientResponse()).ToListAsync();
+
+        return patients;
     }
 
     public async Task<PatientResponse> GetByIdAsync(Guid id)
@@ -110,28 +117,5 @@ public class PatientsService : IPatientsService
 
         patient.IsDeleted = false;
         await _repository.UpdateAsync(patient);
-    }
-
-    public async Task<IEnumerable<PatientResponse>> GetFilteredAsync(UserSpecifications specifications)
-    {
-        if (specifications == null)
-            throw new ArgumentNullException("Specifications to filter are null.");
-
-        if (string.IsNullOrEmpty(specifications.Name))
-            throw new ArgumentException("Patients name cannot be blank.");
-
-        if (string.IsNullOrEmpty(specifications.Surname))
-            throw new ArgumentException("Patients surname cannot be blank.");
-
-        if (string.IsNullOrEmpty(specifications.Patronymic))
-            throw new ArgumentException("Patients patronymic cannot be blank.");
-
-        var patients = await _repository
-            .GetFilteredAsync<Patient>(x => x.Name == specifications.Name &&
-                                            x.Surname == specifications.Surname &&
-                                            x.Patronymic == specifications.Patronymic &&
-                                            x.IsDeleted == specifications.IsDeleted);
-
-        return patients.Select(x => x.ToPatientResponse()).ToList();
     }
 }

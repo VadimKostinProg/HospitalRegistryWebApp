@@ -2,6 +2,9 @@
 
 namespace HospitalRegistry.Application.DTO
 {
+    /// <summary>
+    /// DTO for specification for read list of object request.
+    /// </summary>
     public class Specifications
     {
         // Searching
