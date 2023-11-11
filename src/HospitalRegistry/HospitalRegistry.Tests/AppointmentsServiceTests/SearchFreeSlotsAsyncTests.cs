@@ -101,7 +101,7 @@ public class SearchFreeSlotsAsyncTests : AppointmentsServiceTestsBase
         schedulesServiceMock.Setup(x => x.GetScheduleByDoctorAsync(It.IsAny<Guid>(), null))
             .ReturnsAsync(GetTestScheduleDTO(It.IsAny<Guid>()));
         repositoryMock.Setup(x => x.GetFilteredAsync(It.IsAny<Expression<Func<Appointment, bool>>>(), true))
-            .ReturnsAsync(new List<Appointment>());
+            .ReturnsAsync(new List<Appointment>().AsQueryable());
         
         // Act
         var response = await service.SearchFreeSlotsAsync(specifications);
@@ -132,7 +132,7 @@ public class SearchFreeSlotsAsyncTests : AppointmentsServiceTestsBase
         schedulesServiceMock.Setup(x => x.GetScheduleByDoctorAsync(doctor.Id, null))
             .ReturnsAsync(GetTestScheduleDTO(doctor.Id));
         repositoryMock.Setup(x => x.GetFilteredAsync(It.IsAny<Expression<Func<Appointment, bool>>>(), true))
-            .ReturnsAsync(new List<Appointment>());
+            .ReturnsAsync(new List<Appointment>().AsQueryable());
         
         // Act
         var response = await service.SearchFreeSlotsAsync(specifications);
@@ -163,7 +163,7 @@ public class SearchFreeSlotsAsyncTests : AppointmentsServiceTestsBase
         schedulesServiceMock.Setup(x => x.GetScheduleByDoctorAsync(doctor.Id, null))
             .ReturnsAsync(GetTestScheduleDTO(doctor.Id));
         repositoryMock.Setup(x => x.GetFilteredAsync(It.IsAny<Expression<Func<Appointment, bool>>>(), true))
-            .ReturnsAsync(GetTestScheduledAppointments(doctor.Id, Guid.NewGuid(), specifications.StartDate, new TimeOnly(12, 00)));
+            .ReturnsAsync(GetTestScheduledAppointments(doctor.Id, Guid.NewGuid(), specifications.StartDate, new TimeOnly(12, 00)).AsQueryable());
         
         // Act
         var response = await service.SearchFreeSlotsAsync(specifications);

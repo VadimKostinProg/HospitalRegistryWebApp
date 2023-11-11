@@ -10,7 +10,7 @@ public class GetAllAsyncTests : DiagnosesServiceTestsBase
     public async Task GetAllAsync_ReturnsAllDiagnoses()
     {
         // Arrange
-        var diagnoses = GetTestDiagnoses();
+        var diagnoses = GetTestDiagnoses().AsQueryable();
         repositoryMock.Setup(x => x.GetAllAsync<Diagnosis>(true))
             .ReturnsAsync(diagnoses);
 

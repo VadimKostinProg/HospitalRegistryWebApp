@@ -71,7 +71,7 @@ public class GetScheduledAppoitnmentsOfPatientAsyncTests : AppointmentsServiceTe
         var idToPass = patient.Id;
         var date = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(2));
         var doctor = GetTestDoctor();
-        var appointments = GetTestScheduledAppointments(doctor, patient, date, new TimeOnly(12, 0));
+        var appointments = GetTestScheduledAppointments(doctor, patient, date, new TimeOnly(12, 0)).AsQueryable();
 
         repositoryMock.Setup(x => x.GetByIdAsync<Patient>(idToPass))
             .ReturnsAsync(patient);

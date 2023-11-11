@@ -13,8 +13,8 @@ namespace HospitalReqistry.Domain.RepositoryContracts
         /// </summary>
         /// <typeparam name="T">Type of entities to read.</typeparam>
         /// <param name="disableTracking">Flag for enabling a tracking.</param>
-        /// <returns>Collection IEnumerable of entities.</returns>
-        Task<IEnumerable<T>> GetAllAsync<T>(bool disableTracking = true) where T : EntityBase;
+        /// <returns>Query to select all entities.</returns>
+        Task<IQueryable<T>> GetAllAsync<T>(bool disableTracking = true) where T : EntityBase;
 
         /// <summary>
         /// Method for reading entities of the specific type from the data source filtered by predicate.
@@ -22,8 +22,8 @@ namespace HospitalReqistry.Domain.RepositoryContracts
         /// <typeparam name="T">Type of entities to read.</typeparam>
         /// <param name="predicate">Expression to filter entities.</param>
         /// <param name="disableTracking">Flag for enabling a tracking.</param>
-        /// <returns>Collection IEnumerable of entities.</returns>
-        Task<IEnumerable<T>> GetFilteredAsync<T>(Expression<Func<T, bool>> predicate,
+        /// <returns>Query to select filtered entities.</returns>
+        Task<IQueryable<T>> GetFilteredAsync<T>(Expression<Func<T, bool>> predicate,
                                                  bool disableTracking = true) 
                                                  where T : EntityBase;
 

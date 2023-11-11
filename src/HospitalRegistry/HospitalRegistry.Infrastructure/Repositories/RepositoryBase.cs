@@ -15,7 +15,7 @@ public class RepositoryBase : IAsyncRepository
         this.Context = context;
     }
     
-    public virtual async Task<IEnumerable<T>> GetAllAsync<T>(bool disableTracking = true) where T : EntityBase
+    public virtual Task<IQueryable<T>> GetAllAsync<T>(bool disableTracking = true) where T : EntityBase
     {
         var entities = Context.Set<T>().AsQueryable();
 
@@ -24,10 +24,10 @@ public class RepositoryBase : IAsyncRepository
             entities = entities.AsNoTracking();
         }
 
-        return await entities.ToListAsync();
+        return Task.FromResult(entities);
     }
 
-    public virtual async Task<IEnumerable<T>> GetFilteredAsync<T>(Expression<Func<T, bool>> predicate, bool disableTracking = true) where T : EntityBase
+    public virtual Task<IQueryable<T>> GetFilteredAsync<T>(Expression<Func<T, bool>> predicate, bool disableTracking = true) where T : EntityBase
     {
         var entities = Context.Set<T>().Where(predicate);
 
@@ -36,7 +36,7 @@ public class RepositoryBase : IAsyncRepository
             entities = entities.AsNoTracking();
         }
 
-        return await entities.ToListAsync();
+        return Task.FromResult(entities);
     }
 
     public virtual async Task<T?> GetByIdAsync<T>(Guid id) where T : EntityBase

@@ -10,7 +10,7 @@ public class GetAllAsyncTests : PatientsServiceTestsBase
     public async Task GetAllAsync_ReturnAllPatients()
     {
         // Arrange
-        var patients = GetTestPatients();
+        var patients = GetTestPatients().AsQueryable();
         repositoryMock.Setup(x => x.GetFilteredAsync<Patient>(It.IsAny<Expression<Func<Patient, bool>>>(), true))
                 .ReturnsAsync(patients);
 
