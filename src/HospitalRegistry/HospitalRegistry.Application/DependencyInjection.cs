@@ -15,6 +15,7 @@ namespace HospitalRegistry.Application
             services.AddScoped<IAppointmentsService, AppointmentsService>();
             services.AddScoped<IJwtService, JwtService>();
             services.AddScoped<IUserAccountsService, UserAccountsService>();
+            services.AddScoped<ISpecificationsService, SpecificationsService>();
 
             return services;
         }
