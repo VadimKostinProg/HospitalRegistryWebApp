@@ -57,7 +57,7 @@ namespace HospitalRegistry.API.Controllers
         {
             await _doctorsService.DeleteAsync(id);
 
-            return Ok("Doctor record and account have been successfully deleted.");
+            return Ok("Doctor record have been successfully deleted.");
         }
 
         [HttpPost("recover/{id}")]
