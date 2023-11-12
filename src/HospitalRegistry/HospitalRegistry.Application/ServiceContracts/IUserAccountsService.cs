@@ -25,7 +25,7 @@ namespace HospitalRegistry.Application.ServiceContracts
         /// Method for creating new admin or receptionist account.
         /// </summary>
         /// <param name="user">Admins credentianls.</param>
-        Task CreateAccount(CreateAccountDTO user);
+        Task CreateAccount(CreateAccountRequest user);
 
         /// <summary>
         /// Method for sign in user.

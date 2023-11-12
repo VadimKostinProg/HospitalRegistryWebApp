@@ -1,6 +1,6 @@
-using AutoFixture;
 using HospitalRegistry.Application.DTO;
 using HospitalReqistry.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using Moq;
 
 namespace HospitalRegistry.Tests.DiagnosesServiceTests;
@@ -15,9 +15,7 @@ public class GetAllAsyncTests : DiagnosesServiceTestsBase
         var query = diagnoses.AsQueryable();
         repositoryMock.Setup(x => x.GetAllAsync<Diagnosis>(true))
             .ReturnsAsync(query);
-        var specifications = new Specifications();
-        specificationsServiceMock.Setup(x => x.ApplySpecifications(query, specifications))
-            .Returns(query);
+        Specifications? specifications = null;
 
         // Act
         var actual = await service.GetAllAsync(specifications);

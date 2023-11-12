@@ -21,9 +21,12 @@ namespace HospitalRegistry.Application.Services
         {
             var query = await _repository.GetAllAsync<Diagnosis>();
 
-            query = _specificationsService.ApplySpecifications(query, specifications);
+            if (specifications is not null)
+            {
+                query = _specificationsService.ApplySpecifications(query, specifications);
+            }
 
-            var diagnoses = await query.Select(x => x.ToDiagnosisResponse()).ToListAsync();
+            var diagnoses = query.Select(x => x.ToDiagnosisResponse()).ToList();
 
             return diagnoses;
         }

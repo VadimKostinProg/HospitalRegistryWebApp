@@ -78,11 +78,14 @@ namespace HospitalRegistry.Application.Services
 
         public async Task<IEnumerable<DoctorResponse>> GetAllAsync(Specifications specifications)
         {
-            var query = await _repository.GetFilteredAsync<Doctor>(x => !x.IsDeleted);
+            var query = await _repository.GetAllAsync<Doctor>();
 
-            query = _specificationsService.ApplySpecifications(query, specifications);
+            if (specifications is not null)
+            {
+                query = _specificationsService.ApplySpecifications(query, specifications);
+            }
 
-            var doctors = await query.Select(x => x.ToDoctorResponse()).ToListAsync();
+            var doctors = query.Select(x => x.ToDoctorResponse()).ToList();
 
             return doctors;
         }

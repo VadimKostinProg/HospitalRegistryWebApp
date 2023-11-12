@@ -18,9 +18,15 @@ namespace HospitalRegistry.API.Controllers
             _userAccountsService = userAccountsService;
         }
 
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<AccountResponse>>> GetAccountsList([FromQuery] Specifications specifications)
+        {
+            return Ok(await _userAccountsService.GetAccountsList(specifications));
+        }
+
         [HttpPost]
         [Authorize(Roles = UserRoles.Admin)]
-        public async Task<ActionResult<string>> CreateUser([FromBody] CreateAccountDTO createUserRequest)
+        public async Task<ActionResult<string>> CreateUser([FromBody] CreateAccountRequest createUserRequest)
         {
             await _userAccountsService.CreateAccount(createUserRequest);
 

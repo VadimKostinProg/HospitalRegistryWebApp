@@ -1,5 +1,6 @@
 using HospitalRegistry.Application.DTO;
 using HospitalReqistry.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using Moq;
 using System.Linq.Expressions;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
@@ -14,11 +15,9 @@ public class GetAllAsyncTests : PatientsServiceTestsBase
         // Arrange
         var patients = GetTestPatients().ToList();
         var query = patients.AsQueryable();
-        repositoryMock.Setup(x => x.GetFilteredAsync<Patient>(It.IsAny<Expression<Func<Patient, bool>>>(), true))
+        repositoryMock.Setup(x => x.GetAllAsync<Patient>(true))
                 .ReturnsAsync(query);
-        var specifications = new Specifications();
-        specificationsServiceMock.Setup(x => x.ApplySpecifications(query, specifications))
-            .Returns(query);
+        Specifications? specifications = null;
 
         // Act
         var response = await service.GetAllAsync(specifications);

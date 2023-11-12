@@ -30,7 +30,7 @@ public class AppointmentsService : IAppointmentsService
 
         query = _specificationsService.ApplySpecifications(query, specifications);
 
-        var appointments = await query.ToListAsync();
+        var appointments = query.ToList();
 
         return appointments.Select(appointment => new AppointmentResponse
         {

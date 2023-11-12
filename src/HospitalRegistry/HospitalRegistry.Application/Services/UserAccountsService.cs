@@ -79,7 +79,7 @@ namespace HospitalRegistry.Application.Services
             return accountsList;
         }
 
-        public async Task CreateAccount(CreateAccountDTO user)
+        public async Task CreateAccount(CreateAccountRequest user)
         {
             if (user.Role != UserRoles.Admin && user.Role != UserRoles.Receptionist)
             {

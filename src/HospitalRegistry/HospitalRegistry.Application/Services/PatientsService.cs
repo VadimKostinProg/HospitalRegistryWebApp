@@ -19,11 +19,14 @@ public class PatientsService : IPatientsService
     
     public async Task<IEnumerable<PatientResponse>> GetAllAsync(Specifications specifications)
     {
-        var query = await _repository.GetFilteredAsync<Patient>(x => !x.IsDeleted);
+        var query = await _repository.GetAllAsync<Patient>();
 
-        query = _specificationsService.ApplySpecifications(query, specifications);
-
-        var patients = await query.Select(x => x.ToPatientResponse()).ToListAsync();
+        if (specifications is not null)
+        {
+            query = _specificationsService.ApplySpecifications(query, specifications);
+        }
+        
+        var patients = query.Select(x => x.ToPatientResponse()).ToList();
 
         return patients;
     }

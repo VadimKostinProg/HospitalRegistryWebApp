@@ -22,11 +22,9 @@ namespace HospitalRegistry.Tests.DoctorsServiceTests
             // Arrange
             var testDoctors = GetTestDoctors().ToList();
             var query = testDoctors.AsQueryable();
-            repositoryMock.Setup(x => x.GetFilteredAsync<Doctor>(It.IsAny<Expression<Func<Doctor, bool>>>(), true))
+            repositoryMock.Setup(x => x.GetAllAsync<Doctor>(true))
                 .ReturnsAsync(query);
-            var specifications = new Specifications();
-            specificationsServiceMock.Setup(x => x.ApplySpecifications(query, specifications))
-                .Returns(query);
+            Specifications? specifications = null;
 
             // Act
             var actual = await service.GetAllAsync(specifications);
