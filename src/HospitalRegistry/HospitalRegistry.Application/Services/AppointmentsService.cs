@@ -4,6 +4,8 @@ using HospitalRegistry.Application.Enums;
 using HospitalRegistry.Application.ServiceContracts;
 using HospitalReqistry.Domain.Entities;
 using HospitalReqistry.Domain.RepositoryContracts;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace HospitalRegistry.Application.Services;
@@ -14,14 +16,22 @@ public class AppointmentsService : IAppointmentsService
     private readonly IDoctorsService _doctorsService;
     private readonly ISchedulesService _schedulesService;
     private readonly ISpecificationsService _specificationsService;
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly UserManager<ApplicationUser> _userManager;
 
-    public AppointmentsService(IAsyncRepository repository, IDoctorsService doctorsService,
-        ISchedulesService schedulesService, ISpecificationsService specificationsService)
+    public AppointmentsService(IAsyncRepository repository, 
+        IDoctorsService doctorsService,
+        ISchedulesService schedulesService, 
+        ISpecificationsService specificationsService,
+        IHttpContextAccessor httpContextAccessor,
+        UserManager<ApplicationUser> userManager)
     {
         _repository = repository;
         _doctorsService = doctorsService;
         _schedulesService = schedulesService;
         _specificationsService = specificationsService;
+        _httpContextAccessor = httpContextAccessor;
+        _userManager = userManager;
     }
 
     public async Task<IEnumerable<AppointmentResponse>> GetAppointmnetsList(Specifications specifications)
@@ -337,6 +347,16 @@ public class AppointmentsService : IAppointmentsService
 
         if (string.IsNullOrEmpty(request.Conclusion))
             throw new ArgumentNullException("Conclusion cannot be blank.");
+
+        // Validate user
+        var currentUserClaims = _httpContextAccessor.HttpContext?.User;
+
+        var user = await _userManager.GetUserAsync(currentUserClaims);
+
+        if (user!.DoctorId != appointment.DoctorId)
+        {
+            throw new ArgumentException("Cannot complete appointment of other doctor.");
+        }
 
         // Completing appointment
         appointment.DiagnosisId = request.DiagnosisId;

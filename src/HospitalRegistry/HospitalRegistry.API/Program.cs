@@ -1,4 +1,6 @@
 using HospitalRegistry.Application;
+using HospitalRegistry.Application.ServiceContracts;
+using HospitalRegistry.Application.Services;
 using HospitalRegistry.Infrastructure;
 using HospitalRegistry.Infrastructure.DatabaseContexts;
 using HospitalReqistry.Domain.Entities;
@@ -33,6 +35,8 @@ builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
 builder.Services.AddControllers();
 
 builder.Services.AddApiVersioning();
+
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddInfrastructure();
 builder.Services.AddApplication();

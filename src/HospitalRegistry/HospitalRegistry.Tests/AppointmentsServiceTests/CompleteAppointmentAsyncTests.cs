@@ -2,18 +2,28 @@ using AutoFixture;
 using HospitalRegistry.Application.DTO;
 using HospitalRegistry.Application.Enums;
 using HospitalReqistry.Domain.Entities;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Moq;
+using System.Security.Claims;
 
 namespace HospitalRegistry.Tests.AppointmentsServiceTests;
 
 public class CompleteAppointmentAsyncTests : AppointmentsServiceTestsBase
 {
+    private readonly Mock<HttpContext> _httpContextMock;
+
+    public CompleteAppointmentAsyncTests()
+    {
+        _httpContextMock = new Mock<HttpContext>();
+    }
+
     [Fact]
     public async Task CompleteAppointmentAsync_NullPassed_ThrowsArgumentNullException()
     {
         // Arrange
         AppointmentCompleteRequest request = null;
-        
+
         // Assert
         await Assert.ThrowsAsync<ArgumentNullException>(async () =>
         {
@@ -30,7 +40,7 @@ public class CompleteAppointmentAsyncTests : AppointmentsServiceTestsBase
 
         repositoryMock.Setup(x => x.GetByIdAsync<Appointment>(It.IsAny<Guid>()))
             .ReturnsAsync(null as Appointment);
-        
+
         // Assert
         await Assert.ThrowsAsync<KeyNotFoundException>(async () =>
         {
@@ -53,7 +63,7 @@ public class CompleteAppointmentAsyncTests : AppointmentsServiceTestsBase
 
         repositoryMock.Setup(x => x.GetByIdAsync<Appointment>(appointment.Id))
             .ReturnsAsync(appointment);
-        
+
         // Assert
         await Assert.ThrowsAsync<ArgumentException>(async () =>
         {
@@ -61,7 +71,7 @@ public class CompleteAppointmentAsyncTests : AppointmentsServiceTestsBase
             await service.CompleteAppointmentAsync(request);
         });
     }
-    
+
     [Fact]
     public async Task CompleteAppointmentAsync_AppointmentIsCanceled_ThrowsArgumentException()
     {
@@ -76,7 +86,7 @@ public class CompleteAppointmentAsyncTests : AppointmentsServiceTestsBase
 
         repositoryMock.Setup(x => x.GetByIdAsync<Appointment>(appointment.Id))
             .ReturnsAsync(appointment);
-        
+
         // Assert
         await Assert.ThrowsAsync<ArgumentException>(async () =>
         {
@@ -100,7 +110,7 @@ public class CompleteAppointmentAsyncTests : AppointmentsServiceTestsBase
             .ReturnsAsync(appointment);
         repositoryMock.Setup(x => x.GetByIdAsync<Diagnosis>(request.DiagnosisId))
             .ReturnsAsync(null as Diagnosis);
-        
+
         // Assert
         await Assert.ThrowsAsync<KeyNotFoundException>(async () =>
         {
@@ -126,11 +136,50 @@ public class CompleteAppointmentAsyncTests : AppointmentsServiceTestsBase
             .ReturnsAsync(appointment);
         repositoryMock.Setup(x => x.GetByIdAsync<Diagnosis>(diagnosis.Id))
             .ReturnsAsync(diagnosis);
-        
+
         // Assert
         await Assert.ThrowsAsync<KeyNotFoundException>(async () =>
         {
             // Act
+            await service.CompleteAppointmentAsync(request);
+        });
+    }
+
+    [Fact]
+    public async Task CompleteAppointmentAsync_InvalidDoctor_ThrowsArgumentException()
+    {
+        // Arrange
+        var doctor = GetTestDoctor();
+        var actualDoctor = GetTestDoctor();
+        var patient = GetTestPatient();
+        var diagnosis = GetTestDiagnosis();
+        var appointment = GetTestScheduledAppointments(actualDoctor, patient, DateOnly.FromDateTime(DateTime.UtcNow.AddDays(2)), new TimeOnly(12, 0)).First();
+        var request = fixture.Build<AppointmentCompleteRequest>()
+            .With(x => x.Id, appointment.Id)
+            .With(x => x.DiagnosisId, diagnosis.Id)
+            .Create();
+
+        var claimsPrincipal = new ClaimsPrincipal();
+        _httpContextMock.Setup(x => x.User)
+            .Returns(claimsPrincipal);
+        var httpContext = _httpContextMock.Object;
+        httpContextAccessorMock.Setup(x => x.HttpContext)
+            .Returns(httpContext);
+        var user = new ApplicationUser()
+        {
+            Id = Guid.NewGuid(),
+            DoctorId = doctor.Id
+        };
+        userManagerMock.Setup(x => x.GetUserAsync(It.IsAny<ClaimsPrincipal>()))
+            .ReturnsAsync(user);
+        repositoryMock.Setup(x => x.GetByIdAsync<Appointment>(appointment.Id))
+            .ReturnsAsync(appointment);
+        repositoryMock.Setup(x => x.GetByIdAsync<Diagnosis>(diagnosis.Id))
+            .ReturnsAsync(diagnosis);
+
+        // Assert
+        await Assert.ThrowsAsync<ArgumentException>(async () =>
+        {
             await service.CompleteAppointmentAsync(request);
         });
     }
@@ -148,11 +197,25 @@ public class CompleteAppointmentAsyncTests : AppointmentsServiceTestsBase
             .With(x => x.DiagnosisId, diagnosis.Id)
             .Create();
 
+        var claimsPrincipal = new ClaimsPrincipal();
+        _httpContextMock.Setup(x => x.User)
+            .Returns(claimsPrincipal);
+        var httpContext = _httpContextMock.Object;
+        httpContextAccessorMock.Setup(x => x.HttpContext)
+            .Returns(httpContext);
+        var user = new ApplicationUser()
+        {
+            Id = Guid.NewGuid(),
+            DoctorId = doctor.Id
+        };
+        userManagerMock.Setup(x => x.GetUserAsync(It.IsAny<ClaimsPrincipal>()))
+            .ReturnsAsync(user);
+
         repositoryMock.Setup(x => x.GetByIdAsync<Appointment>(appointment.Id))
             .ReturnsAsync(appointment);
         repositoryMock.Setup(x => x.GetByIdAsync<Diagnosis>(diagnosis.Id))
             .ReturnsAsync(diagnosis);
-        
+
         // Assert
         Assert.Null(await Record.ExceptionAsync(async () =>
         {
