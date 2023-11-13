@@ -1,4 +1,5 @@
-﻿using HospitalRegistry.Application.ServiceContracts;
+﻿using HospitalRegistry.Application.Initializers;
+using HospitalRegistry.Application.ServiceContracts;
 using HospitalRegistry.Application.Services;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -16,6 +17,7 @@ namespace HospitalRegistry.Application
             services.AddScoped<IJwtService, JwtService>();
             services.AddScoped<IUserAccountsService, UserAccountsService>();
             services.AddScoped<ISpecificationsService, SpecificationsService>();
+            services.AddTransient<IUserInitializer, UserInitializer>();
 
             return services;
         }

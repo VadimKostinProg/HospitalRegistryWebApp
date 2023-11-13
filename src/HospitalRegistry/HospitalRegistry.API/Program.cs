@@ -1,8 +1,10 @@
 using HospitalRegistry.Application;
+using HospitalRegistry.Application.Initializers;
 using HospitalRegistry.Application.ServiceContracts;
 using HospitalRegistry.Application.Services;
 using HospitalRegistry.Infrastructure;
 using HospitalRegistry.Infrastructure.DatabaseContexts;
+using HospitalRegistry.Infrastructure.DatabaseInitializer;
 using HospitalReqistry.Domain.Entities;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -70,10 +72,24 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 
 app.UseHttpsRedirection();
+app.UseHsts();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
+SeedData();
+
 app.MapControllers();
 
 app.Run();
+
+void SeedData()
+{
+    using var scope = app.Services.CreateScope();
+
+    var dbInitializer = scope.ServiceProvider.GetRequiredService<IDatabaseInitializer>();
+    dbInitializer.Initialize();
+
+    var userInitializer = scope.ServiceProvider.GetRequiredService<IUserInitializer>();
+    userInitializer.Initialize();
+}
