@@ -120,6 +120,32 @@ public class CompleteAppointmentAsyncTests : AppointmentsServiceTestsBase
     }
 
     [Fact]
+    public async Task CompleteAppointmentAsync_DiagnosisIsDeleted_ThrowsArgumentException()
+    {
+        // Arrange
+        var doctor = GetTestDoctor();
+        var patient = GetTestPatient();
+        var appointment = GetTestScheduledAppointments(doctor, patient, DateOnly.FromDateTime(DateTime.UtcNow.AddDays(2)), new TimeOnly(12, 0)).First();
+        var request = fixture.Build<AppointmentCompleteRequest>()
+            .With(x => x.Id, appointment.Id)
+            .Create();
+        var diagnosis = GetTestDiagnosis();
+        diagnosis.IsDeleted = true;
+
+        repositoryMock.Setup(x => x.GetByIdAsync<Appointment>(appointment.Id))
+            .ReturnsAsync(appointment);
+        repositoryMock.Setup(x => x.GetByIdAsync<Diagnosis>(diagnosis.Id))
+            .ReturnsAsync(diagnosis);
+
+        // Assert
+        await Assert.ThrowsAsync<KeyNotFoundException>(async () =>
+        {
+            // Act
+            await service.CompleteAppointmentAsync(request);
+        });
+    }
+
+    [Fact]
     public async Task CompleteAppointmentAsync_ConclusionIsNotPassed_ThrowsArgumentNullException()
     {
         // Arrange

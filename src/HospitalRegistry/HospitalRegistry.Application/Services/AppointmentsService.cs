@@ -368,6 +368,9 @@ public class AppointmentsService : IAppointmentsService
         if (diagnosis is null)
             throw new KeyNotFoundException("Diagnosis with such id does not exist.");
 
+        if (diagnosis.IsDeleted)
+            throw new ArgumentException("Cannot set deleted diagnoses.");
+
         if (string.IsNullOrEmpty(request.Conclusion))
             throw new ArgumentNullException("Conclusion cannot be blank.");
 
