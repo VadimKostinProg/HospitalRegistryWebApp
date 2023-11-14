@@ -1,7 +1,5 @@
 using HospitalRegistry.Application;
 using HospitalRegistry.Application.Initializers;
-using HospitalRegistry.Application.ServiceContracts;
-using HospitalRegistry.Application.Services;
 using HospitalRegistry.Infrastructure;
 using HospitalRegistry.Infrastructure.DatabaseContexts;
 using HospitalRegistry.Infrastructure.DatabaseInitializer;
@@ -10,8 +8,12 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Swashbuckle.AspNetCore.SwaggerGen;
+using System.Reflection;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -36,7 +38,12 @@ builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
 
 builder.Services.AddControllers();
 
-builder.Services.AddApiVersioning();
+builder.Services.AddApiVersioning(config =>
+{
+    config.ApiVersionReader = new UrlSegmentApiVersionReader();
+    config.DefaultApiVersion = new ApiVersion(1, 0);
+    config.AssumeDefaultVersionWhenUnspecified = true;
+});
 
 builder.Services.AddHttpContextAccessor();
 
@@ -67,9 +74,28 @@ builder.Services.AddAuthentication(options =>
     });
 builder.Services.AddAuthorization();
 
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo()
+    {
+        Title = "Hospital Registry API",
+        Version = "1.0"
+    });
+});
+
+builder.Services.AddVersionedApiExplorer(options =>
+{
+    options.GroupNameFormat = "'v'V";
+    options.SubstituteApiVersionInUrl = true;
+});
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+app.UseSwagger();
+app.UseSwaggerUI(options =>
+{
+    options.SwaggerEndpoint("/swagger/v1/swagger.json", "1.0");
+});
 
 app.UseHttpsRedirection();
 app.UseHsts();

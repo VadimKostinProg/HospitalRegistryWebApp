@@ -187,7 +187,7 @@ namespace HospitalRegistry.Application.Services
 
             return new AuthenticationResponse
             {
-                UserId = register.UserId,
+                UserId = register.UserKey,
                 Role = register.Role,
                 Token = token
             };
@@ -200,7 +200,7 @@ namespace HospitalRegistry.Application.Services
             switch (register.Role)
             {
                 case UserRoles.Doctor:
-                    var doctor = await _repository.GetByIdAsync<Doctor>(register.UserId);
+                    var doctor = await _repository.GetByIdAsync<Doctor>(register.UserKey);
 
                     if (doctor is null) throw new KeyNotFoundException("Doctor with such Id does not exist.");
 
@@ -211,7 +211,7 @@ namespace HospitalRegistry.Application.Services
 
                     break;
                 case UserRoles.Patient:
-                    var patient = await _repository.GetByIdAsync<Patient>(register.UserId);
+                    var patient = await _repository.GetByIdAsync<Patient>(register.UserKey);
 
                     if (patient is null) throw new KeyNotFoundException("Patient with such Id does not exist.");
 

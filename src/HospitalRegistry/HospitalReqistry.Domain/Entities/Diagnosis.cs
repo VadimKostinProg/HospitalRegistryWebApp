@@ -8,6 +8,8 @@ namespace HospitalReqistry.Domain.Entities
         [MaxLength(50)]
         public string Name { get; set; } = null!;
 
+        public bool IsDeleted { get; set; } = false;
+
         public virtual ICollection<Appointment> Appointments { get; set; }
     }
 }

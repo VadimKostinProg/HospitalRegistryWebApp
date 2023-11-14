@@ -6,8 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HospitalRegistry.API.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/v{version:apiVersion}/[controller]")]
+    [ApiVersion("1.0")]
     public class AppointmentsController : ControllerBase
     {
         private readonly IAppointmentsService _appointmentsService;
@@ -23,6 +24,12 @@ namespace HospitalRegistry.API.Controllers
             [FromQuery] Specifications specifications)
         {
             return Ok(await _appointmentsService.GetAppointmnetsList(specifications));
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<AppointmentResponse>> GetAppointmentById([FromRoute] Guid id)
+        {
+            return Ok(await _appointmentsService.GetAppointmentById(id));
         }
 
         [HttpGet("free-slots")]
@@ -69,7 +76,7 @@ namespace HospitalRegistry.API.Controllers
             return Ok($"Appointment \"{id}\" has been successfully recovered.");
         }
 
-        [HttpDelete("/canceled")]
+        [HttpDelete("canceled")]
         [Authorize(Roles = $"{UserRoles.Admin}, {UserRoles.Receptionist}")]
         public async Task<ActionResult<string>> ClearAllCanceledAppointments()
         {

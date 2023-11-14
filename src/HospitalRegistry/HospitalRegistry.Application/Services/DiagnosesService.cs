@@ -80,12 +80,40 @@ namespace HospitalRegistry.Application.Services
 
         public async Task DeleteAsync(Guid id)
         {
-            var result = await _repository.DeleteAsync<Diagnosis>(id);
+            var diagnosis = await _repository.GetByIdAsync<Diagnosis>(id);
 
-            if (!result)
+            if (diagnosis is null)
             {
                 throw new KeyNotFoundException("Diagnosis with such id does not exist.");
             }
+
+            if (diagnosis.IsDeleted)
+            {
+                throw new ArgumentException("Diagnosis is already deleted.");
+            }
+
+            diagnosis.IsDeleted = true;
+
+            await _repository.UpdateAsync<Diagnosis>(diagnosis);
+        }
+
+        public async Task RecoverAsync(Guid id)
+        {
+            var diagnosis = await _repository.GetByIdAsync<Diagnosis>(id);
+
+            if (diagnosis is null)
+            {
+                throw new KeyNotFoundException("Diagnosis with such id does not exist.");
+            }
+
+            if (!diagnosis.IsDeleted)
+            {
+                throw new ArgumentException("Diagnosis is not deleted.");
+            }
+
+            diagnosis.IsDeleted = false;
+
+            await _repository.UpdateAsync<Diagnosis>(diagnosis);
         }
     }
 }

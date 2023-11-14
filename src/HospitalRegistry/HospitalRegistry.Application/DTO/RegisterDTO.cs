@@ -8,6 +8,6 @@ namespace HospitalRegistry.Application.DTO
     public class RegisterDTO : CreateAccountRequest
     {
         [Required]
-        public Guid UserId { get; set; }
+        public Guid UserKey { get; set; }
     }
 }

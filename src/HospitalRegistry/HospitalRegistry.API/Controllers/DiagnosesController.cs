@@ -6,8 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HospitalRegistry.API.Controllers
 {
-    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion("1.0")]
     public class DiagnosesController : ControllerBase
     {
@@ -42,18 +42,27 @@ namespace HospitalRegistry.API.Controllers
 
         [HttpPut]
         [Authorize(Roles = UserRoles.Admin)]
-        public async Task<ActionResult> UpdateDiagnosis([FromBody] DiagnosisUpdateRequest request)
+        public async Task<ActionResult<DiagnosisResponse>> UpdateDiagnosis([FromBody] DiagnosisUpdateRequest request)
         {
             return Ok(await _diagnosesService.UpdateAsync(request));
         }
 
         [HttpDelete("{id}")]
         [Authorize(Roles = UserRoles.Admin)]
-        public async Task<ActionResult> DeleteDiagnosis([FromBody] Guid id)
+        public async Task<ActionResult<string>> DeleteDiagnosis([FromRoute] Guid id)
         {
             await _diagnosesService.DeleteAsync(id);
 
             return Ok($"Diagnosis \"{id}\" has been successfully deleted.");
+        }
+
+        [HttpPost("{id}/recover")]
+        [Authorize(Roles = UserRoles.Admin)]
+        public async Task<ActionResult<string>> RecoverDiagnosis([FromRoute] Guid id)
+        {
+            await _diagnosesService.RecoverAsync(id);
+
+            return Ok($"Diagnosis \"{id}\" has been successfully recovered.");
         }
     }
 }

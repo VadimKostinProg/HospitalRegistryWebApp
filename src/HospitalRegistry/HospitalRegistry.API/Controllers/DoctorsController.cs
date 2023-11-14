@@ -6,8 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HospitalRegistry.API.Controllers
 {
-    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion("1.0")]
     public class DoctorsController : ControllerBase
     {
@@ -77,7 +77,6 @@ namespace HospitalRegistry.API.Controllers
         }
 
         [HttpPost("schedule")]
-        [HttpGet]
         [Authorize(Roles = $"{UserRoles.Admin}, {UserRoles.Receptionist}")]
         public async Task<ActionResult> SetDoctorsSchedule([FromBody] ScheduleDTO schedule)
         {
@@ -87,7 +86,6 @@ namespace HospitalRegistry.API.Controllers
         }
 
         [HttpGet("{id}/appointmnets/history")]
-        [HttpGet]
         [Authorize(Roles = $"{UserRoles.Doctor}, {UserRoles.Admin}, {UserRoles.Receptionist}")]
         public async Task<ActionResult<IEnumerable<AppointmentResponse>>> GetDoctorsAppointmentsHistory(
             [FromRoute] Guid id)

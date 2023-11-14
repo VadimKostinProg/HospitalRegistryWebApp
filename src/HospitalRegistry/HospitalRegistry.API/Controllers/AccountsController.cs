@@ -6,8 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HospitalRegistry.API.Controllers
 {
-    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion("1.0")]
     public class AccountsController : ControllerBase
     {

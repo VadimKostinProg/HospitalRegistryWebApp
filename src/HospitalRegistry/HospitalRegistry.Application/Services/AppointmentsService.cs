@@ -57,6 +57,29 @@ public class AppointmentsService : IAppointmentsService
         .ToList();
     }
 
+    public async Task<AppointmentResponse> GetAppointmentById(Guid id)
+    {
+        var appointment = await _repository.GetByIdAsync<Appointment>(id);
+
+        if (appointment is null)
+        {
+            throw new KeyNotFoundException("Appointment with such id does not exist.");
+        }
+
+        return new AppointmentResponse
+        {
+            Id = appointment.Id,
+            DateAndTime = appointment.DateAndTime,
+            Doctor = appointment.Doctor.ToDoctorResponse(),
+            Patient = appointment.Patient.ToPatientResponse(),
+            AppointmentType = (AppointmentType)Enum.Parse<AppointmentType>(appointment.AppointmentType),
+            ExtraClinicalData = appointment.ExtraClinicalData,
+            Diagnosis = appointment.Diagnosis?.Name,
+            Status = (AppointmentStatus)Enum.Parse<AppointmentStatus>(appointment.Status),
+            Conclusion = appointment.Conclusion
+        };
+    }
+
     public async Task<IEnumerable<AppointmentSlotResponse>> SearchFreeSlotsAsync(FreeSlotsSearchSpecifications specifications)
     {
         // Validating the request

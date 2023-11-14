@@ -15,6 +15,13 @@ namespace HospitalRegistry.Application.ServiceContracts
         Task<IEnumerable<AppointmentResponse>> GetAppointmnetsList(Specifications specifications);
 
         /// <summary>
+        /// Method for reading appointment by id.
+        /// </summary>
+        /// <param name="id">Id of appointment to read.</param>
+        /// <returns>Appointmnet response DTO.</returns>
+        Task<AppointmentResponse> GetAppointmentById(Guid id);
+
+        /// <summary>
         /// Method for searching the free slots for appointments.
         /// </summary>
         /// <param name="specifications">Filter specifications to search free slots.</param>
