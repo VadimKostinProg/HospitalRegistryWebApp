@@ -1,5 +1,6 @@
 ﻿using HospitalRegistry.Application.DTO;
 using HospitalRegistry.Application.Enums;
+using System.ComponentModel;
 using System.Linq.Expressions;
 
 namespace HospitalRegistry.Application.Services
@@ -56,11 +57,10 @@ namespace HospitalRegistry.Application.Services
             var parameterExpression = Expression.Parameter(entityType, "x");
             var propertyExpression = Expression.Property(parameterExpression, sortedProperty);
             var lambda = Expression.Lambda<Func<T, object>>(Expression.Convert(propertyExpression, typeof(object)), parameterExpression);
-            var orderFunc = lambda.Compile();
 
             return specifications.SortDirection == SortDirection.ASC
-                ? query.OrderBy(orderFunc).AsQueryable()
-                : query.OrderByDescending(orderFunc).AsQueryable();
+                ? query.OrderBy(lambda).AsQueryable()
+                : query.OrderByDescending(lambda).AsQueryable();
         }
 
         public Expression<Func<T, bool>> GetPredicate<T>(ParameterExpression parameter, IDictionary<string, string> filters)
@@ -68,7 +68,10 @@ namespace HospitalRegistry.Application.Services
             var conditions = filters.Select(filter =>
             {
                 var property = Expression.Property(parameter, filter.Key);
-                var constant = Expression.Constant(filter.Value);
+
+                var keyType = typeof(T).GetProperty(filter.Key).PropertyType;
+                var value = TypeDescriptor.GetConverter(keyType).ConvertFromInvariantString(filter.Value);
+                var constant = Expression.Constant(value);
                 var equality = Expression.Equal(property, constant);
 
                 return equality;

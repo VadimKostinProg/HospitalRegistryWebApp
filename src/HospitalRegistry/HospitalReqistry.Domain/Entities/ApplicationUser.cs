@@ -13,10 +13,10 @@ namespace HospitalReqistry.Domain.Entities
         public Guid? PatientId { get; set; }
 
         [ForeignKey(nameof(DoctorId))]
-        public virtual Doctor Doctor { get; set; }
+        public virtual Doctor? Doctor { get; set; }
 
         [ForeignKey(nameof(PatientId))]
-        public virtual Patient Patient { get; set; }
+        public virtual Patient? Patient { get; set; }
 
         public virtual ICollection<IdentityUserRole<Guid>> UserRoles { get; set; }
     }

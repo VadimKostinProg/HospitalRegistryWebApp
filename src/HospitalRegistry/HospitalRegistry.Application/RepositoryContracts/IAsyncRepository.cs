@@ -1,7 +1,7 @@
 ﻿using HospitalReqistry.Domain.Entities;
 using System.Linq.Expressions;
 
-namespace HospitalReqistry.Domain.RepositoryContracts
+namespace HospitalReqistry.Application.RepositoryContracts
 {
     /// <summary>
     /// Data access repository for EntityBase objects.
@@ -14,7 +14,7 @@ namespace HospitalReqistry.Domain.RepositoryContracts
         /// <typeparam name="T">Type of entities to read.</typeparam>
         /// <param name="disableTracking">Flag for enabling a tracking.</param>
         /// <returns>Query to select all entities.</returns>
-        Task<IQueryable<T>> GetAllAsync<T>(bool disableTracking = true) where T : EntityBase;
+        Task<IEnumerable<T>> GetAllAsync<T>(bool disableTracking = true) where T : EntityBase;
 
         /// <summary>
         /// Method for reading entities of the specific type from the data source filtered by predicate.
@@ -23,7 +23,7 @@ namespace HospitalReqistry.Domain.RepositoryContracts
         /// <param name="predicate">Expression to filter entities.</param>
         /// <param name="disableTracking">Flag for enabling a tracking.</param>
         /// <returns>Query to select filtered entities.</returns>
-        Task<IQueryable<T>> GetFilteredAsync<T>(Expression<Func<T, bool>> predicate,
+        Task<IEnumerable<T>> GetFilteredAsync<T>(Expression<Func<T, bool>> predicate,
                                                  bool disableTracking = true) 
                                                  where T : EntityBase;
 
@@ -32,16 +32,18 @@ namespace HospitalReqistry.Domain.RepositoryContracts
         /// </summary>
         /// <typeparam name="T">Type of entity to search.</typeparam>
         /// <param name="id">Guid of the entity.</param>
+        /// <param name="disableTracking">Flag for enabling a tracking.</param>
         /// <returns>Found entity of the specific type, null - if entity with passed id was not found.</returns>
-        Task<T?> GetByIdAsync<T>(Guid id) where T : EntityBase;
+        Task<T?> GetByIdAsync<T>(Guid id, bool disableTracking = true) where T : EntityBase;
 
         /// <summary>
         /// Method for searching the entity of the specific type from the data source by specific criteria.
         /// </summary>
         /// <typeparam name="T">Type of entity to search.</typeparam>
         /// <param name="expression">Expression to search.</param>
+        /// <param name="disableTracking">Flag for enabling a tracking.</param>
         /// <returns>Found entity of the specific type, null - if any entity with passed criteria was not found.</returns>
-        Task<T?> FirstOrDefaultAsync<T>(Expression<Func<T, bool>> expression) where T : EntityBase;
+        Task<T?> FirstOrDefaultAsync<T>(Expression<Func<T, bool>> expression, bool disableTracking = true) where T : EntityBase;
 
         /// <summary>
         /// Method for checking if the data source contains the entity.

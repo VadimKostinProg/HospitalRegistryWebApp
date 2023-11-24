@@ -1,5 +1,6 @@
 ﻿using HospitalRegistry.Application.ServiceContracts;
 using HospitalReqistry.Domain.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -10,10 +11,12 @@ namespace HospitalRegistry.Application.Services
 {
     public class JwtService : IJwtService
     {
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly IConfiguration _configuration;
 
-        public JwtService(IConfiguration configuration)
+        public JwtService(UserManager<ApplicationUser> userManager, IConfiguration configuration)
         {
+            _userManager = userManager;
             _configuration = configuration;
         }
 
@@ -23,6 +26,8 @@ namespace HospitalRegistry.Application.Services
             var expiration = DateTime.UtcNow.AddMinutes(
                 Convert.ToDouble(_configuration["Jwt:EXPIRATION_MINUTES"]));
 
+            string role = string.Join(',', await _userManager.GetRolesAsync(user));
+
             // Configure claims for the payload
             var claims = new Claim[]
             {
@@ -30,6 +35,7 @@ namespace HospitalRegistry.Application.Services
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
                 new Claim(ClaimTypes.NameIdentifier, user.Email),
+                new Claim(ClaimTypes.Role, role)
             };
 
             var securityKey = 

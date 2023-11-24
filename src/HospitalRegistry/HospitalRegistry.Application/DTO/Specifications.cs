@@ -15,7 +15,7 @@ namespace HospitalRegistry.Application.DTO
         public int PageNumber { get; set; } = 1;
 
         // Sorting
-        public string? SortField { get; set; }
+        public string SortField { get; set; } = "Id";
         public SortDirection SortDirection { get; set; } = SortDirection.ASC;
 
         // Filtering 

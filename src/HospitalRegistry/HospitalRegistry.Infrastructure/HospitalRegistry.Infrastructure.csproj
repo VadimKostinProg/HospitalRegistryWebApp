@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\HospitalRegistry.Application\HospitalRegistry.Application.csproj" />
     <ProjectReference Include="..\HospitalReqistry.Domain\HospitalReqistry.Domain.csproj" />
   </ItemGroup>
 

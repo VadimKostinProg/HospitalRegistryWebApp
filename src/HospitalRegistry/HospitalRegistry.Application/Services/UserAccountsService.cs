@@ -86,18 +86,19 @@ namespace HospitalRegistry.Application.Services
                 throw new ArgumentException("You may create users only with roles of admin or receptionist.");
             }
 
-            var admin = new ApplicationUser
+            var applicationUser = new ApplicationUser
             {
                 Id = Guid.NewGuid(),
                 FullName = string.Join(' ', user.Surname, user.Name, user.Patronymic),
-                Email = user.Email
+                Email = user.Email,
+                UserName = user.Email
             };
 
-            var result = await _userManager.CreateAsync(admin, user.Password);
+            var result = await _userManager.CreateAsync(applicationUser, user.Password);
 
             if (result.Succeeded)
             {
-                await _userManager.AddToRoleAsync(admin, user.Role);
+                await _userManager.AddToRoleAsync(applicationUser, user.Role);
             }
             else
             {
@@ -124,12 +125,18 @@ namespace HospitalRegistry.Application.Services
 
         public async Task<AuthenticationResponse> LoginAsync(LoginDTO login)
         {
-            var result = await _signInManager.PasswordSignInAsync(login.Email, login.Password,
+            var user = await _userManager.FindByNameAsync(login.Email);
+
+            if (user is null)
+            {
+                throw new KeyNotFoundException("User with such user name or email was not found.");
+            }
+
+            var result = await _signInManager.PasswordSignInAsync(user, login.Password,
                 isPersistent: false, lockoutOnFailure: true);
 
             if (result.Succeeded)
             {
-                var user = await _userManager.FindByEmailAsync(login.Email);
                 var roles = await _userManager.GetRolesAsync(user);
 
                 var token = await _jwtService.CreateJwtToken(user);
