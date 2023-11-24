@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+using HospitalRegistry.Application.Specifications;
 using HospitalRegistry.Infrastructure.DatabaseContexts;
 using HospitalReqistry.Application.RepositoryContracts;
 using HospitalReqistry.Domain.Entities;
@@ -15,7 +16,7 @@ public class RepositoryBase : IAsyncRepository
         this.Context = context;
     }
     
-    public virtual async Task<IEnumerable<T>> GetAllAsync<T>(bool disableTracking = true) where T : EntityBase
+    public virtual async Task<IEnumerable<T>> GetAsync<T>(ISpecification<T> specification, bool disableTracking = true) where T : EntityBase
     {
         var entities = Context.Set<T>().AsQueryable();
 
@@ -23,6 +24,8 @@ public class RepositoryBase : IAsyncRepository
         {
             entities = entities.AsNoTracking();
         }
+
+        entities = entities.ApplySpecifications(specification);
 
         return await entities.ToListAsync();
     }

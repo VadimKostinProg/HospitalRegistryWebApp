@@ -1,4 +1,5 @@
-﻿using HospitalReqistry.Domain.Entities;
+﻿using HospitalRegistry.Application.Specifications;
+using HospitalReqistry.Domain.Entities;
 using System.Linq.Expressions;
 
 namespace HospitalReqistry.Application.RepositoryContracts
@@ -12,9 +13,10 @@ namespace HospitalReqistry.Application.RepositoryContracts
         /// Method for reading all entities of the specific type from the data source.
         /// </summary>
         /// <typeparam name="T">Type of entities to read.</typeparam>
+        /// <param name="specification">Specification for filtering, sorting and pagination.</param>
         /// <param name="disableTracking">Flag for enabling a tracking.</param>
         /// <returns>Query to select all entities.</returns>
-        Task<IEnumerable<T>> GetAllAsync<T>(bool disableTracking = true) where T : EntityBase;
+        Task<IEnumerable<T>> GetAsync<T>(ISpecification<T> specification, bool disableTracking = true) where T : EntityBase;
 
         /// <summary>
         /// Method for reading entities of the specific type from the data source filtered by predicate.

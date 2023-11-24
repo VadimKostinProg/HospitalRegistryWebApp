@@ -16,7 +16,7 @@ public class PatientsService : IPatientsService
     
     public async Task<IEnumerable<PatientResponse>> GetAllAsync(Specifications specifications)
     {
-        var patients = (await _repository.GetAllAsync<Patient>())
+        var patients = (await _repository.GetAsync<Patient>())
             .Select(x => x.ToPatientResponse())
             .ToList();
 

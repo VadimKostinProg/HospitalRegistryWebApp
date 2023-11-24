@@ -17,7 +17,7 @@ namespace HospitalRegistry.Application.Services
 
         public async Task<IEnumerable<DiagnosisResponse>> GetAllAsync(Specifications specifications)
         {
-            var diagnoses = (await _repository.GetAllAsync<Diagnosis>())
+            var diagnoses = (await _repository.GetAsync<Diagnosis>())
                 .Select(x => x.ToDiagnosisResponse())
                 .ToList();
 

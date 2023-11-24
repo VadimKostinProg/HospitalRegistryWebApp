@@ -32,7 +32,7 @@ public class AppointmentsService : IAppointmentsService
 
     public async Task<IEnumerable<AppointmentResponse>> GetAppointmnetsList(Specifications specifications)
     {
-        var appointments = await _repository.GetAllAsync<Appointment>();
+        var appointments = await _repository.GetAsync<Appointment>();
 
         return appointments.Select(appointment => new AppointmentResponse
         {

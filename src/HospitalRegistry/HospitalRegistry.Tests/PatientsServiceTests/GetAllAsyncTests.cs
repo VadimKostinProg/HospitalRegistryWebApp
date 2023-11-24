@@ -15,7 +15,7 @@ public class GetAllAsyncTests : PatientsServiceTestsBase
         // Arrange
         var patients = GetTestPatients().ToList();
         var query = patients.AsQueryable();
-        repositoryMock.Setup(x => x.GetAllAsync<Patient>(true))
+        repositoryMock.Setup(x => x.GetAsync<Patient>(true))
                 .ReturnsAsync(query);
         Specifications? specifications = null;
 
