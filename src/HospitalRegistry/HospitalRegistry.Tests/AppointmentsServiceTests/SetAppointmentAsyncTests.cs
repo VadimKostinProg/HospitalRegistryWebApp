@@ -46,7 +46,7 @@ public class SetAppointmentAsyncTests : AppointmentsServiceTestsBase
             .With(x => x.DateAndTime, DateTime.UtcNow.AddDays(2))
             .Create();
 
-        repositoryMock.Setup(x => x.GetByIdAsync<Doctor>(It.IsAny<Guid>()))
+        repositoryMock.Setup(x => x.GetByIdAsync<Doctor>(It.IsAny<Guid>(), false))
             .ReturnsAsync(null as Doctor);
         
         // Assert
@@ -68,7 +68,7 @@ public class SetAppointmentAsyncTests : AppointmentsServiceTestsBase
             .Create();
         doctor.IsDeleted = true;
 
-        repositoryMock.Setup(x => x.GetByIdAsync<Doctor>(It.IsAny<Guid>()))
+        repositoryMock.Setup(x => x.GetByIdAsync<Doctor>(It.IsAny<Guid>(), false))
             .ReturnsAsync(doctor);
         
         // Assert
@@ -87,7 +87,7 @@ public class SetAppointmentAsyncTests : AppointmentsServiceTestsBase
             .With(x => x.DateAndTime, DateTime.UtcNow.AddDays(2))
             .Create();
 
-        repositoryMock.Setup(x => x.GetByIdAsync<Patient>(It.IsAny<Guid>()))
+        repositoryMock.Setup(x => x.GetByIdAsync<Patient>(It.IsAny<Guid>(), false))
             .ReturnsAsync(null as Patient);
         
         // Assert
@@ -111,9 +111,9 @@ public class SetAppointmentAsyncTests : AppointmentsServiceTestsBase
             .Create();
         patient.IsDeleted = true;
 
-        repositoryMock.Setup(x => x.GetByIdAsync<Doctor>(It.IsAny<Guid>()))
+        repositoryMock.Setup(x => x.GetByIdAsync<Doctor>(It.IsAny<Guid>(), false))
             .ReturnsAsync(doctor);
-        repositoryMock.Setup(x => x.GetByIdAsync<Patient>(It.IsAny<Guid>()))
+        repositoryMock.Setup(x => x.GetByIdAsync<Patient>(It.IsAny<Guid>(), false))
             .ReturnsAsync(patient);
         
         // Assert
@@ -136,9 +136,9 @@ public class SetAppointmentAsyncTests : AppointmentsServiceTestsBase
             .With(x => x.PatientId, patient.Id)
             .Create();
 
-        repositoryMock.Setup(x => x.GetByIdAsync<Doctor>(It.IsAny<Guid>()))
+        repositoryMock.Setup(x => x.GetByIdAsync<Doctor>(It.IsAny<Guid>(), false))
             .ReturnsAsync(doctor);
-        repositoryMock.Setup(x => x.GetByIdAsync<Patient>(It.IsAny<Guid>()))
+        repositoryMock.Setup(x => x.GetByIdAsync<Patient>(It.IsAny<Guid>(), false))
             .ReturnsAsync(patient);
         repositoryMock.Setup(x => x.ContainsAsync(It.IsAny<Expression<Func<Appointment, bool>>>()))
             .ReturnsAsync(true);
@@ -163,9 +163,9 @@ public class SetAppointmentAsyncTests : AppointmentsServiceTestsBase
             .With(x => x.PatientId, patient.Id)
             .Create();
         
-        repositoryMock.Setup(x => x.GetByIdAsync<Doctor>(It.IsAny<Guid>()))
+        repositoryMock.Setup(x => x.GetByIdAsync<Doctor>(It.IsAny<Guid>(), false))
             .ReturnsAsync(doctor);
-        repositoryMock.Setup(x => x.GetByIdAsync<Patient>(It.IsAny<Guid>()))
+        repositoryMock.Setup(x => x.GetByIdAsync<Patient>(It.IsAny<Guid>(), false))
             .ReturnsAsync(patient);
         repositoryMock.Setup(x => x.ContainsAsync(It.IsAny<Expression<Func<Appointment, bool>>>()))
             .ReturnsAsync(false);

@@ -2,11 +2,10 @@ using HospitalRegistry.Application.Constants;
 using HospitalRegistry.Application.DTO;
 using HospitalRegistry.Application.Enums;
 using HospitalRegistry.Application.ServiceContracts;
+using HospitalReqistry.Application.RepositoryContracts;
 using HospitalReqistry.Domain.Entities;
-using HospitalReqistry.Domain.RepositoryContracts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 
 namespace HospitalRegistry.Application.Services;
 
@@ -15,32 +14,25 @@ public class AppointmentsService : IAppointmentsService
     private readonly IAsyncRepository _repository;
     private readonly IDoctorsService _doctorsService;
     private readonly ISchedulesService _schedulesService;
-    private readonly ISpecificationsService _specificationsService;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly UserManager<ApplicationUser> _userManager;
 
     public AppointmentsService(IAsyncRepository repository, 
         IDoctorsService doctorsService,
-        ISchedulesService schedulesService, 
-        ISpecificationsService specificationsService,
+        ISchedulesService schedulesService,
         IHttpContextAccessor httpContextAccessor,
         UserManager<ApplicationUser> userManager)
     {
         _repository = repository;
         _doctorsService = doctorsService;
         _schedulesService = schedulesService;
-        _specificationsService = specificationsService;
         _httpContextAccessor = httpContextAccessor;
         _userManager = userManager;
     }
 
     public async Task<IEnumerable<AppointmentResponse>> GetAppointmnetsList(Specifications specifications)
     {
-        var query = await _repository.GetAllAsync<Appointment>();
-
-        query = _specificationsService.ApplySpecifications(query, specifications);
-
-        var appointments = query.ToList();
+        var appointments = await _repository.GetAllAsync<Appointment>();
 
         return appointments.Select(appointment => new AppointmentResponse
         {

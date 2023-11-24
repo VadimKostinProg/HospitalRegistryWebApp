@@ -1,8 +1,8 @@
 ﻿using HospitalRegistry.Application.DTO;
 using HospitalRegistry.Application.Enums;
 using HospitalRegistry.Application.ServiceContracts;
+using HospitalReqistry.Application.RepositoryContracts;
 using HospitalReqistry.Domain.Entities;
-using HospitalReqistry.Domain.RepositoryContracts;
 using Microsoft.EntityFrameworkCore;
 
 namespace HospitalRegistry.Application.Services
@@ -10,12 +10,10 @@ namespace HospitalRegistry.Application.Services
     public class DoctorsService : IDoctorsService
     {
         private readonly IAsyncRepository _repository;
-        private readonly ISpecificationsService _specificationsService;
 
-        public DoctorsService(IAsyncRepository repository, ISpecificationsService specificationsService)
+        public DoctorsService(IAsyncRepository repository)
         {
             _repository = repository;
-            _specificationsService = specificationsService;
         }
 
         public async Task<DoctorResponse> CreateAsync(DoctorAddRequest request)
@@ -78,14 +76,9 @@ namespace HospitalRegistry.Application.Services
 
         public async Task<IEnumerable<DoctorResponse>> GetAllAsync(Specifications specifications)
         {
-            var query = await _repository.GetAllAsync<Doctor>();
-
-            if (specifications is not null)
-            {
-                query = _specificationsService.ApplySpecifications(query, specifications);
-            }
-
-            var doctors = query.Select(x => x.ToDoctorResponse()).ToList();
+            var doctors = (await _repository.GetAllAsync<Doctor>())
+                .Select(x => x.ToDoctorResponse())
+                .ToList();
 
             return doctors;
         }

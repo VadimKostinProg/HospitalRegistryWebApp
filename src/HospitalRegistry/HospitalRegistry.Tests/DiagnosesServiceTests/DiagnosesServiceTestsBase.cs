@@ -7,11 +7,9 @@ namespace HospitalRegistry.Tests.DiagnosesServiceTests;
 public abstract class DiagnosesServiceTestsBase : HospitalRegistryTestsBase
 {
     protected IDiagnosesService service;
-    protected readonly Mock<ISpecificationsService> specificationsServiceMock;
 
     public DiagnosesServiceTestsBase()
-    {
-        specificationsServiceMock = new Mock<ISpecificationsService>();
-        service = new DiagnosesService(repositoryMock.Object, specificationsServiceMock.Object);
+    {;
+        service = new DiagnosesService(repositoryMock.Object);
     }
 }

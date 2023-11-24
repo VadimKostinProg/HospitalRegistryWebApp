@@ -1,8 +1,8 @@
 ﻿using HospitalRegistry.Application.Constants;
 using HospitalRegistry.Application.DTO;
 using HospitalRegistry.Application.ServiceContracts;
+using HospitalReqistry.Application.RepositoryContracts;
 using HospitalReqistry.Domain.Entities;
-using HospitalReqistry.Domain.RepositoryContracts;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,28 +14,21 @@ namespace HospitalRegistry.Application.Services
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IJwtService _jwtService;
         private readonly IAsyncRepository _repository;
-        private readonly ISpecificationsService _specificationsService;
 
         public UserAccountsService(UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             IJwtService jwtService,
-            IAsyncRepository repository,
-            ISpecificationsService specificationsService)
+            IAsyncRepository repository)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _jwtService = jwtService;
             _repository = repository;
-            _specificationsService = specificationsService;
         }
 
         public async Task<IEnumerable<AccountResponse>> GetAccountsList(Specifications specifications)
         {
-            var query = _userManager.Users;
-
-            query = _specificationsService.ApplySpecifications(query, specifications);
-
-            var accounts = await query.ToListAsync();
+            var accounts = await _userManager.Users.ToListAsync();
 
             List<AccountResponse> accountsList = new List<AccountResponse>();
 

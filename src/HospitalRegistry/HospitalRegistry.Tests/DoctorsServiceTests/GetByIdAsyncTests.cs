@@ -13,7 +13,7 @@ namespace HospitalRegistry.Tests.DoctorsServiceTests
         {
             // Arrange
             var idToPass = Guid.NewGuid();
-            repositoryMock.Setup(x => x.GetByIdAsync<Doctor>(idToPass)).ReturnsAsync(null as Doctor);
+            repositoryMock.Setup(x => x.GetByIdAsync<Doctor>(idToPass, false)).ReturnsAsync(null as Doctor);
 
             // Assert
             await Assert.ThrowsAsync<KeyNotFoundException>(async () =>
@@ -29,7 +29,7 @@ namespace HospitalRegistry.Tests.DoctorsServiceTests
             // Arrange
             var doctor = GetTestDoctor();
             var idToPass = doctor.Id;
-            repositoryMock.Setup(x => x.GetByIdAsync<Doctor>(idToPass)).ReturnsAsync(doctor);
+            repositoryMock.Setup(x => x.GetByIdAsync<Doctor>(idToPass, false)).ReturnsAsync(doctor);
 
             // Act
             var response = await service.GetByIdAsync(idToPass);

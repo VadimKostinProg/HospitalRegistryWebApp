@@ -11,7 +11,7 @@ public class GetAppointmentsHistoryOfPatientAsyncTests : AppointmentsServiceTest
     {
         // Arrange
         var idToPass = Guid.NewGuid();
-        repositoryMock.Setup(x => x.GetByIdAsync<Patient>(idToPass))
+        repositoryMock.Setup(x => x.GetByIdAsync<Patient>(idToPass, false))
             .ReturnsAsync(null as Patient);
 
         // Assert
@@ -37,7 +37,7 @@ public class GetAppointmentsHistoryOfPatientAsyncTests : AppointmentsServiceTest
         var appointments = GetTestCompletedAppointments(doctor, patient, diagnosis, new TimeOnly(12, 0), new TimeOnly(14, 0));
         patient.Appointments = appointments.ToList();
 
-        repositoryMock.Setup(x => x.GetByIdAsync<Patient>(patient.Id))
+        repositoryMock.Setup(x => x.GetByIdAsync<Patient>(patient.Id, false))
             .ReturnsAsync(patient);
 
         // Act

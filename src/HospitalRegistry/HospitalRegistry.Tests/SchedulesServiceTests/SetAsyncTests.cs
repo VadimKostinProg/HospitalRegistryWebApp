@@ -34,7 +34,7 @@ public class SetAsyncTests : SchedulesServiceTestsBase
             .With(x => x.DoctorId, doctorId)
             .With(x => x.Schedule, testSchedule)
             .Create();
-        repositoryMock.Setup(x => x.GetByIdAsync<Doctor>(doctorId))
+        repositoryMock.Setup(x => x.GetByIdAsync<Doctor>(doctorId, false))
             .ReturnsAsync(null as Doctor);
         
         // Assert
@@ -62,7 +62,7 @@ public class SetAsyncTests : SchedulesServiceTestsBase
             .With(x => x.DoctorId, doctorId)
             .With(x => x.Schedule, newSchedule)
             .Create();
-        repositoryMock.Setup(x => x.GetByIdAsync<Doctor>(doctorId))
+        repositoryMock.Setup(x => x.GetByIdAsync<Doctor>(doctorId, false))
             .ReturnsAsync(doctor);
         
         // Assert
@@ -90,7 +90,7 @@ public class SetAsyncTests : SchedulesServiceTestsBase
             .With(x => x.DoctorId, doctorId)
             .With(x => x.Schedule, newSchedule)
             .Create();
-        repositoryMock.Setup(x => x.GetByIdAsync<Doctor>(doctorId))
+        repositoryMock.Setup(x => x.GetByIdAsync<Doctor>(doctorId, false))
             .ReturnsAsync(doctor);
 
         // Assert
@@ -118,11 +118,11 @@ public class SetAsyncTests : SchedulesServiceTestsBase
             .With(x => x.DoctorId, doctorId)
             .With(x => x.Schedule, newSchedule)
             .Create();
-        repositoryMock.Setup(x => x.GetByIdAsync<Doctor>(doctorId))
+        repositoryMock.Setup(x => x.GetByIdAsync<Doctor>(doctorId, false))
             .ReturnsAsync(doctor);
         repositoryMock.Setup(x => x.DeleteRangeAsync(testSchedule))
             .ReturnsAsync(testSchedule.Count());
-        repositoryMock.Setup(x => x.FirstOrDefaultAsync(It.IsAny<Expression<Func<TimeSlot, bool>>>()))
+        repositoryMock.Setup(x => x.FirstOrDefaultAsync(It.IsAny<Expression<Func<TimeSlot, bool>>>(), false))
             .ReturnsAsync(null as TimeSlot);
         repositoryMock.Setup(x => x.AddAsync(It.IsAny<Schedule>()))
             .Returns(Task.CompletedTask);

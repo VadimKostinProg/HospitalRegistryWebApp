@@ -1,8 +1,8 @@
 using HospitalRegistry.Application.DTO;
 using HospitalRegistry.Application.Helpers;
 using HospitalRegistry.Application.ServiceContracts;
+using HospitalReqistry.Application.RepositoryContracts;
 using HospitalReqistry.Domain.Entities;
-using HospitalReqistry.Domain.RepositoryContracts;
 
 namespace HospitalRegistry.Application.Services;
 

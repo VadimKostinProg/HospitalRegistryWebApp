@@ -1,7 +1,7 @@
 using HospitalRegistry.Application.DTO;
 using HospitalRegistry.Application.ServiceContracts;
+using HospitalReqistry.Application.RepositoryContracts;
 using HospitalReqistry.Domain.Entities;
-using HospitalReqistry.Domain.RepositoryContracts;
 using Microsoft.EntityFrameworkCore;
 
 namespace HospitalRegistry.Application.Services
@@ -9,24 +9,17 @@ namespace HospitalRegistry.Application.Services
     public class DiagnosesService : IDiagnosesService
     {
         private readonly IAsyncRepository _repository;
-        private readonly ISpecificationsService _specificationsService;
 
-        public DiagnosesService(IAsyncRepository repository, ISpecificationsService specificationsService)
+        public DiagnosesService(IAsyncRepository repository)
         {
             _repository = repository;
-            _specificationsService = specificationsService;
         }
 
         public async Task<IEnumerable<DiagnosisResponse>> GetAllAsync(Specifications specifications)
         {
-            var query = await _repository.GetAllAsync<Diagnosis>();
-
-            if (specifications is not null)
-            {
-                query = _specificationsService.ApplySpecifications(query, specifications);
-            }
-
-            var diagnoses = query.Select(x => x.ToDiagnosisResponse()).ToList();
+            var diagnoses = (await _repository.GetAllAsync<Diagnosis>())
+                .Select(x => x.ToDiagnosisResponse())
+                .ToList();
 
             return diagnoses;
         }

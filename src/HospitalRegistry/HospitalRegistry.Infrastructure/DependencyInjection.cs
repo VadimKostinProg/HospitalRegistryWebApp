@@ -1,6 +1,6 @@
 ﻿using HospitalRegistry.Infrastructure.DatabaseInitializer;
 using HospitalRegistry.Infrastructure.Repositories;
-using HospitalReqistry.Domain.RepositoryContracts;
+using HospitalReqistry.Application.RepositoryContracts;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace HospitalRegistry.Infrastructure

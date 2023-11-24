@@ -1,8 +1,8 @@
 using AutoFixture;
 using HospitalRegistry.Application.DTO;
 using HospitalRegistry.Application.Enums;
+using HospitalReqistry.Application.RepositoryContracts;
 using HospitalReqistry.Domain.Entities;
-using HospitalReqistry.Domain.RepositoryContracts;
 using Moq;
 
 namespace HospitalRegistry.Tests;

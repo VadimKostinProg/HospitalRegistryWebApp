@@ -13,7 +13,7 @@ public class GetScheduledAppoitnmentsOfPatientAsyncTests : AppointmentsServiceTe
         var idToPass = Guid.NewGuid();
         var date = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(2));
 
-        repositoryMock.Setup(x => x.GetByIdAsync<Patient>(idToPass))
+        repositoryMock.Setup(x => x.GetByIdAsync<Patient>(idToPass, false))
             .ReturnsAsync(null as Patient);
 
         // Assert
@@ -33,7 +33,7 @@ public class GetScheduledAppoitnmentsOfPatientAsyncTests : AppointmentsServiceTe
         patient.IsDeleted = true;
         var date = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(2));
 
-        repositoryMock.Setup(x => x.GetByIdAsync<Patient>(idToPass))
+        repositoryMock.Setup(x => x.GetByIdAsync<Patient>(idToPass, false))
             .ReturnsAsync(patient);
 
         // Assert
@@ -52,7 +52,7 @@ public class GetScheduledAppoitnmentsOfPatientAsyncTests : AppointmentsServiceTe
         var idToPass = patient.Id;
         var date = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(-2));
 
-        repositoryMock.Setup(x => x.GetByIdAsync<Patient>(idToPass))
+        repositoryMock.Setup(x => x.GetByIdAsync<Patient>(idToPass, false))
             .ReturnsAsync(patient);
 
         // Assert
@@ -73,7 +73,7 @@ public class GetScheduledAppoitnmentsOfPatientAsyncTests : AppointmentsServiceTe
         var doctor = GetTestDoctor();
         var appointments = GetTestScheduledAppointments(doctor, patient, date, new TimeOnly(12, 0)).AsQueryable();
 
-        repositoryMock.Setup(x => x.GetByIdAsync<Patient>(idToPass))
+        repositoryMock.Setup(x => x.GetByIdAsync<Patient>(idToPass, false))
             .ReturnsAsync(patient);
         repositoryMock.Setup(x => x.GetFilteredAsync(It.IsAny<Expression<Func<Appointment, bool>>>(), true))
             .ReturnsAsync(appointments);
