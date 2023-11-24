@@ -12,7 +12,7 @@ namespace HospitalRegistry.Application.ServiceContracts
         /// </summary>
         /// <param name="specifications">Specifications to filter, sort, search and paginate accounts.</param>
         /// <returns>Collection IEnumerable of AccountResponse objects.</returns>
-        Task<IEnumerable<AccountResponse>> GetAccountsList(Specifications specifications);
+        Task<IEnumerable<AccountResponse>> GetAccountsList(AccountSpecificationsDTO specificationsDTO);
 
         /// <summary>
         /// Method for registering doctors and users accounts.

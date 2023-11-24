@@ -1,9 +1,9 @@
 ﻿using HospitalRegistry.Application.DTO;
 using HospitalRegistry.Application.Enums;
 using HospitalRegistry.Application.ServiceContracts;
+using HospitalRegistry.Application.Specifications;
 using HospitalReqistry.Application.RepositoryContracts;
 using HospitalReqistry.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
 
 namespace HospitalRegistry.Application.Services
 {
@@ -14,6 +14,61 @@ namespace HospitalRegistry.Application.Services
         public DoctorsService(IAsyncRepository repository)
         {
             _repository = repository;
+        }
+
+        public async Task<IEnumerable<DoctorResponse>> GetDoctorsListAsync(DoctorSpecificationsDTO specificationsDTO)
+        {
+            var doctors = (await _repository.GetAsync<Doctor>(this.GetSpecification(specificationsDTO)))
+                .Select(x => x.ToDoctorResponse())
+                .ToList();
+
+            return doctors;
+        }
+
+        private ISpecification<Doctor> GetSpecification(DoctorSpecificationsDTO specificationsDTO)
+        {
+            var builder = new SpecificationBuilder<Doctor>();
+
+            if (!string.IsNullOrEmpty(specificationsDTO.Name))
+                builder.With(x => x.Name == specificationsDTO.Name);
+
+            if (!string.IsNullOrEmpty(specificationsDTO.Surname))
+                builder.With(x => x.Surname == specificationsDTO.Surname);
+
+            if (!string.IsNullOrEmpty(specificationsDTO.Patronymic))
+                builder.With(x => x.Patronymic == specificationsDTO.Patronymic);
+
+            if (specificationsDTO.DateOfBirth is not null)
+                builder.With(x => x.DateOfBirth == specificationsDTO.DateOfBirth.Value.ToString());
+
+            if (specificationsDTO.Specialty is not null)
+                builder.With(x => x.Specialty == specificationsDTO.Specialty.ToString());
+
+            switch (specificationsDTO.SortField)
+            {
+                case "Id":
+                    builder.OrderBy(x => x.Id, specificationsDTO.SortDirection);
+                    break;
+                case "Name":
+                    builder.OrderBy(x => x.Name, specificationsDTO.SortDirection);
+                    break;
+                case "Surname":
+                    builder.OrderBy(x => x.Surname, specificationsDTO.SortDirection);
+                    break;
+                case "Patronymic":
+                    builder.OrderBy(x => x.Patronymic, specificationsDTO.SortDirection);
+                    break;
+                case "DateOfBirth":
+                    builder.OrderBy(x => x.DateOfBirth, specificationsDTO.SortDirection);
+                    break;
+                case "Specialty":
+                    builder.OrderBy(x => x.Specialty, specificationsDTO.SortDirection);
+                    break;
+            }
+
+            builder.WithPagination(specificationsDTO.PageSize, specificationsDTO.PageNumber);
+
+            return builder.Build();
         }
 
         public async Task<DoctorResponse> CreateAsync(DoctorAddRequest request)
@@ -72,15 +127,6 @@ namespace HospitalRegistry.Application.Services
 
             doctor.IsDeleted = false;
             await _repository.UpdateAsync(doctor);
-        }
-
-        public async Task<IEnumerable<DoctorResponse>> GetAllAsync(Specifications specifications)
-        {
-            var doctors = (await _repository.GetAsync<Doctor>())
-                .Select(x => x.ToDoctorResponse())
-                .ToList();
-
-            return doctors;
         }
 
         public async Task<DoctorResponse> GetByIdAsync(Guid id)

@@ -2,6 +2,7 @@ using HospitalRegistry.Application.Constants;
 using HospitalRegistry.Application.DTO;
 using HospitalRegistry.Application.Enums;
 using HospitalRegistry.Application.ServiceContracts;
+using HospitalRegistry.Application.Specifications;
 using HospitalReqistry.Application.RepositoryContracts;
 using HospitalReqistry.Domain.Entities;
 using Microsoft.AspNetCore.Http;
@@ -30,9 +31,9 @@ public class AppointmentsService : IAppointmentsService
         _userManager = userManager;
     }
 
-    public async Task<IEnumerable<AppointmentResponse>> GetAppointmnetsList(Specifications specifications)
+    public async Task<IEnumerable<AppointmentResponse>> GetAppointmnetsList(AppointmentSpecificationsDTO specifications)
     {
-        var appointments = await _repository.GetAsync<Appointment>();
+        var appointments = await _repository.GetAsync<Appointment>(this.GetSpecification(specifications));
 
         return appointments.Select(appointment => new AppointmentResponse
         {
@@ -47,6 +48,43 @@ public class AppointmentsService : IAppointmentsService
             Conclusion = appointment.Conclusion
         })
         .ToList();
+    }
+
+    private ISpecification<Appointment> GetSpecification(AppointmentSpecificationsDTO specifications)
+    {
+        var builder = new SpecificationBuilder<Appointment>();
+
+        if (specifications.DoctorId is not null)
+            builder.With(x => x.DoctorId == specifications.DoctorId.Value);
+
+        if (specifications.PatientId is not null)
+            builder.With(x => x.PatientId == specifications.PatientId.Value);
+
+        if (specifications.Type is not null)
+            builder.With(x => x.AppointmentType == specifications.Type.Value.ToString());
+
+        if (specifications.Status is not null)
+            builder.With(x => x.Status == specifications.Status.Value.ToString());
+
+        switch(specifications.SortField)
+        {
+            case "Id":
+                builder.OrderBy(x => x.Id, specifications.SortDirection);
+                break;
+            case "DateAndTime":
+                builder.OrderBy(x => x.DateAndTime, specifications.SortDirection);
+                break;
+            case "Type":
+                builder.OrderBy(x => x.AppointmentType, specifications.SortDirection);
+                break;
+            case "Status":
+                builder.OrderBy(x => x.Status, specifications.SortDirection);
+                break;
+        }
+
+        builder.WithPagination(specifications.PageSize, specifications.PageNumber);
+
+        return builder.Build();
     }
 
     public async Task<AppointmentResponse> GetAppointmentById(Guid id)

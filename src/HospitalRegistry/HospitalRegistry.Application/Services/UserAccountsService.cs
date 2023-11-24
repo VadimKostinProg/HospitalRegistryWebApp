@@ -1,6 +1,7 @@
 ﻿using HospitalRegistry.Application.Constants;
 using HospitalRegistry.Application.DTO;
 using HospitalRegistry.Application.ServiceContracts;
+using HospitalRegistry.Application.Specifications;
 using HospitalReqistry.Application.RepositoryContracts;
 using HospitalReqistry.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
@@ -12,21 +13,24 @@ namespace HospitalRegistry.Application.Services
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly IJwtService _jwtService;
         private readonly IAsyncRepository _repository;
 
         public UserAccountsService(UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
+            RoleManager<ApplicationRole> roleManager,
             IJwtService jwtService,
             IAsyncRepository repository)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _roleManager = roleManager;
             _jwtService = jwtService;
             _repository = repository;
         }
 
-        public async Task<IEnumerable<AccountResponse>> GetAccountsList(Specifications specifications)
+        public async Task<IEnumerable<AccountResponse>> GetAccountsList(AccountSpecificationsDTO specifications)
         {
             var accounts = await _userManager.Users.ToListAsync();
 
@@ -36,40 +40,57 @@ namespace HospitalRegistry.Application.Services
             {
                 var role = (await _userManager.GetRolesAsync(account)).First();
 
-                string fullName = string.Empty;
-                Guid? userId = null;
-
-                switch (role)
-                {
-                    case UserRoles.Admin:
-                    case UserRoles.Receptionist:
-                        fullName = account.FullName;
-                        break;
-                    case UserRoles.Doctor:
-                        var doctor = account.Doctor;
-                        fullName = string.Join(' ', doctor.Surname, doctor.Name, doctor.Patronymic);
-                        userId = doctor.Id;
-                        break;
-                    case UserRoles.Patient:
-                        var patient = account.Doctor;
-                        fullName = string.Join(' ', patient.Surname, patient.Name, patient.Patronymic);
-                        userId = patient.Id;
-                        break;
-                }
-
                 var accountResponse = new AccountResponse()
                 {
                     Id = account.Id,
-                    FullName = fullName,
+                    FullName = account.FullName,
                     Email = account.Email,
                     Role = role,
-                    UserId = userId,
+                    UserId = role == UserRoles.Doctor ? account.DoctorId : role == UserRoles.Patient ? account.PatientId : null
                 };
 
                 accountsList.Add(accountResponse);
             }
 
             return accountsList;
+        }
+
+        private async Task<ISpecification<ApplicationUser>> GetSpecification(AccountSpecificationsDTO specificationsDTO)
+        {
+            var builder = new SpecificationBuilder<ApplicationUser>();
+
+            if (!string.IsNullOrEmpty(specificationsDTO.FullName))
+                builder.With(x => x.FullName == specificationsDTO.FullName);
+
+            if (!string.IsNullOrEmpty(specificationsDTO.Email))
+                builder.With(x => x.Email == specificationsDTO.Email);
+
+            if (!string.IsNullOrEmpty(specificationsDTO.Role))
+            {
+                var role = await _roleManager.FindByNameAsync(specificationsDTO.Role);
+
+                if (role is not null)
+                {
+                    builder.With(x => x.UserRoles.First().RoleId == role.Id);
+                }
+            }
+
+            switch (specificationsDTO.SortField)
+            {
+                case "Id":
+                    builder.OrderBy(x => x.Id, specificationsDTO.SortDirection);
+                    break;
+                case "FullName":
+                    builder.OrderBy(x => x.FullName, specificationsDTO.SortDirection);
+                    break;
+                case "Email":
+                    builder.OrderBy(x => x.Email, specificationsDTO.SortDirection);
+                    break;
+            }
+
+            builder.WithPagination(specificationsDTO.PageSize, specificationsDTO.PageNumber);
+
+            return builder.Build();
         }
 
         public async Task CreateAccount(CreateAccountRequest user)
@@ -167,6 +188,8 @@ namespace HospitalRegistry.Application.Services
             var user = new ApplicationUser
             {
                 Id = Guid.NewGuid(),
+                FullName = string.Join(' ', register.Surname, register.Name, register.Patronymic),
+                Email = register.Email,
                 UserName = register.Email
             };
 

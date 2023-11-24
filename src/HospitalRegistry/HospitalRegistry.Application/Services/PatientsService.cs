@@ -1,5 +1,6 @@
 using HospitalRegistry.Application.DTO;
 using HospitalRegistry.Application.ServiceContracts;
+using HospitalRegistry.Application.Specifications;
 using HospitalReqistry.Application.RepositoryContracts;
 using HospitalReqistry.Domain.Entities;
 
@@ -14,13 +15,53 @@ public class PatientsService : IPatientsService
         _repository = repository;
     }
     
-    public async Task<IEnumerable<PatientResponse>> GetAllAsync(Specifications specifications)
+    public async Task<IEnumerable<PatientResponse>> GetPatientsListAsync(PatientSpecificationsDTO specificationsDTO)
     {
-        var patients = (await _repository.GetAsync<Patient>())
+        var patients = (await _repository.GetAsync<Patient>(this.GetSpecification(specificationsDTO)))
             .Select(x => x.ToPatientResponse())
             .ToList();
 
         return patients;
+    }
+
+    private ISpecification<Patient> GetSpecification(PatientSpecificationsDTO specificationsDTO)
+    {
+        var builder = new SpecificationBuilder<Patient>();
+
+        if (!string.IsNullOrEmpty(specificationsDTO.Name))
+            builder.With(x => x.Name == specificationsDTO.Name);
+
+        if (!string.IsNullOrEmpty(specificationsDTO.Surname))
+            builder.With(x => x.Surname == specificationsDTO.Surname);
+
+        if (!string.IsNullOrEmpty(specificationsDTO.Patronymic))
+            builder.With(x => x.Patronymic == specificationsDTO.Patronymic);
+
+        if (specificationsDTO.DateOfBirth is not null)
+            builder.With(x => x.DateOfBirth == specificationsDTO.DateOfBirth.Value.ToString());
+
+        switch (specificationsDTO.SortField)
+        {
+            case "Id":
+                builder.OrderBy(x => x.Id, specificationsDTO.SortDirection);
+                break;
+            case "Name":
+                builder.OrderBy(x => x.Name, specificationsDTO.SortDirection);
+                break;
+            case "Surname":
+                builder.OrderBy(x => x.Surname, specificationsDTO.SortDirection);
+                break;
+            case "Patronymic":
+                builder.OrderBy(x => x.Patronymic, specificationsDTO.SortDirection);
+                break;
+            case "DateOfBirth":
+                builder.OrderBy(x => x.DateOfBirth, specificationsDTO.SortDirection);
+                break;
+        }
+
+        builder.WithPagination(specificationsDTO.PageSize, specificationsDTO.PageNumber);
+
+        return builder.Build();
     }
 
     public async Task<PatientResponse> GetByIdAsync(Guid id)

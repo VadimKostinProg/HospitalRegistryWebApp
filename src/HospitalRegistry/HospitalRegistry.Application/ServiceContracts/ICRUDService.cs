@@ -11,13 +11,6 @@ namespace HospitalRegistry.Application.ServiceContracts
     public interface ICRUDService<TCreateRequest, TUpdateRequest, TResponse>
     {
         /// <summary>
-        /// Method for reading all objects.
-        /// </summary>
-        /// <param name="specifications">Specifications to filter, sort, search and paginate objects.</param>
-        /// <returns>Collection IEnumerable of response DTO.</returns>
-        Task<IEnumerable<TResponse>> GetAllAsync(Specifications specifications);
-
-        /// <summary>
         /// Method for reading single object by its id.
         /// </summary>
         /// <param name="id">Id of object to read.</param>

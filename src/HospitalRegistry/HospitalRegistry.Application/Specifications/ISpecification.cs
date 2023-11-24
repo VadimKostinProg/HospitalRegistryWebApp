@@ -8,7 +8,7 @@ namespace HospitalRegistry.Application.Specifications
     /// Specification for entities.
     /// </summary>
     /// <typeparam name="T">Type of entity.</typeparam>
-    public interface ISpecification<T> where T : EntityBase
+    public interface ISpecification<T>
     {
         /// <summary>
         /// Expression for filtering.

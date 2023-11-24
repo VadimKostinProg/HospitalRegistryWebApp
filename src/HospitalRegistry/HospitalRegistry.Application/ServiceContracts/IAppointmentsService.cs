@@ -10,9 +10,9 @@ namespace HospitalRegistry.Application.ServiceContracts
         /// <summary>
         /// Method for reading appointment list with applyed specifications.
         /// </summary>
-        /// <param name="specifications">Specifications to filter, sort, search and paginate list.</param>
+        /// <param name="specifications">Specifications to filter, sort and paginate list.</param>
         /// <returns>Collection IEnumerable of appointments list with applyed specifications.</returns>
-        Task<IEnumerable<AppointmentResponse>> GetAppointmnetsList(Specifications specifications);
+        Task<IEnumerable<AppointmentResponse>> GetAppointmnetsList(AppointmentSpecificationsDTO specifications);
 
         /// <summary>
         /// Method for reading appointment by id.

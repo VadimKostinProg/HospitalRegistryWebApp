@@ -5,7 +5,6 @@ namespace HospitalRegistry.Application.Specifications
     public static class SpecificationHandler
     {
         public static IQueryable<T> ApplySpecifications<T>(this IQueryable<T> query, ISpecification<T> specification)
-            where T : EntityBase
         {
             if (specification.Predicate is not null)
             {

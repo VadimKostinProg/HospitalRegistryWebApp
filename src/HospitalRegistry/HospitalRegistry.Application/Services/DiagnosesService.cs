@@ -1,5 +1,6 @@
 using HospitalRegistry.Application.DTO;
 using HospitalRegistry.Application.ServiceContracts;
+using HospitalRegistry.Application.Specifications;
 using HospitalReqistry.Application.RepositoryContracts;
 using HospitalReqistry.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -15,13 +16,35 @@ namespace HospitalRegistry.Application.Services
             _repository = repository;
         }
 
-        public async Task<IEnumerable<DiagnosisResponse>> GetAllAsync(Specifications specifications)
+        public async Task<IEnumerable<DiagnosisResponse>> GetDiagnosesListAsync(DiagnosisSpecificationsDTO specificationsDTO)
         {
-            var diagnoses = (await _repository.GetAsync<Diagnosis>())
+            var diagnoses = (await _repository.GetAsync<Diagnosis>(this.GetSpecification(specificationsDTO)))
                 .Select(x => x.ToDiagnosisResponse())
                 .ToList();
 
             return diagnoses;
+        }
+
+        private ISpecification<Diagnosis> GetSpecification(DiagnosisSpecificationsDTO specifications)
+        {
+            var builder = new SpecificationBuilder<Diagnosis>();
+
+            if (!string.IsNullOrEmpty(specifications.Name))
+                builder.With(x => x.Name.Contains(specifications.Name));
+
+            switch(specifications.SortField)
+            {
+                case "Id":
+                    builder.OrderBy(x => x.Id, specifications.SortDirection);
+                    break;
+                case "Name":
+                    builder.OrderBy(x => x.Name, specifications.SortDirection);
+                    break;
+            }
+
+            builder.WithPagination(specifications.PageSize, specifications.PageNumber);
+
+            return builder.Build();
         }
 
         public async Task<DiagnosisResponse> GetByIdAsync(Guid id)
@@ -41,10 +64,10 @@ namespace HospitalRegistry.Application.Services
             // Validating request
             if (request is null)
                 throw new ArgumentNullException("Diagnosis to insert is null.");
-            
+
             if (string.IsNullOrEmpty(request.Name))
                 throw new ArgumentException("Diagnosis name cannot be blank.");
-            
+
             // Adding new diagnosis
             var diagnosis = request.ToDiagnosis();
             await _repository.AddAsync(diagnosis);
@@ -60,10 +83,10 @@ namespace HospitalRegistry.Application.Services
 
             if (!(await _repository.ContainsAsync<Diagnosis>(x => x.Id == request.Id)))
                 throw new KeyNotFoundException("Diagnosis with such id does not exist.");
-            
+
             if (string.IsNullOrEmpty(request.Name))
                 throw new ArgumentException("Diagnosis name cannot be blank.");
-            
+
             // Updating the diagnosis
             var diagnosis = request.ToDiagnosis();
             await _repository.UpdateAsync(diagnosis);

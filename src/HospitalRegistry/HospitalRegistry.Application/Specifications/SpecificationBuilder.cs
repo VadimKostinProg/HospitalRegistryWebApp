@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 
 namespace HospitalRegistry.Application.Specifications
 {
-    public class SpecificationBuilder<T> where T : EntityBase
+    public class SpecificationBuilder<T>
     {
         private readonly List<Expression<Func<T, bool>>> _filters = new();
         private Expression<Func<T, object>> _orderBy;
@@ -20,9 +20,10 @@ namespace HospitalRegistry.Application.Specifications
             return this;
         }
 
-        public SpecificationBuilder<T> OrderBy(Expression<Func<T, object>> orderBy)
+        public SpecificationBuilder<T> OrderBy(Expression<Func<T, object>> orderBy, SortDirection orderDirection)
         {
             this._orderBy = orderBy;
+            this._orderDirection = orderDirection;
 
             return this;
         }
