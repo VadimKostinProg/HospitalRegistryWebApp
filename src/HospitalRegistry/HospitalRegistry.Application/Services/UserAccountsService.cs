@@ -59,36 +59,39 @@ namespace HospitalRegistry.Application.Services
         {
             var builder = new SpecificationBuilder<ApplicationUser>();
 
-            if (!string.IsNullOrEmpty(specificationsDTO.FullName))
-                builder.With(x => x.FullName == specificationsDTO.FullName);
-
-            if (!string.IsNullOrEmpty(specificationsDTO.Email))
-                builder.With(x => x.Email == specificationsDTO.Email);
-
-            if (!string.IsNullOrEmpty(specificationsDTO.Role))
+            if (specificationsDTO is not null)
             {
-                var role = await _roleManager.FindByNameAsync(specificationsDTO.Role);
+                if (!string.IsNullOrEmpty(specificationsDTO.FullName))
+                    builder.With(x => x.FullName == specificationsDTO.FullName);
 
-                if (role is not null)
+                if (!string.IsNullOrEmpty(specificationsDTO.Email))
+                    builder.With(x => x.Email == specificationsDTO.Email);
+
+                if (!string.IsNullOrEmpty(specificationsDTO.Role))
                 {
-                    builder.With(x => x.UserRoles.First().RoleId == role.Id);
+                    var role = await _roleManager.FindByNameAsync(specificationsDTO.Role);
+
+                    if (role is not null)
+                    {
+                        builder.With(x => x.UserRoles.First().RoleId == role.Id);
+                    }
                 }
-            }
 
-            switch (specificationsDTO.SortField)
-            {
-                case "Id":
-                    builder.OrderBy(x => x.Id, specificationsDTO.SortDirection);
-                    break;
-                case "FullName":
-                    builder.OrderBy(x => x.FullName, specificationsDTO.SortDirection);
-                    break;
-                case "Email":
-                    builder.OrderBy(x => x.Email, specificationsDTO.SortDirection);
-                    break;
-            }
+                switch (specificationsDTO.SortField)
+                {
+                    case "Id":
+                        builder.OrderBy(x => x.Id, specificationsDTO.SortDirection);
+                        break;
+                    case "FullName":
+                        builder.OrderBy(x => x.FullName, specificationsDTO.SortDirection);
+                        break;
+                    case "Email":
+                        builder.OrderBy(x => x.Email, specificationsDTO.SortDirection);
+                        break;
+                }
 
-            builder.WithPagination(specificationsDTO.PageSize, specificationsDTO.PageNumber);
+                builder.WithPagination(specificationsDTO.PageSize, specificationsDTO.PageNumber);
+            }
 
             return builder.Build();
         }

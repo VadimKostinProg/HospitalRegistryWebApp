@@ -11,7 +11,7 @@ public class GetByIdAsyncTests : DiagnosesServiceTestsBase
     {
         // Attange
         var idToPass = Guid.NewGuid();
-        repositoryMock.Setup(x => x.GetByIdAsync<Diagnosis>(idToPass, false)).ReturnsAsync(null as Diagnosis);
+        repositoryMock.Setup(x => x.GetByIdAsync<Diagnosis>(idToPass, true)).ReturnsAsync(null as Diagnosis);
         
         // Assert
         await Assert.ThrowsAsync<KeyNotFoundException>(async () =>
@@ -27,7 +27,7 @@ public class GetByIdAsyncTests : DiagnosesServiceTestsBase
         // Arrange
         var diagnosis = GetTestDiagnosis();
         var idToPass = diagnosis.Id;
-        repositoryMock.Setup(x => x.GetByIdAsync<Diagnosis>(idToPass, false))
+        repositoryMock.Setup(x => x.GetByIdAsync<Diagnosis>(idToPass, true))
             .ReturnsAsync(diagnosis);
         
         // Act

@@ -23,9 +23,9 @@ namespace HospitalRegistry.API.Controllers
 
         [HttpGet]
         [Authorize(Roles = $"{UserRoles.Doctor}, {UserRoles.Admin}, {UserRoles.Receptionist}")]
-        public async Task<ActionResult<IEnumerable<PatientResponse>>> GetPatientsList([FromQuery] Specifications specifications)
+        public async Task<ActionResult<IEnumerable<PatientResponse>>> GetPatientsList([FromQuery] PatientSpecificationsDTO specifications)
         {
-            return Ok(await _patientsService.GetAllAsync(specifications));
+            return Ok(await _patientsService.GetPatientsListAsync(specifications));
         }
 
         [HttpGet("{id}")]

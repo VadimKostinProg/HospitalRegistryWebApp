@@ -1,5 +1,6 @@
 ﻿using AutoFixture;
 using HospitalRegistry.Application.DTO;
+using HospitalRegistry.Application.Specifications;
 using HospitalReqistry.Domain.Entities;
 using Moq;
 using System;
@@ -12,22 +13,19 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace HospitalRegistry.Tests.DoctorsServiceTests
 {
-    public class GetAllAsyncTests : DoctorsServiceTestsBase
+    public class GetDoctorsListAsyncTests : DoctorsServiceTestsBase
     {
-        public GetAllAsyncTests() : base() { }
-
         [Fact]
-        public async Task GetAllAsync_ReturnsAllDoctors()
+        public async Task GetDoctorsListAsync_ReturnsAllDoctors()
         {
             // Arrange
             var testDoctors = GetTestDoctors().ToList();
-            var query = testDoctors.AsQueryable();
-            repositoryMock.Setup(x => x.GetAsync<Doctor>(true))
-                .ReturnsAsync(query);
-            Specifications? specifications = null;
+            repositoryMock.Setup(x => x.GetAsync<Doctor>(It.IsAny<ISpecification<Doctor>>(), true))
+                .ReturnsAsync(testDoctors);
+            DoctorSpecificationsDTO? specifications = null;
 
             // Act
-            var actual = await service.GetAllAsync(specifications);
+            var actual = await service.GetDoctorsListAsync(specifications);
 
             // Assert
             Assert.NotNull(actual);

@@ -10,9 +10,9 @@ public class DeleteAsyncTests : DiagnosesServiceTestsBase
     {
         // Arrange
         var idToPass = Guid.NewGuid();
-        repositoryMock.Setup(x => x.DeleteAsync<Diagnosis>(idToPass))
-            .ReturnsAsync(false);
-        
+        repositoryMock.Setup(x => x.GetByIdAsync<Diagnosis>(idToPass, true))
+            .ReturnsAsync(null as Diagnosis);
+
         // Assert
         await Assert.ThrowsAsync<KeyNotFoundException>(async () =>
         {

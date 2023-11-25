@@ -40,7 +40,6 @@ namespace HospitalRegistry.Application.Specifications
 
         public ISpecification<T> Build()
         {
-
             var specification = !this._isPaginationEnabled ?
                 new Specification<T>(this.GetPredicate(), this._orderBy, this._orderDirection) :
                 new Specification<T>(this.GetPredicate(), this._orderBy, this._orderDirection, this._pageSize, this._pageNumber);
@@ -50,6 +49,9 @@ namespace HospitalRegistry.Application.Specifications
 
         private Expression<Func<T, bool>> GetPredicate()
         {
+            if (!this._filters.Any())
+                return null;
+
             Expression combinedExpression = this._filters
                 .Select(e => (Expression)Expression.Invoke(e, e.Parameters.Cast<Expression>()))
                 .Aggregate((acc, expr) => Expression.AndAlso(acc, expr));

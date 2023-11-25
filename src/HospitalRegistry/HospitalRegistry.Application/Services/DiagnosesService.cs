@@ -29,20 +29,23 @@ namespace HospitalRegistry.Application.Services
         {
             var builder = new SpecificationBuilder<Diagnosis>();
 
-            if (!string.IsNullOrEmpty(specifications.Name))
-                builder.With(x => x.Name.Contains(specifications.Name));
-
-            switch(specifications.SortField)
+            if (specifications is not null)
             {
-                case "Id":
-                    builder.OrderBy(x => x.Id, specifications.SortDirection);
-                    break;
-                case "Name":
-                    builder.OrderBy(x => x.Name, specifications.SortDirection);
-                    break;
-            }
+                if (!string.IsNullOrEmpty(specifications.Name))
+                    builder.With(x => x.Name.Contains(specifications.Name));
 
-            builder.WithPagination(specifications.PageSize, specifications.PageNumber);
+                switch (specifications.SortField)
+                {
+                    case "Id":
+                        builder.OrderBy(x => x.Id, specifications.SortDirection);
+                        break;
+                    case "Name":
+                        builder.OrderBy(x => x.Name, specifications.SortDirection);
+                        break;
+                }
+
+                builder.WithPagination(specifications.PageSize, specifications.PageNumber);
+            }
 
             return builder.Build();
         }

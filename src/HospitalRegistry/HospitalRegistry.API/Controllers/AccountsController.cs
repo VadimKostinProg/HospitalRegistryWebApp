@@ -19,7 +19,7 @@ namespace HospitalRegistry.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<AccountResponse>>> GetAccountsList([FromQuery] Specifications specifications)
+        public async Task<ActionResult<IEnumerable<AccountResponse>>> GetAccountsList([FromQuery] AccountSpecificationsDTO specifications)
         {
             return Ok(await _userAccountsService.GetAccountsList(specifications));
         }

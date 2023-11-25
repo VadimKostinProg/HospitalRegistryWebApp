@@ -9,8 +9,14 @@ namespace HospitalRegistry.Tests;
 
 public abstract class HospitalRegistryTestsBase
 {
-    protected Mock<IAsyncRepository> repositoryMock = new();
-    protected Fixture fixture = new();
+    protected readonly Mock<IAsyncRepository> repositoryMock;
+    protected readonly Fixture fixture;
+
+    public HospitalRegistryTestsBase()
+    {
+        repositoryMock = new Mock<IAsyncRepository>();
+        fixture = new Fixture();
+    }
 
     public IEnumerable<Doctor> GetTestDoctors(int count = 10)
     {

@@ -25,9 +25,9 @@ namespace HospitalRegistry.API.Controllers
         [HttpGet]
         [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<DoctorResponse>>> GetDoctorsList(
-            [FromQuery] Specifications specifications)
+            [FromQuery] DoctorSpecificationsDTO specifications)
         {
-            return Ok(await _doctorsService.GetAllAsync(specifications));
+            return Ok(await _doctorsService.GetDoctorsListAsync(specifications));
         }
 
         [HttpGet("{id}")]

@@ -21,7 +21,7 @@ namespace HospitalRegistry.API.Controllers
         [HttpGet]
         [Authorize(Roles = $"{UserRoles.Admin}, {UserRoles.Receptionist}")]
         public async Task<ActionResult<IEnumerable<AppointmentResponse>>> GetAppointmentsList(
-            [FromQuery] Specifications specifications)
+            [FromQuery] AppointmentSpecificationsDTO specifications)
         {
             return Ok(await _appointmentsService.GetAppointmnetsList(specifications));
         }

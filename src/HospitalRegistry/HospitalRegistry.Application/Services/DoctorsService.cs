@@ -28,45 +28,48 @@ namespace HospitalRegistry.Application.Services
         private ISpecification<Doctor> GetSpecification(DoctorSpecificationsDTO specificationsDTO)
         {
             var builder = new SpecificationBuilder<Doctor>();
-
-            if (!string.IsNullOrEmpty(specificationsDTO.Name))
-                builder.With(x => x.Name == specificationsDTO.Name);
-
-            if (!string.IsNullOrEmpty(specificationsDTO.Surname))
-                builder.With(x => x.Surname == specificationsDTO.Surname);
-
-            if (!string.IsNullOrEmpty(specificationsDTO.Patronymic))
-                builder.With(x => x.Patronymic == specificationsDTO.Patronymic);
-
-            if (specificationsDTO.DateOfBirth is not null)
-                builder.With(x => x.DateOfBirth == specificationsDTO.DateOfBirth.Value.ToString());
-
-            if (specificationsDTO.Specialty is not null)
-                builder.With(x => x.Specialty == specificationsDTO.Specialty.ToString());
-
-            switch (specificationsDTO.SortField)
+            
+            if (specificationsDTO is not null)
             {
-                case "Id":
-                    builder.OrderBy(x => x.Id, specificationsDTO.SortDirection);
-                    break;
-                case "Name":
-                    builder.OrderBy(x => x.Name, specificationsDTO.SortDirection);
-                    break;
-                case "Surname":
-                    builder.OrderBy(x => x.Surname, specificationsDTO.SortDirection);
-                    break;
-                case "Patronymic":
-                    builder.OrderBy(x => x.Patronymic, specificationsDTO.SortDirection);
-                    break;
-                case "DateOfBirth":
-                    builder.OrderBy(x => x.DateOfBirth, specificationsDTO.SortDirection);
-                    break;
-                case "Specialty":
-                    builder.OrderBy(x => x.Specialty, specificationsDTO.SortDirection);
-                    break;
-            }
+                if (!string.IsNullOrEmpty(specificationsDTO.Name))
+                    builder.With(x => x.Name == specificationsDTO.Name);
 
-            builder.WithPagination(specificationsDTO.PageSize, specificationsDTO.PageNumber);
+                if (!string.IsNullOrEmpty(specificationsDTO.Surname))
+                    builder.With(x => x.Surname == specificationsDTO.Surname);
+
+                if (!string.IsNullOrEmpty(specificationsDTO.Patronymic))
+                    builder.With(x => x.Patronymic == specificationsDTO.Patronymic);
+
+                if (specificationsDTO.DateOfBirth is not null)
+                    builder.With(x => x.DateOfBirth == specificationsDTO.DateOfBirth.Value.ToString());
+
+                if (specificationsDTO.Specialty is not null)
+                    builder.With(x => x.Specialty == specificationsDTO.Specialty.ToString());
+
+                switch (specificationsDTO.SortField)
+                {
+                    case "Id":
+                        builder.OrderBy(x => x.Id, specificationsDTO.SortDirection);
+                        break;
+                    case "Name":
+                        builder.OrderBy(x => x.Name, specificationsDTO.SortDirection);
+                        break;
+                    case "Surname":
+                        builder.OrderBy(x => x.Surname, specificationsDTO.SortDirection);
+                        break;
+                    case "Patronymic":
+                        builder.OrderBy(x => x.Patronymic, specificationsDTO.SortDirection);
+                        break;
+                    case "DateOfBirth":
+                        builder.OrderBy(x => x.DateOfBirth, specificationsDTO.SortDirection);
+                        break;
+                    case "Specialty":
+                        builder.OrderBy(x => x.Specialty, specificationsDTO.SortDirection);
+                        break;
+                }
+
+                builder.WithPagination(specificationsDTO.PageSize, specificationsDTO.PageNumber);
+            }
 
             return builder.Build();
         }

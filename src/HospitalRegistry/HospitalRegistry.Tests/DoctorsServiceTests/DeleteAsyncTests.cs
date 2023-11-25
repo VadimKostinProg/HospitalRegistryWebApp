@@ -10,14 +10,13 @@ namespace HospitalRegistry.Tests.DoctorsServiceTests
 {
     public class DeleteAsyncTests : DoctorsServiceTestsBase
     {
-        public DeleteAsyncTests() : base() { }
-
         [Fact]
         public async Task DeleteAsync_InvalidId_ThrowsKeyNotFoundException()
         {
             // Arrange
             var idToPass = Guid.NewGuid();
-            repositoryMock.Setup(x => x.DeleteAsync<Doctor>(idToPass)).ReturnsAsync(false);
+            repositoryMock.Setup(x => x.GetByIdAsync<Doctor>(idToPass, true))
+                .ReturnsAsync(null as Doctor);
 
             // Assert
             await Assert.ThrowsAsync<KeyNotFoundException>(async () =>

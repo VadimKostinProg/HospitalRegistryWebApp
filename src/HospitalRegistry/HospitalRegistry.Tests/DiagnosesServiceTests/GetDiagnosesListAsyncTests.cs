@@ -1,24 +1,24 @@
 using HospitalRegistry.Application.DTO;
+using HospitalRegistry.Application.Specifications;
 using HospitalReqistry.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 
 namespace HospitalRegistry.Tests.DiagnosesServiceTests;
 
-public class GetAllAsyncTests : DiagnosesServiceTestsBase
+public class GetDiagnosesListAsyncTests : DiagnosesServiceTestsBase
 {
     [Fact]
     public async Task GetAllAsync_ReturnsAllDiagnoses()
     {
         // Arrange
         var diagnoses = GetTestDiagnoses().ToList();
-        var query = diagnoses.AsQueryable();
-        repositoryMock.Setup(x => x.GetAsync<Diagnosis>(true))
-            .ReturnsAsync(query);
-        Specifications? specifications = null;
+        repositoryMock.Setup(x => x.GetAsync<Diagnosis>(It.IsAny<ISpecification<Diagnosis>>(), true))
+            .ReturnsAsync(diagnoses);
+        DiagnosisSpecificationsDTO? specifications = null;
 
         // Act
-        var actual = await service.GetAllAsync(specifications);
+        var actual = await service.GetDiagnosesListAsync(specifications);
         
         // Assert
         Assert.NotNull(actual);
