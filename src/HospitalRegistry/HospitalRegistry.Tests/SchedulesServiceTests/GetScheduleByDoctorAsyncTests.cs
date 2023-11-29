@@ -1,4 +1,5 @@
 using AutoFixture;
+using FluentAssertions;
 using HospitalRegistry.Application.DTO;
 using HospitalReqistry.Domain.Entities;
 using Moq;
@@ -12,15 +13,17 @@ public class GetScheduleByDoctorAsyncTests : SchedulesServiceTestsBase
     {
         // Arrange
         var idToPass = Guid.NewGuid();
-        repositoryMock.Setup(x => x.GetByIdAsync<Doctor>(idToPass, true))
+        repositoryMock.Setup(x => x.GetByIdAsync<Doctor>(idToPass, false))
             .ReturnsAsync(null as Doctor);
         
         // Assert
-        await Assert.ThrowsAsync<KeyNotFoundException>(async () =>
+        var action = async () =>
         {
             // Act
             var schedule = await service.GetScheduleByDoctorAsync(idToPass);
-        });
+        };
+
+        await action.Should().ThrowAsync<KeyNotFoundException>();
     }
 
     [Fact]
@@ -35,16 +38,16 @@ public class GetScheduleByDoctorAsyncTests : SchedulesServiceTestsBase
             .With(x => x.DateOfBirth, "01.01.2000")
             .With(x => x.Appointments, new List<Appointment>())
             .Create();
-        repositoryMock.Setup(x => x.GetByIdAsync<Doctor>(doctorId, true))
+        repositoryMock.Setup(x => x.GetByIdAsync<Doctor>(doctorId, false))
             .ReturnsAsync(doctor);
         
         // Act
         var schedule = await service.GetScheduleByDoctorAsync(doctorId);
         
         // Assert
-        Assert.NotNull(schedule);
-        Assert.Equal(doctorId, schedule.DoctorId);
-        Assert.Equal(testSchedule.Count, schedule.Schedule.Count);
+        schedule.Should().NotBeNull();
+        schedule.DoctorId.Should().Be(doctorId);
+        schedule.Schedule.Count.Should().Be(testSchedule.Count);
     }
 
     [Fact]
@@ -60,14 +63,14 @@ public class GetScheduleByDoctorAsyncTests : SchedulesServiceTestsBase
             .With(x => x.Appointments, new List<Appointment>())
             .Create();
         var dayOfWeek = 1;
-        repositoryMock.Setup(x => x.GetByIdAsync<Doctor>(doctorId, true))
+        repositoryMock.Setup(x => x.GetByIdAsync<Doctor>(doctorId, false))
             .ReturnsAsync(doctor);
         
         // Act
         var schedule = await service.GetScheduleByDoctorAsync(doctorId, dayOfWeek);
         
         // Assert
-        Assert.NotNull(schedule);
-        Assert.True(schedule.Schedule.All(x => x.DayOfWeek == dayOfWeek));
+        schedule.Should().NotBeNull();
+        schedule.Schedule.Should().OnlyContain(x => x.DayOfWeek == dayOfWeek);
     }
 }

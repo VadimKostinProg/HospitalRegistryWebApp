@@ -1,5 +1,6 @@
 using System.Linq.Expressions;
 using AutoFixture;
+using FluentAssertions;
 using HospitalRegistry.Application.DTO;
 using HospitalReqistry.Domain.Entities;
 using Moq;
@@ -15,11 +16,13 @@ public class UpdateAsyncTests : DiagnosesServiceTestsBase
         DiagnosisUpdateRequest request = null;
         
         // Assert
-        await Assert.ThrowsAsync<ArgumentNullException>(async () =>
+        var action = async () =>
         {
             // Act
             var response = await service.UpdateAsync(request);
-        });
+        };
+
+        await action.Should().ThrowAsync<ArgumentNullException>();
     }
 
     [Fact]
@@ -29,12 +32,15 @@ public class UpdateAsyncTests : DiagnosesServiceTestsBase
         var request = fixture.Create<DiagnosisUpdateRequest>();
         repositoryMock.Setup(x => x.ContainsAsync(It.IsAny<Expression<Func<Diagnosis, bool>>>()))
             .ReturnsAsync(false);
-        
+
         // Assert
-        await Assert.ThrowsAsync<KeyNotFoundException>(async () =>
+        var action = async () =>
         {
+            // Act
             var response = await service.UpdateAsync(request);
-        });
+        };
+
+        await action.Should().ThrowAsync<KeyNotFoundException>();
     }
     
     [Fact]
@@ -46,12 +52,15 @@ public class UpdateAsyncTests : DiagnosesServiceTestsBase
             .Create();
         repositoryMock.Setup(x => x.ContainsAsync(It.IsAny<Expression<Func<Diagnosis, bool>>>()))
             .ReturnsAsync(true);
-        
+
         // Assert
-        await Assert.ThrowsAsync<ArgumentException>(async () =>
+        var action = async () =>
         {
+            // Act
             var response = await service.UpdateAsync(request);
-        });
+        };
+
+        await action.Should().ThrowAsync<ArgumentException>();
     }
 
     [Fact]
@@ -66,8 +75,8 @@ public class UpdateAsyncTests : DiagnosesServiceTestsBase
         var response = await service.UpdateAsync(request);
         
         // Assert
-        Assert.NotNull(response);
-        Assert.Equal(request.Id, response.Id);
-        Assert.Equal(request.Name, response.Name);
+        response.Should().NotBeNull();
+        response.Id.Should().Be(request.Id);
+        response.Name.Should().Be(request.Name);
     }
 }

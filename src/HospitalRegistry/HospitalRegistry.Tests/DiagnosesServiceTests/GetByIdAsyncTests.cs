@@ -1,4 +1,5 @@
 using AutoFixture;
+using FluentAssertions;
 using HospitalReqistry.Domain.Entities;
 using Moq;
 
@@ -14,11 +15,13 @@ public class GetByIdAsyncTests : DiagnosesServiceTestsBase
         repositoryMock.Setup(x => x.GetByIdAsync<Diagnosis>(idToPass, true)).ReturnsAsync(null as Diagnosis);
         
         // Assert
-        await Assert.ThrowsAsync<KeyNotFoundException>(async () =>
+        var action = async () =>
         {
             // Act
             var response = await service.GetByIdAsync(idToPass);
-        });
+        };
+
+        await action.Should().ThrowAsync<KeyNotFoundException>();
     }
 
     [Fact]
@@ -34,8 +37,8 @@ public class GetByIdAsyncTests : DiagnosesServiceTestsBase
         var response = await service.GetByIdAsync(idToPass);
         
         // Assert
-        Assert.NotNull(response);
-        Assert.Equal(diagnosis.Id, response.Id);
-        Assert.Equal(diagnosis.Name, response.Name);
+        response.Should().NotBeNull();
+        response.Id.Should().Be(diagnosis.Id);
+        response.Name.Should().Be(diagnosis.Name);
     }
 }

@@ -1,4 +1,5 @@
 using AutoFixture;
+using FluentAssertions;
 using HospitalRegistry.Application.DTO;
 using HospitalReqistry.Domain.Entities;
 using Moq;
@@ -15,11 +16,13 @@ public class SetAppointmentAsyncTests : AppointmentsServiceTestsBase
         AppointmentSetRequest request = null;
         
         // Assert
-        await Assert.ThrowsAsync<ArgumentNullException>(async () =>
+        var action = async () =>
         {
             // Act
             await service.SetAppointmentAsync(request);
-        });
+        };
+
+        await action.Should().ThrowAsync<ArgumentNullException>();
     }
 
     [Fact]
@@ -29,13 +32,15 @@ public class SetAppointmentAsyncTests : AppointmentsServiceTestsBase
         var request = fixture.Build<AppointmentSetRequest>()
             .With(x => x.DateAndTime, DateTime.UtcNow.AddDays(-2))
             .Create();
-        
+
         // Assert
-        await Assert.ThrowsAsync<ArgumentException>(async () =>
+        var action = async () =>
         {
             // Act
             await service.SetAppointmentAsync(request);
-        });
+        };
+
+        await action.Should().ThrowAsync<ArgumentException>();
     }
     
     [Fact]
@@ -48,13 +53,15 @@ public class SetAppointmentAsyncTests : AppointmentsServiceTestsBase
 
         repositoryMock.Setup(x => x.GetByIdAsync<Doctor>(It.IsAny<Guid>(), true))
             .ReturnsAsync(null as Doctor);
-        
+
         // Assert
-        await Assert.ThrowsAsync<KeyNotFoundException>(async () =>
+        var action = async () =>
         {
             // Act
             await service.SetAppointmentAsync(request);
-        });
+        };
+
+        await action.Should().ThrowAsync<KeyNotFoundException>();
     }
     
     [Fact]
@@ -70,13 +77,15 @@ public class SetAppointmentAsyncTests : AppointmentsServiceTestsBase
 
         repositoryMock.Setup(x => x.GetByIdAsync<Doctor>(It.IsAny<Guid>(), true))
             .ReturnsAsync(doctor);
-        
+
         // Assert
-        await Assert.ThrowsAsync<ArgumentException>(async () =>
+        var action = async () =>
         {
             // Act
             await service.SetAppointmentAsync(request);
-        });
+        };
+
+        await action.Should().ThrowAsync<ArgumentException>();
     }
     
     [Fact]
@@ -89,13 +98,15 @@ public class SetAppointmentAsyncTests : AppointmentsServiceTestsBase
 
         repositoryMock.Setup(x => x.GetByIdAsync<Patient>(It.IsAny<Guid>(), true))
             .ReturnsAsync(null as Patient);
-        
+
         // Assert
-        await Assert.ThrowsAsync<KeyNotFoundException>(async () =>
+        var action = async () =>
         {
             // Act
             await service.SetAppointmentAsync(request);
-        });
+        };
+
+        await action.Should().ThrowAsync<KeyNotFoundException>();
     }
     
     [Fact]
@@ -115,13 +126,15 @@ public class SetAppointmentAsyncTests : AppointmentsServiceTestsBase
             .ReturnsAsync(doctor);
         repositoryMock.Setup(x => x.GetByIdAsync<Patient>(It.IsAny<Guid>(), true))
             .ReturnsAsync(patient);
-        
+
         // Assert
-        await Assert.ThrowsAsync<ArgumentException>(async () =>
+        var action = async () =>
         {
             // Act
             await service.SetAppointmentAsync(request);
-        });
+        };
+
+        await action.Should().ThrowAsync<ArgumentException>();
     }
 
     [Fact]
@@ -144,11 +157,13 @@ public class SetAppointmentAsyncTests : AppointmentsServiceTestsBase
             .ReturnsAsync(true);
 
         // Assert
-        await Assert.ThrowsAsync<ArgumentException>(async () =>
+        var action = async () =>
         {
             // Act
             await service.SetAppointmentAsync(request);
-        });
+        };
+
+        await action.Should().ThrowAsync<ArgumentException>();
     }
 
     [Fact]
@@ -171,10 +186,12 @@ public class SetAppointmentAsyncTests : AppointmentsServiceTestsBase
             .ReturnsAsync(false);
 
         // Assert
-        Assert.Null(await Record.ExceptionAsync(async () =>
+        var action = async () =>
         {
             // Act
             await service.SetAppointmentAsync(request);
-        }));
+        };
+
+        await action.Should().NotThrowAsync();
     }
 }

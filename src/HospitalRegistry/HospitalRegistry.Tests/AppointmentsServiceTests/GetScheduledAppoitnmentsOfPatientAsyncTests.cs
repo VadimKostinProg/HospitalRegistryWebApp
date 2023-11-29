@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+using FluentAssertions;
 using HospitalReqistry.Domain.Entities;
 using Moq;
 
@@ -17,11 +18,13 @@ public class GetScheduledAppoitnmentsOfPatientAsyncTests : AppointmentsServiceTe
             .ReturnsAsync(null as Patient);
 
         // Assert
-        await Assert.ThrowsAsync<KeyNotFoundException>(async () =>
+        var action = async () =>
         {
             // Act
             var response = await service.GetScheduledAppoitnmentsOfPatientAsync(idToPass, date);
-        });
+        };
+
+        await action.Should().ThrowAsync<KeyNotFoundException>();
     }
 
     [Fact]
@@ -37,11 +40,13 @@ public class GetScheduledAppoitnmentsOfPatientAsyncTests : AppointmentsServiceTe
             .ReturnsAsync(patient);
 
         // Assert
-        await Assert.ThrowsAsync<ArgumentException>(async () =>
+        var action = async () =>
         {
             // Act
             var response = await service.GetScheduledAppoitnmentsOfPatientAsync(idToPass, date);
-        });
+        };
+
+        await action.Should().ThrowAsync<ArgumentException>();
     }
 
     [Fact]
@@ -56,11 +61,13 @@ public class GetScheduledAppoitnmentsOfPatientAsyncTests : AppointmentsServiceTe
             .ReturnsAsync(patient);
 
         // Assert
-        await Assert.ThrowsAsync<ArgumentException>(async () =>
+        var action = async () =>
         {
             // Act
             var response = await service.GetScheduledAppoitnmentsOfPatientAsync(idToPass, date);
-        });
+        };
+
+        await action.Should().ThrowAsync<ArgumentException>();
     }
 
     [Fact]
@@ -82,8 +89,9 @@ public class GetScheduledAppoitnmentsOfPatientAsyncTests : AppointmentsServiceTe
         var response = await service.GetScheduledAppoitnmentsOfPatientAsync(idToPass, date);
         
         // Assert
-        Assert.NotEmpty(response);
-        Assert.True(response.All(x => x.Patient.Id == patient.Id && 
-                                      DateOnly.FromDateTime(x.DateAndTime) == date));
+        response.Should().NotBeNull();
+        response.Should().NotBeEmpty();
+        response.Should().OnlyContain(x => x.Patient.Id == patient.Id &&
+                                      DateOnly.FromDateTime(x.DateAndTime) == date);
     }
 }

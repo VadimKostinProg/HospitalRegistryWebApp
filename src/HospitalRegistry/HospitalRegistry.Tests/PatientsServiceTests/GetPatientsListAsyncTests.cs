@@ -1,4 +1,5 @@
 using AutoFixture;
+using FluentAssertions;
 using HospitalRegistry.Application.DTO;
 using HospitalRegistry.Application.Specifications;
 using HospitalReqistry.Domain.Entities;
@@ -23,7 +24,7 @@ public class GetPatientsListAsyncTests : PatientsServiceTestsBase
         var response = await service.GetPatientsListAsync(specifications);
         
         // Assert
-        Assert.NotNull(response);
-        Assert.Equal(patients.Count(), response.Count());
+        response.Should().NotBeNull();
+        response.Count().Should().Be(patients.Count());
     }
 }

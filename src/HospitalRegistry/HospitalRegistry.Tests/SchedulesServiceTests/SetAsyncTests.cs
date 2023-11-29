@@ -1,5 +1,6 @@
 using System.Linq.Expressions;
 using AutoFixture;
+using FluentAssertions;
 using HospitalRegistry.Application.DTO;
 using HospitalReqistry.Domain.Entities;
 using Moq;
@@ -62,15 +63,17 @@ public class SetAsyncTests : SchedulesServiceTestsBase
             .With(x => x.DoctorId, doctorId)
             .With(x => x.Schedule, newSchedule)
             .Create();
-        repositoryMock.Setup(x => x.GetByIdAsync<Doctor>(doctorId, true))
+        repositoryMock.Setup(x => x.GetByIdAsync<Doctor>(doctorId, false))
             .ReturnsAsync(doctor);
-        
+
         // Assert
-        await Assert.ThrowsAsync<ArgumentException>(async () =>
+        var action = async () =>
         {
             // Act
             await service.SetAsync(scheduleSetRequest);
-        });
+        };
+        
+        await action.Should().ThrowAsync<ArgumentException>();
     }
     
     [Fact]
@@ -90,15 +93,17 @@ public class SetAsyncTests : SchedulesServiceTestsBase
             .With(x => x.DoctorId, doctorId)
             .With(x => x.Schedule, newSchedule)
             .Create();
-        repositoryMock.Setup(x => x.GetByIdAsync<Doctor>(doctorId, true))
+        repositoryMock.Setup(x => x.GetByIdAsync<Doctor>(doctorId, false))
             .ReturnsAsync(doctor);
 
         // Assert
-        await Assert.ThrowsAsync<ArgumentException>(async () =>
+        var action = async () =>
         {
             // Act
             await service.SetAsync(scheduleSetRequest);
-        });
+        };
+
+        await action.Should().ThrowAsync<ArgumentException>();
     }
 
     [Fact]
@@ -118,7 +123,7 @@ public class SetAsyncTests : SchedulesServiceTestsBase
             .With(x => x.DoctorId, doctorId)
             .With(x => x.Schedule, newSchedule)
             .Create();
-        repositoryMock.Setup(x => x.GetByIdAsync<Doctor>(doctorId, true))
+        repositoryMock.Setup(x => x.GetByIdAsync<Doctor>(doctorId, false))
             .ReturnsAsync(doctor);
         repositoryMock.Setup(x => x.DeleteRangeAsync(testSchedule))
             .ReturnsAsync(testSchedule.Count());
@@ -129,15 +134,12 @@ public class SetAsyncTests : SchedulesServiceTestsBase
         repositoryMock.Setup(x => x.AddAsync(It.IsAny<TimeSlot>()))
             .Returns(Task.CompletedTask);
 
-        try
+        var action = async () =>
         {
             // Act
             await service.SetAsync(scheduleSetRequest);
-        }
-        catch (Exception ex)
-        {
-            // Assert
-            Assert.Fail(ex.Message);
-        }
+        };
+
+        await action.Should().NotThrowAsync();
     }
 }

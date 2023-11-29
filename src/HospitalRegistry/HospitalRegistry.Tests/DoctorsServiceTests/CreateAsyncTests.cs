@@ -1,4 +1,5 @@
 ﻿using AutoFixture;
+using FluentAssertions;
 using HospitalRegistry.Application.DTO;
 using HospitalReqistry.Domain.Entities;
 using Moq;
@@ -16,11 +17,13 @@ namespace HospitalRegistry.Tests.DoctorsServiceTests
             DoctorAddRequest request = null;
 
             // Assert
-            await Assert.ThrowsAsync<ArgumentNullException>(async () =>
+            var action = async () =>
             {
                 // Act
                 await service.CreateAsync(request);
-            });
+            };
+
+            await action.Should().ThrowAsync<ArgumentNullException>();
         }
 
         [Fact]
@@ -33,11 +36,13 @@ namespace HospitalRegistry.Tests.DoctorsServiceTests
                 .Create();
 
             // Assert
-            await Assert.ThrowsAsync<ArgumentException>(async () =>
+            var action = async () =>
             {
                 // Act
                 await service.CreateAsync(request);
-            });
+            };
+
+            await action.Should().ThrowAsync<ArgumentException>();
         }
 
         [Fact]
@@ -50,11 +55,13 @@ namespace HospitalRegistry.Tests.DoctorsServiceTests
                 .Create();
 
             // Assert
-            await Assert.ThrowsAsync<ArgumentException>(async () =>
+            var action = async () =>
             {
                 // Act
                 await service.CreateAsync(request);
-            });
+            };
+
+            await action.Should().ThrowAsync<ArgumentException>();
         }
 
         [Fact]
@@ -67,11 +74,13 @@ namespace HospitalRegistry.Tests.DoctorsServiceTests
                 .Create();
 
             // Assert
-            await Assert.ThrowsAsync<ArgumentException>(async () =>
+            var action = async () =>
             {
                 // Act
                 await service.CreateAsync(request);
-            });
+            };
+
+            await action.Should().ThrowAsync<ArgumentException>();
         }
 
         [Fact]
@@ -83,11 +92,13 @@ namespace HospitalRegistry.Tests.DoctorsServiceTests
                 .Create();
 
             // Assert
-            await Assert.ThrowsAsync<ArgumentException>(async () =>
+            var action = async () =>
             {
                 // Act
                 await service.CreateAsync(request);
-            });
+            };
+
+            await action.Should().ThrowAsync<ArgumentException>();
         }
 
         [Fact]
@@ -104,14 +115,14 @@ namespace HospitalRegistry.Tests.DoctorsServiceTests
             var response = await service.CreateAsync(request);
 
             // Assert
-            Assert.NotNull(response);
-            Assert.Equal(request.Name, response.Name);
-            Assert.Equal(request.Surname, response.Surname);
-            Assert.Equal(request.Patronymic, response.Patronymic);
-            Assert.Equal(request.DateOfBirth.ToShortDateString(), response.DateOfBirth);
-            Assert.Equal(request.Specialty, response.Specialty);
-            Assert.Equal(request.Email, response.Email);
-            Assert.Equal(request.PhoneNumber, response.PhoneNumber);
+            response.Should().NotBeNull();
+            response.Name.Should().Be(request.Name);
+            response.Surname.Should().Be(request.Surname);
+            response.Patronymic.Should().Be(request.Patronymic);
+            response.DateOfBirth.Should().Be(request.DateOfBirth.ToShortDateString());
+            response.Specialty.Should().Be(request.Specialty);
+            response.Email.Should().Be(request.Email);
+            response.PhoneNumber.Should().Be(request.PhoneNumber);
         }
     }
 }

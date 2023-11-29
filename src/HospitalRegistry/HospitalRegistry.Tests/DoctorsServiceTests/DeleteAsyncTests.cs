@@ -1,4 +1,5 @@
-﻿using HospitalReqistry.Domain.Entities;
+﻿using FluentAssertions;
+using HospitalReqistry.Domain.Entities;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -19,11 +20,13 @@ namespace HospitalRegistry.Tests.DoctorsServiceTests
                 .ReturnsAsync(null as Doctor);
 
             // Assert
-            await Assert.ThrowsAsync<KeyNotFoundException>(async () =>
+            var action = async () =>
             {
                 // Act
                 await service.DeleteAsync(idToPass);
-            });
+            };
+
+            await action.Should().ThrowAsync<KeyNotFoundException>();
         }
     }
 }

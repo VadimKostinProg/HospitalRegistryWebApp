@@ -1,3 +1,4 @@
+using FluentAssertions;
 using HospitalReqistry.Domain.Entities;
 using Moq;
 
@@ -14,10 +15,12 @@ public class DeleteAsyncTests : DiagnosesServiceTestsBase
             .ReturnsAsync(null as Diagnosis);
 
         // Assert
-        await Assert.ThrowsAsync<KeyNotFoundException>(async () =>
+        var action = async () =>
         {
             // Act
             await service.DeleteAsync(idToPass);
-        });
+        };
+
+        await action.Should().ThrowAsync<KeyNotFoundException>();
     }
 }

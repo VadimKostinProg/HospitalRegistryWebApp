@@ -1,4 +1,5 @@
 using AutoFixture;
+using FluentAssertions;
 using HospitalRegistry.Application.DTO;
 using HospitalReqistry.Domain.Entities;
 using Moq;
@@ -14,11 +15,13 @@ public class CreateAsyncTests : DiagnosesServiceTestsBase
         DiagnosisAddRequest request = null;
         
         // Assert
-        await Assert.ThrowsAsync<ArgumentNullException>(async () =>
+        var action = async () =>
         {
             // Act
             var response = await service.CreateAsync(request);
-        });
+        };
+
+        await action.Should().ThrowAsync<ArgumentNullException>();
     }
     
     [Fact]
@@ -29,13 +32,15 @@ public class CreateAsyncTests : DiagnosesServiceTestsBase
         {
             Name = string.Empty
         };
-        
+
         // Assert
-        await Assert.ThrowsAsync<ArgumentException>(async () =>
+        var action = async () =>
         {
             // Act
             var response = await service.CreateAsync(request);
-        });
+        };
+
+        await action.Should().ThrowAsync<ArgumentException>();
     }
     
     [Fact]
@@ -49,7 +54,7 @@ public class CreateAsyncTests : DiagnosesServiceTestsBase
         var response = await service.CreateAsync(request);
         
         // Assert
-        Assert.NotNull(response);
-        Assert.Equal(request.Name, response.Name);
+        response.Should().NotBeNull();
+        response.Name.Should().Be(request.Name);
     }
 }

@@ -1,4 +1,5 @@
-﻿using HospitalRegistry.Application.Enums;
+﻿using FluentAssertions;
+using HospitalRegistry.Application.Enums;
 using HospitalReqistry.Domain.Entities;
 using Moq;
 
@@ -16,11 +17,13 @@ public class CancelAppointmentAsyncTests : AppointmentsServiceTestsBase
             .ReturnsAsync(null as Appointment);
 
         // Assert
-        await Assert.ThrowsAsync<KeyNotFoundException>(async () =>
+        var action = async () =>
         {
             // Act
             await service.CancelAppointmentAsync(idToPass);
-        });
+        };
+
+        await action.Should().ThrowAsync<KeyNotFoundException>();
     }
 
     [Fact]
@@ -37,11 +40,13 @@ public class CancelAppointmentAsyncTests : AppointmentsServiceTestsBase
             .ReturnsAsync(appointment);
 
         // Assert
-        await Assert.ThrowsAsync<ArgumentException>(async () =>
+        var action = async () =>
         {
             // Act
             await service.CancelAppointmentAsync(idToPass);
-        });
+        };
+
+        await action.Should().ThrowAsync<ArgumentException>();
     }
 
     [Fact]
@@ -58,11 +63,13 @@ public class CancelAppointmentAsyncTests : AppointmentsServiceTestsBase
             .ReturnsAsync(appointment);
 
         // Assert
-        await Assert.ThrowsAsync<ArgumentException>(async () =>
+        var action = async () =>
         {
             // Act
             await service.CancelAppointmentAsync(idToPass);
-        });
+        };
+
+        await action.Should().ThrowAsync<ArgumentException>();
     }
 
     [Fact]
@@ -78,10 +85,12 @@ public class CancelAppointmentAsyncTests : AppointmentsServiceTestsBase
             .ReturnsAsync(appointment);
 
         // Assert
-        Assert.Null(await Record.ExceptionAsync(async () =>
+        var action = async () =>
         {
             // Act
             await service.CancelAppointmentAsync(idToPass);
-        }));
+        };
+
+        await action.Should().NotThrowAsync();
     }
 }

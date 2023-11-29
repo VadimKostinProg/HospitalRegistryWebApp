@@ -1,4 +1,5 @@
 ﻿using AutoFixture;
+using FluentAssertions;
 using HospitalRegistry.Application.DTO;
 using HospitalRegistry.Application.Specifications;
 using HospitalReqistry.Domain.Entities;
@@ -23,8 +24,8 @@ public class GetDeletedDoctorsListAsyncTests : DoctorsServiceTestsBase
         var actual = await service.GetDoctorsListAsync(specifications);
 
         // Assert
-        Assert.NotNull(actual);
-        Assert.NotEmpty(actual);
-        Assert.Equal(testDoctors.Count(), actual.Count());
+        actual.Should().NotBeNull();
+        actual.Should().NotBeEmpty();
+        actual.Count().Should().Be(testDoctors.Count());
     }
 }

@@ -1,5 +1,5 @@
 ﻿using AutoFixture;
-using HospitalRegistry.Application.DTO;
+using FluentAssertions;
 using HospitalRegistry.Application.Enums;
 using HospitalReqistry.Domain.Entities;
 using Moq;
@@ -28,8 +28,8 @@ namespace HospitalRegistry.Tests.DoctorsServiceTests
             var actual = await service.GetBySpecialtyAsync(specialty);
 
             // Assert
-            Assert.NotNull(actual);
-            Assert.Equal(filteredDoctors.Count(), actual.Count());
+            actual.Should().NotBeNull();
+            actual.Count().Should().Be(filteredDoctors.Count());
         }
     }
 }

@@ -1,8 +1,8 @@
 using AutoFixture;
+using FluentAssertions;
 using HospitalRegistry.Application.DTO;
 using HospitalRegistry.Application.Specifications;
 using HospitalReqistry.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
 using Moq;
 
 namespace HospitalRegistry.Tests.DiagnosesServiceTests;
@@ -22,8 +22,8 @@ public class GetDiagnosesListAsyncTests : DiagnosesServiceTestsBase
         var actual = await service.GetDiagnosesListAsync(specifications);
 
         // Assert
-        Assert.NotNull(actual);
-        Assert.NotEmpty(actual);
-        Assert.Equal(diagnoses.Count(), actual.Count());
+        actual.Should().NotBeNull();
+        actual.Should().NotBeEmpty();
+        actual.Count().Should().Be(diagnoses.Count());
     }
 }

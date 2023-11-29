@@ -1,3 +1,4 @@
+using FluentAssertions;
 using HospitalReqistry.Domain.Entities;
 using Moq;
 
@@ -14,11 +15,13 @@ public class GetByIdAsyncTests : PatientsServiceTestsBase
             .ReturnsAsync(null as Patient);
         
         // Assert
-        await Assert.ThrowsAsync<KeyNotFoundException>(async () =>
+        var action = async () =>
         {
             // Act
             var response = await service.GetByIdAsync(idToPass);
-        });
+        };
+
+        await action.Should().ThrowAsync<KeyNotFoundException>();
     }
 
     [Fact]
@@ -34,12 +37,12 @@ public class GetByIdAsyncTests : PatientsServiceTestsBase
         var response = await service.GetByIdAsync(idToPass);
         
         // Assert
-        Assert.NotNull(response);
-        Assert.Equal(idToPass, response.Id);
-        Assert.Equal(patient.Name, response.Name);
-        Assert.Equal(patient.Surname, response.Surname);
-        Assert.Equal(patient.Patronymic, response.Patronymic);
-        Assert.Equal(patient.Name, response.Name);
-        Assert.Equal(patient.Name, response.Name);
+        response.Should().NotBeNull();
+        response.Id.Should().Be(idToPass);
+        response.Name.Should().Be(patient.Name);
+        response.Surname.Should().Be(patient.Surname);
+        response.Patronymic.Should().Be(patient.Patronymic);
+        response.Email.Should().Be(patient.Email);
+        response.PhoneNumber.Should().Be(patient.PhoneNumber);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using AutoFixture;
+using FluentAssertions;
 using HospitalRegistry.Application.DTO;
 using HospitalRegistry.Application.Specifications;
 using HospitalReqistry.Domain.Entities;
@@ -20,8 +21,8 @@ public class GetDeletedDiagnosesListAsyncTests : DiagnosesServiceTestsBase
         var actual = await service.GetDeletedDiagnosesListAsync(specifications);
 
         // Assert
-        Assert.NotNull(actual);
-        Assert.NotEmpty(actual);
-        Assert.Equal(diagnoses.Count(), actual.Count());
+        actual.Should().NotBeNull();
+        actual.Should().NotBeEmpty();
+        actual.Count().Should().Be(diagnoses.Count());
     }
 }

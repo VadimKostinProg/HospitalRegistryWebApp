@@ -1,4 +1,5 @@
 using AutoFixture;
+using FluentAssertions;
 using HospitalRegistry.Application.DTO;
 using HospitalRegistry.Application.Enums;
 using HospitalReqistry.Domain.Entities;
@@ -25,11 +26,13 @@ public class CompleteAppointmentAsyncTests : AppointmentsServiceTestsBase
         AppointmentCompleteRequest request = null;
 
         // Assert
-        await Assert.ThrowsAsync<ArgumentNullException>(async () =>
+        var action = async () =>
         {
             // Act
             await service.CompleteAppointmentAsync(request);
-        });
+        };
+
+        await action.Should().ThrowAsync<ArgumentNullException>();
     }
 
     [Fact]
@@ -42,11 +45,13 @@ public class CompleteAppointmentAsyncTests : AppointmentsServiceTestsBase
             .ReturnsAsync(null as Appointment);
 
         // Assert
-        await Assert.ThrowsAsync<KeyNotFoundException>(async () =>
+        var action = async () =>
         {
             // Act
             await service.CompleteAppointmentAsync(request);
-        });
+        };
+
+        await action.Should().ThrowAsync<KeyNotFoundException>();
     }
 
     [Fact]
@@ -65,11 +70,13 @@ public class CompleteAppointmentAsyncTests : AppointmentsServiceTestsBase
             .ReturnsAsync(appointment);
 
         // Assert
-        await Assert.ThrowsAsync<ArgumentException>(async () =>
+        var action = async () =>
         {
             // Act
             await service.CompleteAppointmentAsync(request);
-        });
+        };
+
+        await action.Should().ThrowAsync<ArgumentException>();
     }
 
     [Fact]
@@ -88,11 +95,13 @@ public class CompleteAppointmentAsyncTests : AppointmentsServiceTestsBase
             .ReturnsAsync(appointment);
 
         // Assert
-        await Assert.ThrowsAsync<ArgumentException>(async () =>
+        var action = async () =>
         {
             // Act
             await service.CompleteAppointmentAsync(request);
-        });
+        };
+
+        await action.Should().ThrowAsync<ArgumentException>();
     }
 
     [Fact]
@@ -112,11 +121,13 @@ public class CompleteAppointmentAsyncTests : AppointmentsServiceTestsBase
             .ReturnsAsync(null as Diagnosis);
 
         // Assert
-        await Assert.ThrowsAsync<KeyNotFoundException>(async () =>
+        var action = async () =>
         {
             // Act
             await service.CompleteAppointmentAsync(request);
-        });
+        };
+
+        await action.Should().ThrowAsync<KeyNotFoundException>();
     }
 
     [Fact]
@@ -126,11 +137,14 @@ public class CompleteAppointmentAsyncTests : AppointmentsServiceTestsBase
         var doctor = GetTestDoctor();
         var patient = GetTestPatient();
         var appointment = GetTestScheduledAppointments(doctor, patient, DateOnly.FromDateTime(DateTime.UtcNow.AddDays(2)), new TimeOnly(12, 0)).First();
-        var request = fixture.Build<AppointmentCompleteRequest>()
-            .With(x => x.Id, appointment.Id)
-            .Create();
+
         var diagnosis = GetTestDiagnosis();
         diagnosis.IsDeleted = true;
+
+        var request = fixture.Build<AppointmentCompleteRequest>()
+            .With(x => x.Id, appointment.Id)
+            .With(x => x.DiagnosisId, diagnosis.Id)
+            .Create();
 
         repositoryMock.Setup(x => x.GetByIdAsync<Appointment>(appointment.Id, true))
             .ReturnsAsync(appointment);
@@ -138,11 +152,13 @@ public class CompleteAppointmentAsyncTests : AppointmentsServiceTestsBase
             .ReturnsAsync(diagnosis);
 
         // Assert
-        await Assert.ThrowsAsync<KeyNotFoundException>(async () =>
+        var action = async () =>
         {
             // Act
             await service.CompleteAppointmentAsync(request);
-        });
+        };
+
+        await action.Should().ThrowAsync<ArgumentException>();
     }
 
     [Fact]
@@ -152,11 +168,14 @@ public class CompleteAppointmentAsyncTests : AppointmentsServiceTestsBase
         var doctor = GetTestDoctor();
         var patient = GetTestPatient();
         var appointment = GetTestScheduledAppointments(doctor, patient, DateOnly.FromDateTime(DateTime.UtcNow.AddDays(2)), new TimeOnly(12, 0)).First();
+
+        var diagnosis = GetTestDiagnosis();
+
         var request = fixture.Build<AppointmentCompleteRequest>()
             .With(x => x.Id, appointment.Id)
+            .With(x => x.DiagnosisId, diagnosis.Id)
             .With(x => x.Conclusion, string.Empty)
             .Create();
-        var diagnosis = GetTestDiagnosis();
 
         repositoryMock.Setup(x => x.GetByIdAsync<Appointment>(appointment.Id, true))
             .ReturnsAsync(appointment);
@@ -164,11 +183,13 @@ public class CompleteAppointmentAsyncTests : AppointmentsServiceTestsBase
             .ReturnsAsync(diagnosis);
 
         // Assert
-        await Assert.ThrowsAsync<KeyNotFoundException>(async () =>
+        var action = async () =>
         {
             // Act
             await service.CompleteAppointmentAsync(request);
-        });
+        };
+
+        await action.Should().ThrowAsync<ArgumentNullException>();
     }
 
     [Fact]
@@ -204,10 +225,14 @@ public class CompleteAppointmentAsyncTests : AppointmentsServiceTestsBase
             .ReturnsAsync(diagnosis);
 
         // Assert
-        await Assert.ThrowsAsync<ArgumentException>(async () =>
+        // Assert
+        var action = async () =>
         {
+            // Act
             await service.CompleteAppointmentAsync(request);
-        });
+        };
+
+        await action.Should().ThrowAsync<ArgumentException>();
     }
 
     [Fact]
@@ -243,10 +268,13 @@ public class CompleteAppointmentAsyncTests : AppointmentsServiceTestsBase
             .ReturnsAsync(diagnosis);
 
         // Assert
-        Assert.Null(await Record.ExceptionAsync(async () =>
+        // Assert
+        var action = async () =>
         {
             // Act
             await service.CompleteAppointmentAsync(request);
-        }));
+        };
+
+        await action.Should().NotThrowAsync();
     }
 }

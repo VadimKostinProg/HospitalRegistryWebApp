@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+using FluentAssertions;
 using HospitalRegistry.Application.DTO;
 using HospitalRegistry.Application.Enums;
 using HospitalReqistry.Domain.Entities;
@@ -16,11 +17,13 @@ public class SearchFreeSlotsAsyncTests : AppointmentsServiceTestsBase
         FreeSlotsSearchSpecifications specifications = null;
         
         // Assert
-        await Assert.ThrowsAsync<ArgumentNullException>(async () =>
+        var action = async () =>
         {
             // Act
             var response = await service.SearchFreeSlotsAsync(specifications);
-        });
+        };
+
+        await action.Should().ThrowAsync<ArgumentNullException>();
     }
 
     [Fact]
@@ -34,13 +37,15 @@ public class SearchFreeSlotsAsyncTests : AppointmentsServiceTestsBase
             AppointmentType = AppointmentType.Consultation,
             Specialty = Specialty.Allergist
         };
-        
+
         // Assert
-        await Assert.ThrowsAsync<ArgumentException>(async () =>
+        var action = async () =>
         {
             // Act
             var response = await service.SearchFreeSlotsAsync(specifications);
-        });
+        };
+
+        await action.Should().ThrowAsync<ArgumentException>();
     }
 
     [Fact]
@@ -54,13 +59,15 @@ public class SearchFreeSlotsAsyncTests : AppointmentsServiceTestsBase
             AppointmentType = AppointmentType.Consultation,
             Specialty = Specialty.Allergist
         };
-        
+
         // Assert
-        await Assert.ThrowsAsync<ArgumentException>(async () =>
+        var action = async () =>
         {
             // Act
             var response = await service.SearchFreeSlotsAsync(specifications);
-        });
+        };
+
+        await action.Should().ThrowAsync<ArgumentException>();
     }
     
     [Fact]
@@ -73,13 +80,15 @@ public class SearchFreeSlotsAsyncTests : AppointmentsServiceTestsBase
             EndDate = DateOnly.FromDateTime(DateTime.Now.AddDays(2)),
             AppointmentType = AppointmentType.Consultation
         };
-        
+
         // Assert
-        await Assert.ThrowsAsync<ArgumentNullException>(async () =>
+        var action = async () =>
         {
             // Act
             var response = await service.SearchFreeSlotsAsync(specifications);
-        });
+        };
+
+        await action.Should().ThrowAsync<ArgumentNullException>();
     }
 
     [Fact]
@@ -107,10 +116,10 @@ public class SearchFreeSlotsAsyncTests : AppointmentsServiceTestsBase
         var response = await service.SearchFreeSlotsAsync(specifications);
         
         // Assert
-        Assert.NotNull(response);
-        Assert.True(response.All(x => x.Specialty == specifications.Specialty));
-        Assert.True(response.Min(x => x.Date) >= specifications.StartDate);
-        Assert.True(response.Max(x => x.Date) <= specifications.EndDate);
+        response.Should().NotBeNull();
+        response.Should().OnlyContain(x => x.Specialty == specifications.Specialty);
+        response.Min(x => x.Date).Should().BeOnOrAfter(specifications.StartDate);
+        response.Min(x => x.Date).Should().BeOnOrBefore(specifications.EndDate);
     }
     
     [Fact]
@@ -138,10 +147,10 @@ public class SearchFreeSlotsAsyncTests : AppointmentsServiceTestsBase
         var response = await service.SearchFreeSlotsAsync(specifications);
         
         // Assert
-        Assert.NotNull(response);
-        Assert.True(response.All(x => x.DoctorId == specifications.DoctorId));
-        Assert.True(response.Min(x => x.Date) >= specifications.StartDate);
-        Assert.True(response.Max(x => x.Date) <= specifications.EndDate);
+        response.Should().NotBeNull();
+        response.Should().OnlyContain(x => x.DoctorId == specifications.DoctorId);
+        response.Min(x => x.Date).Should().BeOnOrAfter(specifications.StartDate);
+        response.Min(x => x.Date).Should().BeOnOrBefore(specifications.EndDate);
     }
     
     [Fact]
@@ -167,11 +176,11 @@ public class SearchFreeSlotsAsyncTests : AppointmentsServiceTestsBase
         
         // Act
         var response = await service.SearchFreeSlotsAsync(specifications);
-        
+
         // Assert
-        Assert.NotNull(response);
-        Assert.True(response.All(x => x.DoctorId == specifications.DoctorId));
-        Assert.True(response.Min(x => x.Date) >= specifications.StartDate);
-        Assert.True(response.Max(x => x.Date) <= specifications.EndDate);
+        response.Should().NotBeNull();
+        response.Should().OnlyContain(x => x.DoctorId == specifications.DoctorId);
+        response.Min(x => x.Date).Should().BeOnOrAfter(specifications.StartDate);
+        response.Min(x => x.Date).Should().BeOnOrBefore(specifications.EndDate);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using AutoFixture;
+using FluentAssertions;
 using HospitalReqistry.Domain.Entities;
 using Moq;
 
@@ -15,11 +16,13 @@ public class GetAppointmentsHistoryOfPatientAsyncTests : AppointmentsServiceTest
             .ReturnsAsync(null as Patient);
 
         // Assert
-        await Assert.ThrowsAsync<KeyNotFoundException>(async () =>
+        var action = async () =>
         {
             // Act
             var history = await service.GetAppointmentsHistoryOfPatientAsync(idToPass);
-        });
+        };
+
+        await action.Should().ThrowAsync<KeyNotFoundException>();
     }
 
     [Fact]
@@ -44,7 +47,8 @@ public class GetAppointmentsHistoryOfPatientAsyncTests : AppointmentsServiceTest
         var history = await service.GetAppointmentsHistoryOfPatientAsync(patient.Id);
 
         // Assert
-        Assert.NotNull(history);
-        Assert.True(history.All(x => x.Patient.Id == patient.Id));
+        history.Should().NotBeNull();
+        history.Should().NotBeEmpty();
+        history.Should().OnlyContain(x => x.Patient.Id == patient.Id);
     }
 }

@@ -1,4 +1,6 @@
 ﻿using AutoFixture;
+using Azure.Core;
+using FluentAssertions;
 using HospitalReqistry.Domain.Entities;
 using Moq;
 
@@ -6,8 +8,6 @@ namespace HospitalRegistry.Tests.DoctorsServiceTests
 {
     public class GetByIdAsyncTests : DoctorsServiceTestsBase
     {
-        public GetByIdAsyncTests() : base() { }
-
         [Fact]
         public async Task GetByIdAsync_InvalidId_ThrowsKeyNotFoundException()
         {
@@ -16,11 +16,13 @@ namespace HospitalRegistry.Tests.DoctorsServiceTests
             repositoryMock.Setup(x => x.GetByIdAsync<Doctor>(idToPass, true)).ReturnsAsync(null as Doctor);
 
             // Assert
-            await Assert.ThrowsAsync<KeyNotFoundException>(async () =>
+            var action = async () =>
             {
                 // Act
-                var response = await service.GetByIdAsync(idToPass);
-            });
+                await service.GetByIdAsync(idToPass);
+            };
+
+            await action.Should().ThrowAsync<KeyNotFoundException>();
         }
 
         [Fact]
@@ -35,13 +37,14 @@ namespace HospitalRegistry.Tests.DoctorsServiceTests
             var response = await service.GetByIdAsync(idToPass);
 
             // Assert
-            Assert.NotNull(response);
-            Assert.Equal(doctor.Id, response.Id);
-            Assert.Equal(doctor.Surname, response.Surname);
-            Assert.Equal(doctor.Patronymic, response.Patronymic);
-            Assert.Equal(doctor.DateOfBirth, response.DateOfBirth);
-            Assert.Equal(doctor.Email, response.Email);
-            Assert.Equal(doctor.PhoneNumber, response.PhoneNumber);
+            response.Should().NotBeNull();
+            response.Name.Should().Be(doctor.Name);
+            response.Surname.Should().Be(doctor.Surname);
+            response.Patronymic.Should().Be(doctor.Patronymic);
+            response.DateOfBirth.Should().Be(doctor.DateOfBirth);
+            response.Specialty.ToString().Should().Be(doctor.Specialty);
+            response.Email.Should().Be(doctor.Email);
+            response.PhoneNumber.Should().Be(doctor.PhoneNumber);
         }
     }
 }
