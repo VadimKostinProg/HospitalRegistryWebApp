@@ -196,6 +196,18 @@ namespace HospitalRegistry.Application.Services
                 UserName = register.Email
             };
 
+            switch (register.Role)
+            {
+                case UserRoles.Doctor:
+                    user.DoctorId = register.UserKey;
+                    break;
+                case UserRoles.Patient:
+                    user.PatientId = register.UserKey;
+                    break;
+                default:
+                    throw new ArgumentException("Incorrect role.");
+            }
+
             var result = await _userManager.CreateAsync(user, register.Password);
 
             if (result.Succeeded)

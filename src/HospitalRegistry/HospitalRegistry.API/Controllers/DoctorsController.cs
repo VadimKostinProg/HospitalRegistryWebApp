@@ -1,5 +1,6 @@
 ﻿using HospitalRegistry.Application.Constants;
 using HospitalRegistry.Application.DTO;
+using HospitalRegistry.Application.Helpers;
 using HospitalRegistry.Application.ServiceContracts;
 using HospitalRegistry.Application.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -94,7 +95,7 @@ namespace HospitalRegistry.API.Controllers
             return Ok($"Schedule for doctor \"{schedule.DoctorId}\" has been successfully set.");
         }
 
-        [HttpGet("{id}/appointmnets/history")]
+        [HttpGet("{id}/appointments/history")]
         [Authorize(Roles = $"{UserRoles.Doctor}, {UserRoles.Admin}, {UserRoles.Receptionist}")]
         public async Task<ActionResult<IEnumerable<AppointmentResponse>>> GetDoctorsAppointmentsHistory(
             [FromRoute] Guid id)
@@ -105,7 +106,7 @@ namespace HospitalRegistry.API.Controllers
         [HttpGet("{id}/appointments/scheduled")]
         [Authorize(Roles = $"{UserRoles.Doctor}, {UserRoles.Admin}, {UserRoles.Receptionist}")]
         public async Task<ActionResult<IEnumerable<AppointmentResponse>>> GetDoctorsScheduledAppointments(
-            [FromRoute] Guid id, [FromQuery] DateOnly date)
+            [FromRoute] Guid id, [FromQuery] DateOnly? date)
         {
             return Ok(await _appointmentsService.GetScheduledAppoitnmentsOfDoctorAsync(id, date));
         }

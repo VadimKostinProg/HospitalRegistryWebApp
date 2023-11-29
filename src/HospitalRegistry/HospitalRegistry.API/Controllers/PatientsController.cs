@@ -87,7 +87,7 @@ namespace HospitalRegistry.API.Controllers
         [HttpGet("{id}/appointments/scheduled")]
         [Authorize(Roles = $"{UserRoles.Patient}, {UserRoles.Admin}, {UserRoles.Receptionist}")]
         public async Task<ActionResult<IEnumerable<AppointmentResponse>>> GetPatientsScheduledAppointments(
-            [FromRoute] Guid id, [FromQuery] DateOnly date)
+            [FromRoute] Guid id, [FromQuery] DateOnly? date)
         {
             return Ok(await _appointmentsService.GetScheduledAppoitnmentsOfPatientAsync(id, date));
         }

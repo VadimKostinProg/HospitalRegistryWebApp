@@ -92,7 +92,7 @@ public class AppointmentsService : IAppointmentsService
 
     public async Task<AppointmentResponse> GetAppointmentById(Guid id)
     {
-        var appointment = await _repository.GetByIdAsync<Appointment>(id);
+        var appointment = await _repository.GetByIdAsync<Appointment>(id, disableTracking: false);
 
         if (appointment is null)
         {
@@ -167,7 +167,7 @@ public class AppointmentsService : IAppointmentsService
     {
         // Convert DateOnly to DateTime format
         var startDateTime = new DateTime(startDate.Year, startDate.Month, startDate.Day);
-        var endDateTime = new DateTime(endDate.Year, endDate.Month, endDate.Day);
+        var endDateTime = new DateTime(endDate.Year, endDate.Month, endDate.Day).AddDays(1);
 
         // Get all appointments for passed dates
         var appointments =
@@ -224,7 +224,7 @@ public class AppointmentsService : IAppointmentsService
 
     public async Task<IEnumerable<AppointmentResponse>> GetAppointmentsHistoryOfPatientAsync(Guid patientId)
     {
-        var patient = await _repository.GetByIdAsync<Patient>(patientId);
+        var patient = await _repository.GetByIdAsync<Patient>(patientId, disableTracking: false);
 
         if (patient is null)
             throw new KeyNotFoundException("Patient with such Id does not exist.");
@@ -248,7 +248,7 @@ public class AppointmentsService : IAppointmentsService
 
     public async Task<IEnumerable<AppointmentResponse>> GetAppointmentsHistoryOfDoctorAsync(Guid doctorId)
     {
-        var doctor = await _repository.GetByIdAsync<Doctor>(doctorId);
+        var doctor = await _repository.GetByIdAsync<Doctor>(doctorId, disableTracking: false);
 
         if (doctor is null)
             throw new KeyNotFoundException("Doctor with such id does not exits.");
@@ -270,7 +270,7 @@ public class AppointmentsService : IAppointmentsService
             .ToList();
     }
 
-    public async Task<IEnumerable<AppointmentResponse>> GetScheduledAppoitnmentsOfPatientAsync(Guid patientId, DateOnly date)
+    public async Task<IEnumerable<AppointmentResponse>> GetScheduledAppoitnmentsOfPatientAsync(Guid patientId, DateOnly? date)
     {
         var patient = await _repository.GetByIdAsync<Patient>(patientId);
 
@@ -280,10 +280,12 @@ public class AppointmentsService : IAppointmentsService
         if (patient.IsDeleted)
             throw new ArgumentException("Patient is deleted.");
 
-        if (date < DateOnly.FromDateTime(DateTime.UtcNow))
+        if (date is null)
+            date = DateOnly.FromDateTime(DateTime.UtcNow);
+        else if (date < DateOnly.FromDateTime(DateTime.UtcNow))
             throw new ArgumentException("Scheduled appointments can be accessed only for present and future days.");
 
-        var dateAndTime = date.ToDateTime(new TimeOnly(0, 0));
+        var dateAndTime = date.Value.ToDateTime(new TimeOnly(0, 0));
 
         var appointments =
             await _repository.GetFilteredAsync<Appointment>(x =>
@@ -304,7 +306,7 @@ public class AppointmentsService : IAppointmentsService
             .ToList();
     }
 
-    public async Task<IEnumerable<AppointmentResponse>> GetScheduledAppoitnmentsOfDoctorAsync(Guid doctorId, DateOnly date)
+    public async Task<IEnumerable<AppointmentResponse>> GetScheduledAppoitnmentsOfDoctorAsync(Guid doctorId, DateOnly? date)
     {
         var doctor = await _repository.GetByIdAsync<Doctor>(doctorId);
 
@@ -314,10 +316,12 @@ public class AppointmentsService : IAppointmentsService
         if (doctor.IsDeleted)
             throw new ArgumentException("Doctor is deleted.");
 
-        if (date < DateOnly.FromDateTime(DateTime.UtcNow))
+        if (date is null)
+            date = DateOnly.FromDateTime(DateTime.UtcNow);
+        else if (date < DateOnly.FromDateTime(DateTime.UtcNow))
             throw new ArgumentException("Scheduled appointments can be accessed only for present and future days.");
 
-        var dateAndTime = date.ToDateTime(new TimeOnly(0, 0));
+        var dateAndTime = date.Value.ToDateTime(new TimeOnly(0, 0));
 
         var appointments =
             await _repository.GetFilteredAsync<Appointment>(x =>
@@ -368,13 +372,22 @@ public class AppointmentsService : IAppointmentsService
                                                               x.Status == AppointmentStatus.Scheduled.ToString()))
             throw new ArgumentException("Another appointmnet has been already set on this time.");
 
+        // Validting schedule slot
+        var scheduleSlot = await _repository.FirstOrDefaultAsync<Schedule>(x => x.DoctorId == request.DoctorId &&
+            x.TimeSlot.StartTime == request.DateAndTime.ToShortTimeString());
+
+        if (scheduleSlot is null)
+            throw new ArgumentException("There are not time slots in the doctors schedule for the passed time.");
+
         // Adding new appointment
         var appointment = new Appointment()
         {
             DateAndTime = request.DateAndTime,
             DoctorId = request.DoctorId,
             PatientId = request.PatientId,
-            ExtraClinicalData = request.ExtraClinicalData
+            ExtraClinicalData = request.ExtraClinicalData,
+            AppointmentType = scheduleSlot.AppointmentType,
+            Status = AppointmentStatus.Scheduled.ToString()
         };
         await _repository.AddAsync(appointment);
     }
