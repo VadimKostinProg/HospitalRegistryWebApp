@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 
 namespace HospitalRegistry.Application.Specifications
 {
-    internal class Specification<T> : SpecificationBase<T>
+    public class Specification<T> : SpecificationBase<T>
     {
         public Specification(Expression<Func<T, bool>> predicate = null,
                              Expression<Func<T, object>> orderBy = null,

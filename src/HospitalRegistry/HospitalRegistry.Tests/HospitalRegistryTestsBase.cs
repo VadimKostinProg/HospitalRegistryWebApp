@@ -18,13 +18,13 @@ public abstract class HospitalRegistryTestsBase
         fixture = new Fixture();
     }
 
-    public IEnumerable<Doctor> GetTestDoctors(int count = 10)
+    public IEnumerable<Doctor> GetTestDoctors(int count = 10, bool isDeleted = false)
     {
         for (int i = 0; i < count; i++)
-            yield return GetTestDoctor();
+            yield return GetTestDoctor(isDeleted);
     }
 
-    public Doctor GetTestDoctor()
+    public Doctor GetTestDoctor(bool isDeleted = false)
     {
         return new Doctor
         {
@@ -36,18 +36,19 @@ public abstract class HospitalRegistryTestsBase
             Specialty = Specialty.Allergist.ToString(),
             Email = fixture.Create<string>(),
             PhoneNumber = fixture.Create<string>(),
+            IsDeleted = isDeleted
         };
     }
 
-    public IEnumerable<Patient> GetTestPatients(int count = 10)
+    public IEnumerable<Patient> GetTestPatients(int count = 10, bool isDeleted = false)
     {
         for (int i = 0; i < count; i++)
         {
-            yield return GetTestPatient();
+            yield return GetTestPatient(isDeleted);
         }
     }
 
-    public Patient GetTestPatient()
+    public Patient GetTestPatient(bool isDeleted = false)
     {
         return new Patient()
         {
@@ -128,18 +129,19 @@ public abstract class HospitalRegistryTestsBase
         };
     }
 
-    public IEnumerable<Diagnosis> GetTestDiagnoses(int count = 10)
+    public IEnumerable<Diagnosis> GetTestDiagnoses(int count = 10, bool isDeleted = false)
     {
         for (int i = 0; i < count; i++)
-            yield return GetTestDiagnosis();
+            yield return GetTestDiagnosis(isDeleted);
     }
 
-    public Diagnosis GetTestDiagnosis()
+    public Diagnosis GetTestDiagnosis(bool isDeleted = false)
     {
         return new Diagnosis()
         {
             Id = Guid.NewGuid(),
-            Name = fixture.Create<string>()
+            Name = fixture.Create<string>(),
+            IsDeleted = isDeleted
         };
     }
 

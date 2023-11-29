@@ -36,11 +36,13 @@ namespace HospitalRegistry.Application.Initializers
             {
                 var sysAdminEmail = _configaration["SysAdminCredentials:Email"]!;
                 var password = _configaration["SysAdminCredentials:Password"]!;
+                var fullName = _configaration["SysAdminCredentials:FullName"]!;
 
                 var user = new ApplicationUser
                 {
+                    FullName = fullName,
                     UserName = sysAdminEmail,
-                    Email = sysAdminEmail,
+                    Email = sysAdminEmail
                 };
 
                 var result = _userManager.CreateAsync(user, password).GetAwaiter().GetResult();

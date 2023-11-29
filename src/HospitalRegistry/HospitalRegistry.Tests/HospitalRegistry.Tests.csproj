@@ -10,6 +10,8 @@
 
   <ItemGroup>
     <PackageReference Include="AutoFixture" Version="4.18.0" />
+    <PackageReference Include="FluentAssertions" Version="6.12.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.14" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
     <PackageReference Include="Moq" Version="4.20.69" />
     <PackageReference Include="xunit" Version="2.4.2" />
@@ -25,6 +27,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\HospitalRegistry.Application\HospitalRegistry.Application.csproj" />
+    <ProjectReference Include="..\HospitalRegistry.Infrastructure\HospitalRegistry.Infrastructure.csproj" />
     <ProjectReference Include="..\HospitalReqistry.Domain\HospitalReqistry.Domain.csproj" />
   </ItemGroup>
 

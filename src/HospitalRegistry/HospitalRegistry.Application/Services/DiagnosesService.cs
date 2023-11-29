@@ -25,9 +25,12 @@ namespace HospitalRegistry.Application.Services
             return diagnoses;
         }
 
-        private ISpecification<Diagnosis> GetSpecification(DiagnosisSpecificationsDTO specifications)
+        private ISpecification<Diagnosis> GetSpecification(DiagnosisSpecificationsDTO specifications, bool isDeleted = false)
         {
             var builder = new SpecificationBuilder<Diagnosis>();
+
+            if (isDeleted) builder.With(x => x.IsDeleted == true);
+            else builder.With(x => x.IsDeleted == false);
 
             if (specifications is not null)
             {
@@ -133,6 +136,16 @@ namespace HospitalRegistry.Application.Services
             diagnosis.IsDeleted = false;
 
             await _repository.UpdateAsync<Diagnosis>(diagnosis);
+        }
+
+        public async Task<IEnumerable<DiagnosisResponse>> GetDeletedDiagnosesListAsync(DiagnosisSpecificationsDTO specificationsDTO)
+        {
+            var diagnoses = 
+                (await _repository.GetAsync<Diagnosis>(this.GetSpecification(specificationsDTO, isDeleted: true)))
+                .Select(x => x.ToDiagnosisResponse())
+                .ToList();
+
+            return diagnoses;
         }
     }
 }

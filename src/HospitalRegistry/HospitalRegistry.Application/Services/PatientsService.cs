@@ -24,9 +24,11 @@ public class PatientsService : IPatientsService
         return patients;
     }
 
-    private ISpecification<Patient> GetSpecification(PatientSpecificationsDTO specificationsDTO)
+    private ISpecification<Patient> GetSpecification(PatientSpecificationsDTO specificationsDTO, bool isDeleted = false)
     {
         var builder = new SpecificationBuilder<Patient>();
+
+        builder.With(x => x.IsDeleted == isDeleted);
 
         if (specificationsDTO is not null)
         {
@@ -137,7 +139,7 @@ public class PatientsService : IPatientsService
         if (patient is null)
             throw new KeyNotFoundException("Patient with such id does not exist.");
 
-        if (!patient.IsDeleted)
+        if (patient.IsDeleted)
             throw new ArgumentException("Patient is already deleted.");
 
         patient.IsDeleted = true;
@@ -151,10 +153,20 @@ public class PatientsService : IPatientsService
         if (patient is null)
             throw new KeyNotFoundException("Patient with such id does not exist.");
 
-        if (patient.IsDeleted)
+        if (!patient.IsDeleted)
             throw new ArgumentException("Patient has been not deleted for recovering.");
 
         patient.IsDeleted = false;
         await _repository.UpdateAsync(patient);
+    }
+
+    public async Task<IEnumerable<PatientResponse>> GetDeletedPatientsListAsync(PatientSpecificationsDTO specificationsDTO)
+    {
+        var patients = 
+            (await _repository.GetAsync<Patient>(this.GetSpecification(specificationsDTO, isDeleted: true)))
+            .Select(x => x.ToPatientResponse())
+            .ToList();
+
+        return patients;
     }
 }

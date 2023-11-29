@@ -56,6 +56,14 @@ namespace HospitalRegistry.API.Controllers
             return Ok($"Diagnosis \"{id}\" has been successfully deleted.");
         }
 
+        [HttpGet("deleted")]
+        [Authorize(Roles = UserRoles.Admin)]
+        public async Task<ActionResult<IEnumerable<DiagnosisResponse>>> GetDeletedDiagnosis(
+            [FromQuery] DiagnosisSpecificationsDTO specifications)
+        {
+            return Ok(await _diagnosesService.GetDeletedDiagnosesListAsync(specifications));
+        }
+
         [HttpPost("{id}/recover")]
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<ActionResult<string>> RecoverDiagnosis([FromRoute] Guid id)

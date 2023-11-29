@@ -3,6 +3,8 @@
     /// <summary>
     /// Tools for recovering functional.
     /// </summary>
+    /// <typeparam name="TResponse">DTO for response.</typeparam>
+    /// <typeparam name="TSpecifications">DTO for specifications.</typeparam>
     public interface IRecoverable
     {
         /// <summary>

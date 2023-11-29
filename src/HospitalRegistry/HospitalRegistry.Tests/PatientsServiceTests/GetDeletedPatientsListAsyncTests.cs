@@ -1,4 +1,4 @@
-using AutoFixture;
+﻿using AutoFixture;
 using HospitalRegistry.Application.DTO;
 using HospitalRegistry.Application.Specifications;
 using HospitalReqistry.Domain.Entities;
@@ -6,13 +6,13 @@ using Moq;
 
 namespace HospitalRegistry.Tests.PatientsServiceTests;
 
-public class GetPatientsListAsyncTests : PatientsServiceTestsBase
+public class GetDeletedPatientsListAsyncTests : PatientsServiceTestsBase
 {
     [Fact]
-    public async Task GetPatientsListAsync_ReturnAllPatients()
+    public async Task GetDeletedPatientsListAsync_ReturnAllPatients()
     {
         // Arrange
-        var patients = GetTestPatients().ToList();
+        var patients = GetTestPatients(isDeleted: true).ToList();
         repositoryMock.Setup(x => x.GetAsync<Patient>(It.IsAny<ISpecification<Patient>>(), true))
                 .ReturnsAsync(patients);
         var specifications = fixture.Build<PatientSpecificationsDTO>()
@@ -21,7 +21,7 @@ public class GetPatientsListAsyncTests : PatientsServiceTestsBase
 
         // Act
         var response = await service.GetPatientsListAsync(specifications);
-        
+
         // Assert
         Assert.NotNull(response);
         Assert.Equal(patients.Count(), response.Count());

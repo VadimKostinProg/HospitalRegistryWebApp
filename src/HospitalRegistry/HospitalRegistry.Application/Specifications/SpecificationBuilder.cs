@@ -1,5 +1,4 @@
 ﻿using HospitalRegistry.Application.Enums;
-using HospitalReqistry.Domain.Entities;
 using System.Linq.Expressions;
 
 namespace HospitalRegistry.Application.Specifications
@@ -52,11 +51,24 @@ namespace HospitalRegistry.Application.Specifications
             if (!this._filters.Any())
                 return null;
 
-            Expression combinedExpression = this._filters
-                .Select(e => (Expression)Expression.Invoke(e, e.Parameters.Cast<Expression>()))
-                .Aggregate((acc, expr) => Expression.AndAlso(acc, expr));
+            Expression<Func<T, bool>> combinedExpression = this._filters.First();
 
-            return Expression.Lambda<Func<T, bool>>(combinedExpression, this._filters[0].Parameters);
+            if (this._filters.Count > 1)
+                for (int i = 0; i < this._filters.Count - 1; i++)
+                    combinedExpression = this.Combine(_filters[i], _filters[i + 1]);
+
+            return combinedExpression;
+        }
+
+        private Expression<Func<T, bool>> Combine(Expression<Func<T, bool>> left, Expression<Func<T, bool>> right)
+        {
+            var param = Expression.Parameter(typeof(T), "x");
+            var body = Expression.AndAlso(
+                    Expression.Invoke(left, param),
+                    Expression.Invoke(right, param)
+                );
+            var lambda = Expression.Lambda<Func<T, bool>>(body, param);
+            return lambda;
         }
     }
 }

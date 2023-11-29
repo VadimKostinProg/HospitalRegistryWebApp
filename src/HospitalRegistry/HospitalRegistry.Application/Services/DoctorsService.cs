@@ -25,9 +25,11 @@ namespace HospitalRegistry.Application.Services
             return doctors;
         }
 
-        private ISpecification<Doctor> GetSpecification(DoctorSpecificationsDTO specificationsDTO)
+        private ISpecification<Doctor> GetSpecification(DoctorSpecificationsDTO specificationsDTO, bool isDeleted = false)
         {
             var builder = new SpecificationBuilder<Doctor>();
+
+            builder.With(x => x.IsDeleted == isDeleted);
             
             if (specificationsDTO is not null)
             {
@@ -106,12 +108,16 @@ namespace HospitalRegistry.Application.Services
             if (doctor is null)
                 throw new KeyNotFoundException("Doctor with such id does not exists.");
 
-            if (!doctor.IsDeleted)
+            if (doctor.IsDeleted)
                 throw new ArgumentException("Doctor is already deleted.");
 
             // Deleting doctors schedule
             var scheduleSlots = doctor.Schedules;
-            await _repository.DeleteRangeAsync(scheduleSlots);
+
+            if (scheduleSlots is not null)
+            {
+                await _repository.DeleteRangeAsync(scheduleSlots);
+            }
 
             // Firing the doctor
             doctor.IsDeleted = true;
@@ -175,6 +181,16 @@ namespace HospitalRegistry.Application.Services
             await _repository.UpdateAsync(doctor);
 
             return doctor.ToDoctorResponse();
+        }
+
+        public async Task<IEnumerable<DoctorResponse>> GetDeletedDoctorsListAsync(DoctorSpecificationsDTO specificationsDTO)
+        {
+            var doctors = 
+                (await _repository.GetAsync<Doctor>(this.GetSpecification(specificationsDTO, isDeleted: true)))
+                .Select(x => x.ToDoctorResponse())
+                .ToList();
+
+            return doctors;
         }
     }
 }

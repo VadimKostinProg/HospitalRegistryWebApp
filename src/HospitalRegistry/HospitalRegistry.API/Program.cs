@@ -4,7 +4,6 @@ using HospitalRegistry.Infrastructure;
 using HospitalRegistry.Infrastructure.DatabaseContexts;
 using HospitalRegistry.Infrastructure.DatabaseInitializer;
 using HospitalReqistry.Domain.Entities;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -12,9 +11,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Swashbuckle.AspNetCore.SwaggerGen;
-using System.Reflection;
 using System.Text;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +20,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<ApplicationContext>(options =>
 {
+    options.UseLazyLoadingProxies();
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
@@ -36,7 +35,11 @@ builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
     .AddUserStore<UserStore<ApplicationUser, ApplicationRole, ApplicationContext, Guid>>()
     .AddRoleStore<RoleStore<ApplicationRole, ApplicationContext, Guid>>();
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
 
 builder.Services.AddApiVersioning(config =>
 {
@@ -72,6 +75,7 @@ builder.Services.AddAuthentication(options =>
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
         };
     });
+
 builder.Services.AddAuthorization();
 
 builder.Services.AddSwaggerGen(options =>

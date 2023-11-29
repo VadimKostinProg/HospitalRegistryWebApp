@@ -13,7 +13,10 @@ namespace HospitalRegistry.Infrastructure.DatabaseContexts
         public DbSet<Diagnosis> Diagnoses { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
 
-        public ApplicationContext(DbContextOptions options) : base(options) { }
+        public ApplicationContext(DbContextOptions options) : base(options)
+        {
+            this.ChangeTracker.LazyLoadingEnabled = true;
+        }
 
         public ApplicationContext() { }
 

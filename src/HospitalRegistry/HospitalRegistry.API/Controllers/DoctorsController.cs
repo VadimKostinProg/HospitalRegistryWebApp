@@ -1,6 +1,7 @@
 ﻿using HospitalRegistry.Application.Constants;
 using HospitalRegistry.Application.DTO;
 using HospitalRegistry.Application.ServiceContracts;
+using HospitalRegistry.Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -60,7 +61,15 @@ namespace HospitalRegistry.API.Controllers
             return Ok("Doctor record have been successfully deleted.");
         }
 
-        [HttpPost("recover/{id}")]
+        [HttpGet("deleted")]
+        [Authorize(Roles = UserRoles.Admin)]
+        public async Task<ActionResult<IEnumerable<DoctorResponse>>> GetDeletedDoctors(
+            [FromQuery] DoctorSpecificationsDTO specifications)
+        {
+            return Ok(await _doctorsService.GetDeletedDoctorsListAsync(specifications));
+        }
+
+        [HttpPost("{id}/recover")]
         [Authorize(Roles = $"{UserRoles.Admin}, {UserRoles.Receptionist}")]
         public async Task<ActionResult<string>> RecoverDoctor([FromRoute] Guid id)
         {
@@ -71,9 +80,9 @@ namespace HospitalRegistry.API.Controllers
 
         [HttpGet("{id}/schedule")]
         [AllowAnonymous]
-        public async Task<ActionResult<ScheduleDTO>> GetDoctorsSchedule([FromRoute] Guid id)
+        public async Task<ActionResult<ScheduleDTO>> GetDoctorsSchedule([FromRoute] Guid id, [FromQuery] int? dayOfWeek)
         {
-            return Ok(await _schedulesService.GetScheduleByDoctorAsync(id));
+            return Ok(await _schedulesService.GetScheduleByDoctorAsync(id, dayOfWeek));
         }
 
         [HttpPost("schedule")]

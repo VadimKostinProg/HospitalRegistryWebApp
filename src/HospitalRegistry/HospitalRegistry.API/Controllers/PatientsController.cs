@@ -1,6 +1,7 @@
 ﻿using HospitalRegistry.Application.Constants;
 using HospitalRegistry.Application.DTO;
 using HospitalRegistry.Application.ServiceContracts;
+using HospitalRegistry.Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -56,6 +57,14 @@ namespace HospitalRegistry.API.Controllers
             await _patientsService.DeleteAsync(id);
 
             return Ok($"Patient record have been successfully deleted.");
+        }
+
+        [HttpGet("deleted")]
+        [Authorize(Roles = UserRoles.Admin)]
+        public async Task<ActionResult<IEnumerable<PatientResponse>>> GetDeletedPatients(
+            [FromQuery] PatientSpecificationsDTO specifications)
+        {
+            return Ok(await _patientsService.GetDeletedPatientsListAsync(specifications));
         }
 
         [HttpPost("{id}/recover")]

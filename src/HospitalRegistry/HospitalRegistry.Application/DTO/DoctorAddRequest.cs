@@ -1,7 +1,8 @@
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
 using HospitalRegistry.Application.Enums;
 using HospitalReqistry.Domain.Entities;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace HospitalRegistry.Application.DTO;
 
@@ -26,7 +27,6 @@ public class DoctorAddRequest
     public DateOnly DateOfBirth { get; set; }
 
     [Required]
-    [MaxLength(30)]
     public Specialty Specialty { get; set; }
 
     [Required]

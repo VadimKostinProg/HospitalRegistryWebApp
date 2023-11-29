@@ -18,7 +18,7 @@ public class AppointmentsService : IAppointmentsService
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly UserManager<ApplicationUser> _userManager;
 
-    public AppointmentsService(IAsyncRepository repository, 
+    public AppointmentsService(IAsyncRepository repository,
         IDoctorsService doctorsService,
         ISchedulesService schedulesService,
         IHttpContextAccessor httpContextAccessor,
@@ -54,35 +54,38 @@ public class AppointmentsService : IAppointmentsService
     {
         var builder = new SpecificationBuilder<Appointment>();
 
-        if (specifications.DoctorId is not null)
-            builder.With(x => x.DoctorId == specifications.DoctorId.Value);
-
-        if (specifications.PatientId is not null)
-            builder.With(x => x.PatientId == specifications.PatientId.Value);
-
-        if (specifications.Type is not null)
-            builder.With(x => x.AppointmentType == specifications.Type.Value.ToString());
-
-        if (specifications.Status is not null)
-            builder.With(x => x.Status == specifications.Status.Value.ToString());
-
-        switch(specifications.SortField)
+        if (specifications is not null)
         {
-            case "Id":
-                builder.OrderBy(x => x.Id, specifications.SortDirection);
-                break;
-            case "DateAndTime":
-                builder.OrderBy(x => x.DateAndTime, specifications.SortDirection);
-                break;
-            case "Type":
-                builder.OrderBy(x => x.AppointmentType, specifications.SortDirection);
-                break;
-            case "Status":
-                builder.OrderBy(x => x.Status, specifications.SortDirection);
-                break;
-        }
+            if (specifications.DoctorId is not null)
+                builder.With(x => x.DoctorId == specifications.DoctorId.Value);
 
-        builder.WithPagination(specifications.PageSize, specifications.PageNumber);
+            if (specifications.PatientId is not null)
+                builder.With(x => x.PatientId == specifications.PatientId.Value);
+
+            if (specifications.Type is not null)
+                builder.With(x => x.AppointmentType == specifications.Type.Value.ToString());
+
+            if (specifications.Status is not null)
+                builder.With(x => x.Status == specifications.Status.Value.ToString());
+
+            switch (specifications.SortField)
+            {
+                case "Id":
+                    builder.OrderBy(x => x.Id, specifications.SortDirection);
+                    break;
+                case "DateAndTime":
+                    builder.OrderBy(x => x.DateAndTime, specifications.SortDirection);
+                    break;
+                case "Type":
+                    builder.OrderBy(x => x.AppointmentType, specifications.SortDirection);
+                    break;
+                case "Status":
+                    builder.OrderBy(x => x.Status, specifications.SortDirection);
+                    break;
+            }
+
+            builder.WithPagination(specifications.PageSize, specifications.PageNumber);
+        }
 
         return builder.Build();
     }

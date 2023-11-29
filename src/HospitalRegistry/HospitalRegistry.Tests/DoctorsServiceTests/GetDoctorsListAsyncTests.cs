@@ -22,7 +22,9 @@ namespace HospitalRegistry.Tests.DoctorsServiceTests
             var testDoctors = GetTestDoctors().ToList();
             repositoryMock.Setup(x => x.GetAsync<Doctor>(It.IsAny<ISpecification<Doctor>>(), true))
                 .ReturnsAsync(testDoctors);
-            DoctorSpecificationsDTO? specifications = null;
+            var specifications = fixture.Build<DoctorSpecificationsDTO>()
+                .With(x => x.DateOfBirth, DateOnly.Parse("01.01.2000"))
+                .Create();
 
             // Act
             var actual = await service.GetDoctorsListAsync(specifications);

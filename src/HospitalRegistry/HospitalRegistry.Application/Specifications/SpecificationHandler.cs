@@ -6,6 +6,11 @@ namespace HospitalRegistry.Application.Specifications
     {
         public static IQueryable<T> ApplySpecifications<T>(this IQueryable<T> query, ISpecification<T> specification)
         {
+            if (specification is null)
+            {
+                return query;
+            }
+
             if (specification.Predicate is not null)
             {
                 query = query.Where(specification.Predicate);

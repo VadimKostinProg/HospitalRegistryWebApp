@@ -17,25 +17,29 @@ public class SchedulesService : ISchedulesService
 
     public async Task<ScheduleDTO> GetScheduleByDoctorAsync(Guid doctorId, int? dayOfWeek = null)
     {
-        var doctor = await _repository.GetByIdAsync<Doctor>(doctorId);
+        var doctor = await _repository.GetByIdAsync<Doctor>(doctorId, disableTracking: false);
 
         if (doctor is null)
             throw new KeyNotFoundException("Doctor with such id does not exists.");
 
-        var schedule = doctor.Schedules.Select(x => x.ToTimeSlotDTO());
+        var schedule = doctor.Schedules
+            .Select(x => x.ToTimeSlotDTO())
+            .OrderBy(x => x.DayOfWeek)
+            .ThenBy(x => x.StartTime)
+            .ToList();
 
         if (dayOfWeek is not null)
         {
             if (dayOfWeek < 1 || dayOfWeek > 7)
                 throw new ArgumentException("Day of week must be between 1 and 7.");
 
-            schedule = schedule.Where(x => x.DayOfWeek == dayOfWeek.Value);
+            schedule = schedule.Where(x => x.DayOfWeek == dayOfWeek.Value).ToList();
         }
 
         return new ScheduleDTO()
         {
             DoctorId = doctorId,
-            Schedule = schedule.ToList()
+            Schedule = schedule
         };
     }
 
@@ -45,7 +49,7 @@ public class SchedulesService : ISchedulesService
         if (request is null)
             throw new ArgumentNullException("Schedule to set is null.");
 
-        var doctor = await _repository.GetByIdAsync<Doctor>(request.DoctorId);
+        var doctor = await _repository.GetByIdAsync<Doctor>(request.DoctorId, disableTracking: false);
 
         if (doctor is null)
             throw new KeyNotFoundException("Doctor with such Id does not exist.");
@@ -83,13 +87,17 @@ public class SchedulesService : ISchedulesService
     // Method that deletes old scheduled of the doctor for the passed days of week.
     private async Task DeleteOldScheduleForDoctorAsync(Doctor doctor, params int[] daysOfWeek)
     {
+        if (doctor.Schedules is null)
+            return;
+
         foreach (var dayOfWeek in daysOfWeek)
         {
             var schedulesToDelete = doctor.Schedules
                 .Where(x => x.TimeSlot.DayOfWeek == dayOfWeek)
                 .ToList();
 
-            await _repository.DeleteRangeAsync(schedulesToDelete);
+            if (schedulesToDelete.Any())
+                await _repository.DeleteRangeAsync(schedulesToDelete);
         }
     }
 
