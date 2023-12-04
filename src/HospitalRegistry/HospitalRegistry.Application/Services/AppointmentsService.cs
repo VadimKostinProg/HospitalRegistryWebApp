@@ -31,10 +31,22 @@ public class AppointmentsService : IAppointmentsService
         _userManager = userManager;
     }
 
-    public async Task<ListModel<AppointmentResponse>> GetAppointmnetsListAsync(AppointmentSpecificationsDTO specifications)
+    public async Task<ListModel<AppointmentResponse>> GetAppointmentsListAsync(AppointmentSpecificationsDTO specifications)
     {
         if (specifications is null)
             throw new ArgumentNullException("Specifications ara null.");
+
+        if (specifications.DoctorId is not null && 
+            !await _repository.ContainsAsync<Doctor>(x => x.Id == specifications.DoctorId))
+            throw new KeyNotFoundException("Doctor with such id does not exists.");
+
+        if (specifications.PatientId is not null &&
+            !await _repository.ContainsAsync<Patient>(x => x.Id == specifications.PatientId))
+            throw new KeyNotFoundException("Patient with such id does not exists.");
+
+        if (specifications.DiagnosisId is not null &&
+            !await _repository.ContainsAsync<Diagnosis>(x => x.Id == specifications.DiagnosisId))
+            throw new KeyNotFoundException("Diagnosis with such id does not exists.");
 
         var specification = this.GetSpecification(specifications);
 
@@ -50,6 +62,9 @@ public class AppointmentsService : IAppointmentsService
 
         if (specifications.PatientId is not null)
             builder.With(x => x.PatientId == specifications.PatientId.Value);
+
+        if (specifications.DiagnosisId is not null)
+            builder.With(x => x.DiagnosisId == specifications.DiagnosisId.Value);
 
         if (specifications.Type is not null)
             builder.With(x => x.AppointmentType == specifications.Type.Value.ToString());

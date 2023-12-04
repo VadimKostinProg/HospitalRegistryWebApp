@@ -1,5 +1,4 @@
-﻿using AutoFixture;
-using FluentAssertions;
+﻿using FluentAssertions;
 using HospitalRegistry.Application.DTO;
 using HospitalRegistry.Application.Enums;
 using HospitalRegistry.Application.Specifications;
@@ -11,6 +10,22 @@ namespace HospitalRegistry.Tests.DoctorsServiceTests;
 
 public class GetDeletedDoctorsListAsyncTests : DoctorsServiceTestsBase
 {
+    [Fact]
+    public async Task GetDeletedDoctorsListAsync_SpecificationsIsNull_ThrowsArgumentNullException()
+    {
+        // Arrange
+        DoctorSpecificationsDTO specifications = null;
+
+        // Assert
+        var action = async () =>
+        {
+            // Act
+            var list = await service.GetDeletedDoctorsListAsync(specifications);
+        };
+
+        await action.Should().ThrowAsync<ArgumentNullException>();
+    }
+
     [Theory]
     [InlineData(5, 1)]
     [InlineData(4, 2)]

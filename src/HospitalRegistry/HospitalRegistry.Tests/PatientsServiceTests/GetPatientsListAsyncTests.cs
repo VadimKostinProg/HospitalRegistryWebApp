@@ -11,6 +11,22 @@ namespace HospitalRegistry.Tests.PatientsServiceTests;
 
 public class GetPatientsListAsyncTests : PatientsServiceTestsBase
 {
+    [Fact]
+    public async Task GetPatientsListAsync_SpecificationsIsNull_ThrowsArgumentNullException()
+    {
+        // Arrange
+        PatientSpecificationsDTO specifications = null;
+
+        // Assert
+        var action = async () =>
+        {
+            // Act
+            var list = await service.GetPatientsListAsync(specifications);
+        };
+
+        await action.Should().ThrowAsync<ArgumentNullException>();
+    }
+
     [Theory]
     [InlineData(5, 1)]
     [InlineData(4, 2)]
@@ -47,7 +63,7 @@ public class GetPatientsListAsyncTests : PatientsServiceTestsBase
         repositoryMock.Setup(x => x.CountAsync<Patient>(It.IsAny<Expression<Func<Patient, bool>>>()))
             .ReturnsAsync(filteredPatients.Count);
 
-        var exprectedPatients = patientsToReturn
+        var expectedPatients = patientsToReturn
             .Select(x => x.ToPatientResponse())
             .ToList();
 
@@ -69,7 +85,7 @@ public class GetPatientsListAsyncTests : PatientsServiceTestsBase
 
         // Assert
         actual.Should().NotBeNull();
-        actual.List.Should().BeEquivalentTo(exprectedPatients);
+        actual.List.Should().BeEquivalentTo(expectedPatients);
         actual.TotalPages.Should().Be(expectedTotalPages);
     }
 }

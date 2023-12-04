@@ -12,7 +12,7 @@ namespace HospitalRegistry.Application.ServiceContracts
         /// </summary>
         /// <param name="specifications">Specifications to filter, sort and paginate list.</param>
         /// <returns>List of appointments list with applyed specifications.</returns>
-        Task<ListModel<AppointmentResponse>> GetAppointmnetsListAsync(AppointmentSpecificationsDTO specifications);
+        Task<ListModel<AppointmentResponse>> GetAppointmentsListAsync(AppointmentSpecificationsDTO specifications);
 
         /// <summary>
         /// Method for reading appointment by id.

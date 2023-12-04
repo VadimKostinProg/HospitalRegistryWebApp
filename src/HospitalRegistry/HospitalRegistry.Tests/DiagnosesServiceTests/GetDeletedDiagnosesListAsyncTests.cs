@@ -9,6 +9,21 @@ using System.Linq.Expressions;
 namespace HospitalRegistry.Tests.DiagnosesServiceTests;
 public class GetDeletedDiagnosesListAsyncTests : DiagnosesServiceTestsBase
 {
+    [Fact]
+    public async Task GetDeletedDiagnosesListAsync_SpecificationsIsNull_ThrowsArgumentNullException()
+    {
+        // Arrange
+        DiagnosisSpecificationsDTO specifications = null;
+
+        // Assert
+        var action = async () =>
+        {
+            // Act
+            var list = await service.GetDeletedDiagnosesListAsync(specifications);
+        };
+
+        await action.Should().ThrowAsync<ArgumentNullException>();
+    }
 
     [Theory]
     [InlineData(5, 1)]

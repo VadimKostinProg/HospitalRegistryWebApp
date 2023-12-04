@@ -11,6 +11,22 @@ namespace HospitalRegistry.Tests.DoctorsServiceTests
 {
     public class GetDoctorsListAsyncTests : DoctorsServiceTestsBase
     {
+        [Fact]
+        public async Task GetDoctorsListAsync_SpecificationsIsNull_ThrowsArgumentNullException()
+        {
+            // Arrange
+            DoctorSpecificationsDTO specifications = null;
+
+            // Assert
+            var action = async () =>
+            {
+                // Act
+                var list = await service.GetDoctorsListAsync(specifications);
+            };
+
+            await action.Should().ThrowAsync<ArgumentNullException>();
+        }
+
         [Theory]
         [InlineData(5, 1)]
         [InlineData(4, 2)]
