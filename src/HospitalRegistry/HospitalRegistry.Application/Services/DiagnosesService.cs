@@ -16,39 +16,38 @@ namespace HospitalRegistry.Application.Services
             _repository = repository;
         }
 
-        public async Task<IEnumerable<DiagnosisResponse>> GetDiagnosesListAsync(DiagnosisSpecificationsDTO specificationsDTO)
+        public async Task<ListModel<DiagnosisResponse>> GetDiagnosesListAsync(DiagnosisSpecificationsDTO specificationsDTO)
         {
-            var diagnoses = (await _repository.GetAsync<Diagnosis>(this.GetSpecification(specificationsDTO)))
-                .Select(x => x.ToDiagnosisResponse())
-                .ToList();
+            if (specificationsDTO is null)
+                throw new ArgumentNullException("Specifications are null.");
 
-            return diagnoses;
+            return await this.GetDiagnosesListBySpecificationAsync(this.GetSpecification(specificationsDTO));
         }
 
-        private ISpecification<Diagnosis> GetSpecification(DiagnosisSpecificationsDTO specifications, bool isDeleted = false)
+        private ISpecification<Diagnosis> GetSpecification(DiagnosisSpecificationsDTO specificationsDTO, bool isDeleted = false)
         {
             var builder = new SpecificationBuilder<Diagnosis>();
 
             if (isDeleted) builder.With(x => x.IsDeleted == true);
             else builder.With(x => x.IsDeleted == false);
 
-            if (specifications is not null)
-            {
-                if (!string.IsNullOrEmpty(specifications.Name))
-                    builder.With(x => x.Name.Contains(specifications.Name));
+            if (!string.IsNullOrEmpty(specificationsDTO.Name))
+                builder.With(x => x.Name.Contains(specificationsDTO.Name));
 
-                switch (specifications.SortField)
+            if (!string.IsNullOrEmpty(specificationsDTO.SortField))
+            {
+                switch (specificationsDTO.SortField)
                 {
                     case "Id":
-                        builder.OrderBy(x => x.Id, specifications.SortDirection);
+                        builder.OrderBy(x => x.Id, specificationsDTO.SortDirection ?? Enums.SortDirection.ASC);
                         break;
                     case "Name":
-                        builder.OrderBy(x => x.Name, specifications.SortDirection);
+                        builder.OrderBy(x => x.Name, specificationsDTO.SortDirection ?? Enums.SortDirection.ASC);
                         break;
                 }
-
-                builder.WithPagination(specifications.PageSize, specifications.PageNumber);
             }
+
+            builder.WithPagination(specificationsDTO.PageSize, specificationsDTO.PageNumber);
 
             return builder.Build();
         }
@@ -138,14 +137,32 @@ namespace HospitalRegistry.Application.Services
             await _repository.UpdateAsync<Diagnosis>(diagnosis);
         }
 
-        public async Task<IEnumerable<DiagnosisResponse>> GetDeletedDiagnosesListAsync(DiagnosisSpecificationsDTO specificationsDTO)
+        public async Task<ListModel<DiagnosisResponse>> GetDeletedDiagnosesListAsync(DiagnosisSpecificationsDTO specificationsDTO)
         {
-            var diagnoses = 
-                (await _repository.GetAsync<Diagnosis>(this.GetSpecification(specificationsDTO, isDeleted: true)))
+            if (specificationsDTO is null)
+                throw new ArgumentNullException("Specifications are null.");
+
+            return await this.GetDiagnosesListBySpecificationAsync(this.GetSpecification(specificationsDTO, isDeleted: true));
+        }
+
+        private async Task<ListModel<DiagnosisResponse>> GetDiagnosesListBySpecificationAsync(ISpecification<Diagnosis> specification)
+        {
+            var diagnoses =
+                (await _repository.GetAsync<Diagnosis>(specification))
                 .Select(x => x.ToDiagnosisResponse())
                 .ToList();
 
-            return diagnoses;
+            var totalCount = specification.Predicate is null ?
+                await _repository.CountAsync<Diagnosis>() :
+                await _repository.CountAsync<Diagnosis>(specification.Predicate);
+
+            var totalPages = (int)Math.Ceiling((double)totalCount / specification.Take);
+
+            return new ListModel<DiagnosisResponse>
+            {
+                List = diagnoses,
+                TotalPages = totalPages
+            };
         }
     }
 }

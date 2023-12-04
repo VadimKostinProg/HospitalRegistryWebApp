@@ -11,15 +11,15 @@ namespace HospitalRegistry.Application.ServiceContracts
         /// Method for reading appointment list with applyed specifications.
         /// </summary>
         /// <param name="specifications">Specifications to filter, sort and paginate list.</param>
-        /// <returns>Collection IEnumerable of appointments list with applyed specifications.</returns>
-        Task<IEnumerable<AppointmentResponse>> GetAppointmnetsList(AppointmentSpecificationsDTO specifications);
+        /// <returns>List of appointments list with applyed specifications.</returns>
+        Task<ListModel<AppointmentResponse>> GetAppointmnetsListAsync(AppointmentSpecificationsDTO specifications);
 
         /// <summary>
         /// Method for reading appointment by id.
         /// </summary>
         /// <param name="id">Id of appointment to read.</param>
         /// <returns>Appointmnet response DTO.</returns>
-        Task<AppointmentResponse> GetAppointmentById(Guid id);
+        Task<AppointmentResponse> GetAppointmentByIdAsync(Guid id);
 
         /// <summary>
         /// Method for searching the free slots for appointments.
@@ -32,15 +32,15 @@ namespace HospitalRegistry.Application.ServiceContracts
         /// Method for reading the complited appointments history of the patient.
         /// </summary>
         /// <param name="patientId">Id of the patient to read history.</param>
-        /// <returns>Collection IENumerable of appointment DTO.</returns>
-        Task<IEnumerable<AppointmentResponse>> GetAppointmentsHistoryOfPatientAsync(Guid patientId);
+        /// <returns>List of appointment DTO.</returns>
+        Task<ListModel<AppointmentResponse>> GetAppointmentsHistoryOfPatientAsync(Guid patientId, SpecificationsDTO specifications);
 
         /// <summary>
         /// Method for reading the complited appointments history of the doctor.
         /// </summary>
         /// <param name="doctorId">Id of the doctor to read history.</param>
-        /// <returns>Collection IENumerable of appointment DTO.</returns>
-        Task<IEnumerable<AppointmentResponse>> GetAppointmentsHistoryOfDoctorAsync(Guid doctorId);
+        /// <returns>List of appointment DTO.</returns>
+        Task<ListModel<AppointmentResponse>> GetAppointmentsHistoryOfDoctorAsync(Guid doctorId, SpecificationsDTO specifications);
 
         /// <summary>
         /// Method for reading scheduled appointments of the person on the specific date if it is passed or 
@@ -48,7 +48,7 @@ namespace HospitalRegistry.Application.ServiceContracts
         /// </summary>
         /// <param name="patientId">Id of person to read scheduled appointments.</param>
         /// <param name="date">Date to read scheduled appointments on.</param>
-        /// <returns>Collection IENumerable of appointment DTO.</returns>
+        /// <returns>Collection IEnumerable of appointment DTO.</returns>
         Task<IEnumerable<AppointmentResponse>> GetScheduledAppoitnmentsOfPatientAsync(Guid patientId, DateOnly? date);
 
         /// <summary>

@@ -6,7 +6,7 @@ namespace HospitalRegistry.Application.DTO
     {
         public int PageSize { get; set; } = 25;
         public int PageNumber { get; set; } = 1;
-        public string SortField { get; set; } = "Id";
-        public SortDirection SortDirection { get; set; } = SortDirection.ASC;
+        public string? SortField { get; set; }
+        public SortDirection? SortDirection { get; set; }
     }
 }

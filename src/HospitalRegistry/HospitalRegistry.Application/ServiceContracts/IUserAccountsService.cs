@@ -11,8 +11,8 @@ namespace HospitalRegistry.Application.ServiceContracts
         /// Method for reading accounts list with applying specifications.
         /// </summary>
         /// <param name="specifications">Specifications to filter, sort, search and paginate accounts.</param>
-        /// <returns>Collection IEnumerable of AccountResponse objects.</returns>
-        Task<IEnumerable<AccountResponse>> GetAccountsList(AccountSpecificationsDTO specificationsDTO);
+        /// <returns>List of AccountResponse objects.</returns>
+        Task<ListModel<AccountResponse>> GetAccountsList(AccountSpecificationsDTO specificationsDTO);
 
         /// <summary>
         /// Method for registering doctors and users accounts.

@@ -17,14 +17,14 @@ namespace HospitalRegistry.Application.ServiceContracts
         /// Method for read the patients list with applyed specifications.
         /// </summary>
         /// <param name="specificationsDTO">Specifications for filtering, sorting and pagination to apply.</param>
-        /// <returns>Collection IEnumerable of patients with applyed specifications.</returns>
-        Task<IEnumerable<PatientResponse>> GetPatientsListAsync(PatientSpecificationsDTO specificationsDTO);
+        /// <returns>List of patients with applyed specifications.</returns>
+        Task<ListModel<PatientResponse>> GetPatientsListAsync(PatientSpecificationsDTO specificationsDTO);
 
         /// <summary>
         /// Method for reading all deleted patients.
         /// </summary>
         /// <param name="specificationsDTO">Specifications for filtering, sorting and paginating to apply.</param>
-        /// <returns>Collection IEnumerable of deleted patients with applyed specifications.</returns>
-        Task<IEnumerable<PatientResponse>> GetDeletedPatientsListAsync(PatientSpecificationsDTO specificationsDTO);
+        /// <returns>List of deleted patients with applyed specifications.</returns>
+        Task<ListModel<PatientResponse>> GetDeletedPatientsListAsync(PatientSpecificationsDTO specificationsDTO);
     }
 }

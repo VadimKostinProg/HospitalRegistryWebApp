@@ -15,13 +15,12 @@ public class PatientsService : IPatientsService
         _repository = repository;
     }
     
-    public async Task<IEnumerable<PatientResponse>> GetPatientsListAsync(PatientSpecificationsDTO specificationsDTO)
+    public async Task<ListModel<PatientResponse>> GetPatientsListAsync(PatientSpecificationsDTO specificationsDTO)
     {
-        var patients = (await _repository.GetAsync<Patient>(this.GetSpecification(specificationsDTO)))
-            .Select(x => x.ToPatientResponse())
-            .ToList();
+        if (specificationsDTO is null)
+            throw new ArgumentNullException("Specifications are null.");
 
-        return patients;
+        return await this.GetPatientsListBySpecificationAsync(this.GetSpecification(specificationsDTO));
     }
 
     private ISpecification<Patient> GetSpecification(PatientSpecificationsDTO specificationsDTO, bool isDeleted = false)
@@ -44,23 +43,26 @@ public class PatientsService : IPatientsService
             if (specificationsDTO.DateOfBirth is not null)
                 builder.With(x => x.DateOfBirth == specificationsDTO.DateOfBirth.Value.ToString());
 
-            switch (specificationsDTO.SortField)
+            if (!string.IsNullOrEmpty(specificationsDTO.SortField))
             {
-                case "Id":
-                    builder.OrderBy(x => x.Id, specificationsDTO.SortDirection);
-                    break;
-                case "Name":
-                    builder.OrderBy(x => x.Name, specificationsDTO.SortDirection);
-                    break;
-                case "Surname":
-                    builder.OrderBy(x => x.Surname, specificationsDTO.SortDirection);
-                    break;
-                case "Patronymic":
-                    builder.OrderBy(x => x.Patronymic, specificationsDTO.SortDirection);
-                    break;
-                case "DateOfBirth":
-                    builder.OrderBy(x => x.DateOfBirth, specificationsDTO.SortDirection);
-                    break;
+                switch (specificationsDTO.SortField)
+                {
+                    case "Id":
+                        builder.OrderBy(x => x.Id, specificationsDTO.SortDirection ?? Enums.SortDirection.ASC);
+                        break;
+                    case "Name":
+                        builder.OrderBy(x => x.Name, specificationsDTO.SortDirection ?? Enums.SortDirection.ASC);
+                        break;
+                    case "Surname":
+                        builder.OrderBy(x => x.Surname, specificationsDTO.SortDirection ?? Enums.SortDirection.ASC);
+                        break;
+                    case "Patronymic":
+                        builder.OrderBy(x => x.Patronymic, specificationsDTO.SortDirection ?? Enums.SortDirection.ASC);
+                        break;
+                    case "DateOfBirth":
+                        builder.OrderBy(x => x.DateOfBirth, specificationsDTO.SortDirection ?? Enums.SortDirection.ASC);
+                        break;
+                }
             }
 
             builder.WithPagination(specificationsDTO.PageSize, specificationsDTO.PageNumber);
@@ -160,13 +162,31 @@ public class PatientsService : IPatientsService
         await _repository.UpdateAsync(patient);
     }
 
-    public async Task<IEnumerable<PatientResponse>> GetDeletedPatientsListAsync(PatientSpecificationsDTO specificationsDTO)
+    public async Task<ListModel<PatientResponse>> GetDeletedPatientsListAsync(PatientSpecificationsDTO specificationsDTO)
     {
-        var patients = 
-            (await _repository.GetAsync<Patient>(this.GetSpecification(specificationsDTO, isDeleted: true)))
+        if (specificationsDTO is null)
+            throw new ArgumentNullException("Specifications are null.");
+
+        return await this.GetPatientsListBySpecificationAsync(this.GetSpecification(specificationsDTO, isDeleted: true));
+    }
+
+    private async Task<ListModel<PatientResponse>> GetPatientsListBySpecificationAsync(ISpecification<Patient> specification)
+    {
+        var patients =
+            (await _repository.GetAsync<Patient>(specification, disableTracking: false))
             .Select(x => x.ToPatientResponse())
             .ToList();
 
-        return patients;
+        var totalCount = specification.Predicate is null ?
+            await _repository.CountAsync<Patient>() :
+            await _repository.CountAsync<Patient>(specification.Predicate);
+
+        var totalPages = (int)Math.Ceiling((double)totalCount / specification.Take);
+
+        return new ListModel<PatientResponse>
+        {
+            List = patients,
+            TotalPages = totalPages
+        };
     }
 }

@@ -23,13 +23,13 @@ namespace HospitalRegistry.API.Controllers
         public async Task<ActionResult<IEnumerable<AppointmentResponse>>> GetAppointmentsList(
             [FromQuery] AppointmentSpecificationsDTO specifications)
         {
-            return Ok(await _appointmentsService.GetAppointmnetsList(specifications));
+            return Ok(await _appointmentsService.GetAppointmnetsListAsync(specifications));
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<AppointmentResponse>> GetAppointmentById([FromRoute] Guid id)
         {
-            return Ok(await _appointmentsService.GetAppointmentById(id));
+            return Ok(await _appointmentsService.GetAppointmentByIdAsync(id));
         }
 
         [HttpGet("free-slots")]

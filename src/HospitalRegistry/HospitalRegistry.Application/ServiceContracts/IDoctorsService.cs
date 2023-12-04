@@ -13,8 +13,8 @@ namespace HospitalRegistry.Application.ServiceContracts
         /// Method for read the doctors list with applyed specifications.
         /// </summary>
         /// <param name="specificationsDTO">Specifications for filtering, sorting and pagination to apply.</param>
-        /// <returns>Collection IEnumerable of doctors with applyed specifications.</returns>
-        Task<IEnumerable<DoctorResponse>> GetDoctorsListAsync(DoctorSpecificationsDTO specificationsDTO);
+        /// <returns>List of doctors with applyed specifications.</returns>
+        Task<ListModel<DoctorResponse>> GetDoctorsListAsync(DoctorSpecificationsDTO specificationsDTO);
 
         /// <summary>
         /// Method to get all doctors filtered by specialty.
@@ -27,7 +27,7 @@ namespace HospitalRegistry.Application.ServiceContracts
         /// Method for reading all deleted doctors.
         /// </summary>
         /// <param name="specificationsDTO">Specifications for filtering, sorting and paginating to apply.</param>
-        /// <returns>Collection IEnumerable of deleted doctors with applyed specifications.</returns>
-        Task<IEnumerable<DoctorResponse>> GetDeletedDoctorsListAsync(DoctorSpecificationsDTO specificationsDTO);
+        /// <returns>List of deleted doctors with applyed specifications.</returns>
+        Task<ListModel<DoctorResponse>> GetDeletedDoctorsListAsync(DoctorSpecificationsDTO specificationsDTO);
     }
 }

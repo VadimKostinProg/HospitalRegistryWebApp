@@ -30,9 +30,22 @@ namespace HospitalRegistry.Application.Services
             _repository = repository;
         }
 
-        public async Task<IEnumerable<AccountResponse>> GetAccountsList(AccountSpecificationsDTO specifications)
+        public async Task<ListModel<AccountResponse>> GetAccountsList(AccountSpecificationsDTO specifications)
         {
-            var accounts = await _userManager.Users.ToListAsync();
+            if (specifications is null)
+                throw new ArgumentNullException("Specifications are null.");
+
+            var specification = await this.GetSpecification(specifications);
+
+            var accounts = await _userManager.Users
+                .ApplySpecifications<ApplicationUser>(specification)
+                .ToListAsync();
+
+            var totalCount = specification.Predicate is null ?
+                await _userManager.Users.CountAsync() :
+                await _userManager.Users.CountAsync(specification.Predicate);
+
+            var totalPages = (int)Math.Ceiling((double)totalCount / specification.Take);
 
             List<AccountResponse> accountsList = new List<AccountResponse>();
 
@@ -52,46 +65,50 @@ namespace HospitalRegistry.Application.Services
                 accountsList.Add(accountResponse);
             }
 
-            return accountsList;
+            return new ListModel<AccountResponse>
+            {
+                List = accountsList,
+                TotalPages = totalPages
+            };
         }
 
         private async Task<ISpecification<ApplicationUser>> GetSpecification(AccountSpecificationsDTO specificationsDTO)
         {
             var builder = new SpecificationBuilder<ApplicationUser>();
 
-            if (specificationsDTO is not null)
+            if (!string.IsNullOrEmpty(specificationsDTO.FullName))
+                builder.With(x => x.FullName == specificationsDTO.FullName);
+
+            if (!string.IsNullOrEmpty(specificationsDTO.Email))
+                builder.With(x => x.Email == specificationsDTO.Email);
+
+            if (!string.IsNullOrEmpty(specificationsDTO.Role))
             {
-                if (!string.IsNullOrEmpty(specificationsDTO.FullName))
-                    builder.With(x => x.FullName == specificationsDTO.FullName);
+                var role = await _roleManager.FindByNameAsync(specificationsDTO.Role);
 
-                if (!string.IsNullOrEmpty(specificationsDTO.Email))
-                    builder.With(x => x.Email == specificationsDTO.Email);
-
-                if (!string.IsNullOrEmpty(specificationsDTO.Role))
+                if (role is not null)
                 {
-                    var role = await _roleManager.FindByNameAsync(specificationsDTO.Role);
-
-                    if (role is not null)
-                    {
-                        builder.With(x => x.UserRoles.First().RoleId == role.Id);
-                    }
+                    builder.With(x => x.UserRoles.First().RoleId == role.Id);
                 }
+            }
 
+            if (!string.IsNullOrEmpty(specificationsDTO.SortField))
+            {
                 switch (specificationsDTO.SortField)
                 {
                     case "Id":
-                        builder.OrderBy(x => x.Id, specificationsDTO.SortDirection);
+                        builder.OrderBy(x => x.Id, specificationsDTO.SortDirection ?? Enums.SortDirection.ASC);
                         break;
                     case "FullName":
-                        builder.OrderBy(x => x.FullName, specificationsDTO.SortDirection);
+                        builder.OrderBy(x => x.FullName, specificationsDTO.SortDirection ?? Enums.SortDirection.ASC);
                         break;
                     case "Email":
-                        builder.OrderBy(x => x.Email, specificationsDTO.SortDirection);
+                        builder.OrderBy(x => x.Email, specificationsDTO.SortDirection ?? Enums.SortDirection.ASC);
                         break;
                 }
-
-                builder.WithPagination(specificationsDTO.PageSize, specificationsDTO.PageNumber);
             }
+
+            builder.WithPagination(specificationsDTO.PageSize, specificationsDTO.PageNumber);
 
             return builder.Build();
         }

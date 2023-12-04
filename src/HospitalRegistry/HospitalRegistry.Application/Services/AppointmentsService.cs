@@ -31,66 +31,88 @@ public class AppointmentsService : IAppointmentsService
         _userManager = userManager;
     }
 
-    public async Task<IEnumerable<AppointmentResponse>> GetAppointmnetsList(AppointmentSpecificationsDTO specifications)
+    public async Task<ListModel<AppointmentResponse>> GetAppointmnetsListAsync(AppointmentSpecificationsDTO specifications)
     {
-        var appointments = await _repository.GetAsync<Appointment>(this.GetSpecification(specifications));
+        if (specifications is null)
+            throw new ArgumentNullException("Specifications ara null.");
 
-        return appointments.Select(appointment => new AppointmentResponse
-        {
-            Id = appointment.Id,
-            DateAndTime = appointment.DateAndTime,
-            Doctor = appointment.Doctor.ToDoctorResponse(),
-            Patient = appointment.Patient.ToPatientResponse(),
-            AppointmentType = (AppointmentType)Enum.Parse<AppointmentType>(appointment.AppointmentType),
-            ExtraClinicalData = appointment.ExtraClinicalData,
-            Diagnosis = appointment.Diagnosis?.Name,
-            Status = (AppointmentStatus)Enum.Parse<AppointmentStatus>(appointment.Status),
-            Conclusion = appointment.Conclusion
-        })
-        .ToList();
+        var specification = this.GetSpecification(specifications);
+
+        return await this.GetAppointmentsListBySpecificationAsync(specification);
     }
 
     private ISpecification<Appointment> GetSpecification(AppointmentSpecificationsDTO specifications)
     {
         var builder = new SpecificationBuilder<Appointment>();
 
-        if (specifications is not null)
+        if (specifications.DoctorId is not null)
+            builder.With(x => x.DoctorId == specifications.DoctorId.Value);
+
+        if (specifications.PatientId is not null)
+            builder.With(x => x.PatientId == specifications.PatientId.Value);
+
+        if (specifications.Type is not null)
+            builder.With(x => x.AppointmentType == specifications.Type.Value.ToString());
+
+        if (specifications.Status is not null)
+            builder.With(x => x.Status == specifications.Status.Value.ToString());
+
+        if (!string.IsNullOrEmpty(specifications.SortField))
         {
-            if (specifications.DoctorId is not null)
-                builder.With(x => x.DoctorId == specifications.DoctorId.Value);
-
-            if (specifications.PatientId is not null)
-                builder.With(x => x.PatientId == specifications.PatientId.Value);
-
-            if (specifications.Type is not null)
-                builder.With(x => x.AppointmentType == specifications.Type.Value.ToString());
-
-            if (specifications.Status is not null)
-                builder.With(x => x.Status == specifications.Status.Value.ToString());
-
             switch (specifications.SortField)
             {
                 case "Id":
-                    builder.OrderBy(x => x.Id, specifications.SortDirection);
+                    builder.OrderBy(x => x.Id, specifications.SortDirection ?? SortDirection.ASC);
                     break;
                 case "DateAndTime":
-                    builder.OrderBy(x => x.DateAndTime, specifications.SortDirection);
+                    builder.OrderBy(x => x.DateAndTime, specifications.SortDirection ?? SortDirection.ASC);
                     break;
                 case "Type":
-                    builder.OrderBy(x => x.AppointmentType, specifications.SortDirection);
+                    builder.OrderBy(x => x.AppointmentType, specifications.SortDirection ?? SortDirection.ASC);
                     break;
                 case "Status":
-                    builder.OrderBy(x => x.Status, specifications.SortDirection);
+                    builder.OrderBy(x => x.Status, specifications.SortDirection ?? SortDirection.ASC);
                     break;
             }
-
-            builder.WithPagination(specifications.PageSize, specifications.PageNumber);
         }
+
+        builder.WithPagination(specifications.PageSize, specifications.PageNumber);
 
         return builder.Build();
     }
 
-    public async Task<AppointmentResponse> GetAppointmentById(Guid id)
+    private async Task<ListModel<AppointmentResponse>> GetAppointmentsListBySpecificationAsync(ISpecification<Appointment> specification)
+    {
+        var appointments = await _repository.GetAsync<Appointment>(specification, disableTracking: false);
+
+        var totalCount = specification.Predicate is null ?
+            await _repository.CountAsync<Appointment>() :
+            await _repository.CountAsync<Appointment>(specification.Predicate);
+
+        var totalPages = (int)Math.Ceiling((double)totalCount / specification.Take);
+
+        var list = new ListModel<AppointmentResponse>()
+        {
+            List = appointments.Select(appointment => new AppointmentResponse
+            {
+                Id = appointment.Id,
+                DateAndTime = appointment.DateAndTime,
+                Doctor = appointment.Doctor.ToDoctorResponse(),
+                Patient = appointment.Patient.ToPatientResponse(),
+                AppointmentType = (AppointmentType)Enum.Parse<AppointmentType>(appointment.AppointmentType),
+                ExtraClinicalData = appointment.ExtraClinicalData,
+                Diagnosis = appointment.Diagnosis?.Name,
+                Status = (AppointmentStatus)Enum.Parse<AppointmentStatus>(appointment.Status),
+                Conclusion = appointment.Conclusion
+            })
+            .ToList(),
+            TotalPages = totalPages
+        };
+
+        return list;
+    }
+
+    public async Task<AppointmentResponse> GetAppointmentByIdAsync(Guid id)
     {
         var appointment = await _repository.GetByIdAsync<Appointment>(id, disableTracking: false);
 
@@ -201,7 +223,7 @@ public class AppointmentsService : IAppointmentsService
 
         for (DateOnly date = startDate; date <= endDate; date = date.AddDays(1))
         {
-            var timeSlotsForDate = schedule.Schedule.Where(x => x.DayOfWeek % 7 == (int)date.DayOfWeek).ToList();
+            var timeSlotsForDate = schedule.Schedule.Where(x => x.DayOfWeek == (int)date.DayOfWeek).ToList();
             foreach (var timeSlot in timeSlotsForDate)
             {
                 var appointmentSlot = new AppointmentSlotResponse()
@@ -222,52 +244,38 @@ public class AppointmentsService : IAppointmentsService
         return slots;
     }
 
-    public async Task<IEnumerable<AppointmentResponse>> GetAppointmentsHistoryOfPatientAsync(Guid patientId)
+    public async Task<ListModel<AppointmentResponse>> GetAppointmentsHistoryOfPatientAsync(Guid patientId, SpecificationsDTO specifications)
     {
-        var patient = await _repository.GetByIdAsync<Patient>(patientId, disableTracking: false);
+        if (specifications is null)
+            throw new ArgumentNullException("Specifications are null.");
 
-        if (patient is null)
+        if (!await _repository.ContainsAsync<Patient>(x => x.Id == patientId))
             throw new KeyNotFoundException("Patient with such Id does not exist.");
 
-        return patient.Appointments
-            .Where(appointment => appointment.Status == AppointmentStatus.Completed.ToString())
-            .Select(appointment => new AppointmentResponse
-            {
-                Id = appointment.Id,
-                DateAndTime = appointment.DateAndTime,
-                Doctor = appointment.Doctor.ToDoctorResponse(),
-                Patient = patient.ToPatientResponse(),
-                AppointmentType = (AppointmentType)Enum.Parse<AppointmentType>(appointment.AppointmentType),
-                ExtraClinicalData = appointment.ExtraClinicalData,
-                Diagnosis = appointment.Diagnosis?.Name,
-                Status = (AppointmentStatus)Enum.Parse<AppointmentStatus>(appointment.Status),
-                Conclusion = appointment.Conclusion
-            })
-            .ToList();
+        var specification = new SpecificationBuilder<Appointment>()
+            .With(x => x.PatientId == patientId)
+            .OrderBy(x => x.DateAndTime, SortDirection.DESC)
+            .WithPagination(specifications.PageSize, specifications.PageNumber)
+            .Build();
+
+        return await this.GetAppointmentsListBySpecificationAsync(specification);
     }
 
-    public async Task<IEnumerable<AppointmentResponse>> GetAppointmentsHistoryOfDoctorAsync(Guid doctorId)
+    public async Task<ListModel<AppointmentResponse>> GetAppointmentsHistoryOfDoctorAsync(Guid doctorId, SpecificationsDTO specifications)
     {
-        var doctor = await _repository.GetByIdAsync<Doctor>(doctorId, disableTracking: false);
+        if (specifications is null)
+            throw new ArgumentNullException("Specifications are null.");
 
-        if (doctor is null)
+        if (!await _repository.ContainsAsync<Doctor>(x => x.Id == doctorId))
             throw new KeyNotFoundException("Doctor with such id does not exits.");
 
-        return doctor.Appointments
-            .Where(appointment => appointment.Status == AppointmentStatus.Completed.ToString())
-            .Select(appointment => new AppointmentResponse()
-            {
-                Id = appointment.Id,
-                DateAndTime = appointment.DateAndTime,
-                Doctor = doctor.ToDoctorResponse(),
-                Patient = appointment.Patient.ToPatientResponse(),
-                AppointmentType = (AppointmentType)Enum.Parse<AppointmentType>(appointment.AppointmentType),
-                ExtraClinicalData = appointment.ExtraClinicalData,
-                Diagnosis = appointment.Diagnosis?.Name,
-                Status = (AppointmentStatus)Enum.Parse<AppointmentStatus>(appointment.Status),
-                Conclusion = appointment.Conclusion
-            })
-            .ToList();
+        var specification = new SpecificationBuilder<Appointment>()
+            .With(x => x.DoctorId == doctorId)
+            .OrderBy(x => x.DateAndTime, SortDirection.DESC)
+            .WithPagination(specifications.PageSize, specifications.PageNumber)
+            .Build();
+
+        return await this.GetAppointmentsListBySpecificationAsync(specification);
     }
 
     public async Task<IEnumerable<AppointmentResponse>> GetScheduledAppoitnmentsOfPatientAsync(Guid patientId, DateOnly? date)
@@ -374,7 +382,8 @@ public class AppointmentsService : IAppointmentsService
 
         // Validting schedule slot
         var scheduleSlot = await _repository.FirstOrDefaultAsync<Schedule>(x => x.DoctorId == request.DoctorId &&
-            x.TimeSlot.StartTime == request.DateAndTime.ToShortTimeString());
+            x.TimeSlot.DayOfWeek == (int)request.DateAndTime.DayOfWeek &&
+            x.TimeSlot.StartTime == request.DateAndTime.ToShortTimeString(), disableTracking: false);
 
         if (scheduleSlot is null)
             throw new ArgumentException("There are not time slots in the doctors schedule for the passed time.");

@@ -98,9 +98,9 @@ namespace HospitalRegistry.API.Controllers
         [HttpGet("{id}/appointments/history")]
         [Authorize(Roles = $"{UserRoles.Doctor}, {UserRoles.Admin}, {UserRoles.Receptionist}")]
         public async Task<ActionResult<IEnumerable<AppointmentResponse>>> GetDoctorsAppointmentsHistory(
-            [FromRoute] Guid id)
+            [FromRoute] Guid id, [FromQuery] SpecificationsDTO specifications)
         {
-            return Ok(await _appointmentsService.GetAppointmentsHistoryOfDoctorAsync(id));
+            return Ok(await _appointmentsService.GetAppointmentsHistoryOfDoctorAsync(id, specifications));
         }
 
         [HttpGet("{id}/appointments/scheduled")]

@@ -10,6 +10,21 @@ namespace HospitalReqistry.Application.RepositoryContracts
     public interface IAsyncRepository
     {
         /// <summary>
+        /// Method for counting the amount of all entities of the specified type in the data source.
+        /// </summary>
+        /// <typeparam name="T">Type of entities to count amount.</typeparam>
+        /// <returns>Amount of all entities of the specified type.</returns>
+        Task<long> CountAsync<T>() where T : EntityBase;
+
+        /// <summary>
+        /// Method for counting the amount of filtered by predicate entities of the specified type in the data source.
+        /// </summary>
+        /// <typeparam name="T">Type of entities to count amount.</typeparam>
+        /// <param name="predicate">Expression to filter entities.</param>
+        /// <returns>Amount of filtered by predicate entities of the specified type.</returns>
+        Task<long> CountAsync<T>(Expression<Func<T, bool>> predicate) where T : EntityBase;
+
+        /// <summary>
         /// Method for reading all entities of the specific type from the data source.
         /// </summary>
         /// <typeparam name="T">Type of entities to read.</typeparam>

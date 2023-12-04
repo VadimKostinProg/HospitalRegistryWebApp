@@ -62,7 +62,7 @@ public abstract class HospitalRegistryTestsBase
         };
     }
 
-    public IEnumerable<Schedule> GetTestSchedules(Guid doctorId, int startHour = 10, int endHour = 15)
+    public IEnumerable<Schedule> GetTestSchedules(Guid doctorId, int dayOfWeek = 1, int startHour = 10, int endHour = 15)
     {
         for (int i = startHour; i <= endHour; i++)
         {
@@ -71,7 +71,7 @@ public abstract class HospitalRegistryTestsBase
                 Id = Guid.NewGuid(),
                 StartTime = $"{i}:00",
                 EndTime = $"{i + 1}:00",
-                DayOfWeek = 1
+                DayOfWeek = dayOfWeek
             };
 
             yield return new Schedule()

@@ -172,11 +172,18 @@ public class SetAppointmentAsyncTests : AppointmentsServiceTestsBase
         // Arrange
         var patient = GetTestPatient();
         var doctor = GetTestDoctor();
+
+        var tomorrowDate = DateTime.UtcNow.AddDays(1);
+
+        var dateTimeToSet = new DateTime(tomorrowDate.Year, tomorrowDate.Month, tomorrowDate.Day, 10, 0, 0);
+
         var request = fixture.Build<AppointmentSetRequest>()
-            .With(x => x.DateAndTime, DateTime.UtcNow.AddDays(2))
+            .With(x => x.DateAndTime, dateTimeToSet)
             .With(x => x.DoctorId, doctor.Id)
             .With(x => x.PatientId, patient.Id)
             .Create();
+
+        var schedules = GetTestSchedules(doctor.Id, dayOfWeek: (int)dateTimeToSet.DayOfWeek);
         
         repositoryMock.Setup(x => x.GetByIdAsync<Doctor>(It.IsAny<Guid>(), true))
             .ReturnsAsync(doctor);
@@ -184,6 +191,8 @@ public class SetAppointmentAsyncTests : AppointmentsServiceTestsBase
             .ReturnsAsync(patient);
         repositoryMock.Setup(x => x.ContainsAsync(It.IsAny<Expression<Func<Appointment, bool>>>()))
             .ReturnsAsync(false);
+        repositoryMock.Setup(x => x.FirstOrDefaultAsync<Schedule>(It.IsAny<Expression<Func<Schedule, bool>>>(), false))
+            .ReturnsAsync(schedules.First());
 
         // Assert
         var action = async () =>

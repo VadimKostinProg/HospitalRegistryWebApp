@@ -16,13 +16,12 @@ namespace HospitalRegistry.Application.Services
             _repository = repository;
         }
 
-        public async Task<IEnumerable<DoctorResponse>> GetDoctorsListAsync(DoctorSpecificationsDTO specificationsDTO)
+        public async Task<ListModel<DoctorResponse>> GetDoctorsListAsync(DoctorSpecificationsDTO specificationsDTO)
         {
-            var doctors = (await _repository.GetAsync<Doctor>(this.GetSpecification(specificationsDTO)))
-                .Select(x => x.ToDoctorResponse())
-                .ToList();
+            if (specificationsDTO is null)
+                throw new ArgumentNullException("Specifications are null.");
 
-            return doctors;
+            return await this.GetDoctorsListBySpecificationAsync(this.GetSpecification(specificationsDTO));
         }
 
         private ISpecification<Doctor> GetSpecification(DoctorSpecificationsDTO specificationsDTO, bool isDeleted = false)
@@ -30,7 +29,7 @@ namespace HospitalRegistry.Application.Services
             var builder = new SpecificationBuilder<Doctor>();
 
             builder.With(x => x.IsDeleted == isDeleted);
-            
+
             if (specificationsDTO is not null)
             {
                 if (!string.IsNullOrEmpty(specificationsDTO.Name))
@@ -48,26 +47,29 @@ namespace HospitalRegistry.Application.Services
                 if (specificationsDTO.Specialty is not null)
                     builder.With(x => x.Specialty == specificationsDTO.Specialty.ToString());
 
-                switch (specificationsDTO.SortField)
+                if (!string.IsNullOrEmpty(specificationsDTO.SortField))
                 {
-                    case "Id":
-                        builder.OrderBy(x => x.Id, specificationsDTO.SortDirection);
-                        break;
-                    case "Name":
-                        builder.OrderBy(x => x.Name, specificationsDTO.SortDirection);
-                        break;
-                    case "Surname":
-                        builder.OrderBy(x => x.Surname, specificationsDTO.SortDirection);
-                        break;
-                    case "Patronymic":
-                        builder.OrderBy(x => x.Patronymic, specificationsDTO.SortDirection);
-                        break;
-                    case "DateOfBirth":
-                        builder.OrderBy(x => x.DateOfBirth, specificationsDTO.SortDirection);
-                        break;
-                    case "Specialty":
-                        builder.OrderBy(x => x.Specialty, specificationsDTO.SortDirection);
-                        break;
+                    switch (specificationsDTO.SortField)
+                    {
+                        case "Id":
+                            builder.OrderBy(x => x.Id, specificationsDTO.SortDirection ?? Enums.SortDirection.ASC);
+                            break;
+                        case "Name":
+                            builder.OrderBy(x => x.Name, specificationsDTO.SortDirection ?? Enums.SortDirection.ASC);
+                            break;
+                        case "Surname":
+                            builder.OrderBy(x => x.Surname, specificationsDTO.SortDirection ?? Enums.SortDirection.ASC);
+                            break;
+                        case "Patronymic":
+                            builder.OrderBy(x => x.Patronymic, specificationsDTO.SortDirection ?? Enums.SortDirection.ASC);
+                            break;
+                        case "DateOfBirth":
+                            builder.OrderBy(x => x.DateOfBirth, specificationsDTO.SortDirection ?? Enums.SortDirection.ASC);
+                            break;
+                        case "Specialty":
+                            builder.OrderBy(x => x.Specialty, specificationsDTO.SortDirection ?? Enums.SortDirection.ASC);
+                            break;
+                    }
                 }
 
                 builder.WithPagination(specificationsDTO.PageSize, specificationsDTO.PageNumber);
@@ -79,7 +81,7 @@ namespace HospitalRegistry.Application.Services
         public async Task<DoctorResponse> CreateAsync(DoctorAddRequest request)
         {
             // Validating the request
-            if (request is null) 
+            if (request is null)
                 throw new ArgumentNullException("Doctor to insert is null.");
 
             if (string.IsNullOrEmpty(request.Name))
@@ -183,14 +185,31 @@ namespace HospitalRegistry.Application.Services
             return doctor.ToDoctorResponse();
         }
 
-        public async Task<IEnumerable<DoctorResponse>> GetDeletedDoctorsListAsync(DoctorSpecificationsDTO specificationsDTO)
+        public async Task<ListModel<DoctorResponse>> GetDeletedDoctorsListAsync(DoctorSpecificationsDTO specificationsDTO)
         {
-            var doctors = 
-                (await _repository.GetAsync<Doctor>(this.GetSpecification(specificationsDTO, isDeleted: true)))
+            if (specificationsDTO is null)
+                throw new ArgumentNullException("Specifications are null.");
+
+            return await this.GetDoctorsListBySpecificationAsync(this.GetSpecification(specificationsDTO, isDeleted: true));
+        }
+
+        private async Task<ListModel<DoctorResponse>> GetDoctorsListBySpecificationAsync(ISpecification<Doctor> specification)
+        {
+            var doctors = (await _repository.GetAsync<Doctor>(specification, disableTracking: false))
                 .Select(x => x.ToDoctorResponse())
                 .ToList();
 
-            return doctors;
+            var totalCount = specification.Predicate is null ?
+                await _repository.CountAsync<Doctor>() :
+                await _repository.CountAsync<Doctor>(specification.Predicate);
+
+            var totalPages = (int)Math.Ceiling((double)totalCount / specification.Take);
+
+            return new ListModel<DoctorResponse>
+            {
+                List = doctors,
+                TotalPages = totalPages,
+            };
         }
     }
 }
