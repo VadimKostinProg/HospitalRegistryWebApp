@@ -21,14 +21,14 @@ namespace HospitalRegistry.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<AccountResponse>>> GetAccountsList([FromQuery] AccountSpecificationsDTO specifications)
         {
-            return Ok(await _userAccountsService.GetAccountsList(specifications));
+            return Ok(await _userAccountsService.GetAccountsListAsync(specifications));
         }
 
         [HttpPost]
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<ActionResult<string>> CreateUser([FromBody] CreateAccountRequest createUserRequest)
         {
-            await _userAccountsService.CreateAccount(createUserRequest);
+            await _userAccountsService.CreateAccountAsync(createUserRequest);
 
             return Ok("User has been successfully created.");
         }

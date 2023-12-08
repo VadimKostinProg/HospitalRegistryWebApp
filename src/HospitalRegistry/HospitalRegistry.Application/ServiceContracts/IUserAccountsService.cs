@@ -12,7 +12,7 @@ namespace HospitalRegistry.Application.ServiceContracts
         /// </summary>
         /// <param name="specifications">Specifications to filter, sort, search and paginate accounts.</param>
         /// <returns>List of AccountResponse objects.</returns>
-        Task<ListModel<AccountResponse>> GetAccountsList(AccountSpecificationsDTO specificationsDTO);
+        Task<ListModel<AccountResponse>> GetAccountsListAsync(AccountSpecificationsDTO specificationsDTO);
 
         /// <summary>
         /// Method for registering doctors and users accounts.
@@ -25,7 +25,7 @@ namespace HospitalRegistry.Application.ServiceContracts
         /// Method for creating new admin or receptionist account.
         /// </summary>
         /// <param name="user">Admins credentianls.</param>
-        Task CreateAccount(CreateAccountRequest user);
+        Task CreateAccountAsync(CreateAccountRequest user);
 
         /// <summary>
         /// Method for sign in user.
@@ -38,7 +38,7 @@ namespace HospitalRegistry.Application.ServiceContracts
         /// Method for deleting user accounts(does not delete records of doctors and patients). 
         /// </summary>
         /// <param name="accountId">Id of account to delete.</param>
-        Task DeleteAccount(Guid accountId);
+        Task DeleteAccountAsync(Guid accountId);
 
         /// <summary>
         /// Method for logout current user.

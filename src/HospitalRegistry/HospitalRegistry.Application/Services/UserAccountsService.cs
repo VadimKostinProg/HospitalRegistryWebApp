@@ -30,7 +30,7 @@ namespace HospitalRegistry.Application.Services
             _repository = repository;
         }
 
-        public async Task<ListModel<AccountResponse>> GetAccountsList(AccountSpecificationsDTO specifications)
+        public async Task<ListModel<AccountResponse>> GetAccountsListAsync(AccountSpecificationsDTO specifications)
         {
             if (specifications is null)
                 throw new ArgumentNullException("Specifications are null.");
@@ -76,11 +76,9 @@ namespace HospitalRegistry.Application.Services
         {
             var builder = new SpecificationBuilder<ApplicationUser>();
 
-            if (!string.IsNullOrEmpty(specificationsDTO.FullName))
-                builder.With(x => x.FullName == specificationsDTO.FullName);
-
-            if (!string.IsNullOrEmpty(specificationsDTO.Email))
-                builder.With(x => x.Email == specificationsDTO.Email);
+            if (!string.IsNullOrEmpty(specificationsDTO.SearchTerm))
+                builder.With(x => x.FullName.Contains(specificationsDTO.SearchTerm) || 
+                    x.Email.Contains(specificationsDTO.SearchTerm));
 
             if (!string.IsNullOrEmpty(specificationsDTO.Role))
             {
@@ -113,7 +111,7 @@ namespace HospitalRegistry.Application.Services
             return builder.Build();
         }
 
-        public async Task CreateAccount(CreateAccountRequest user)
+        public async Task CreateAccountAsync(CreateAccountRequest user)
         {
             if (user.Role != UserRoles.Admin && user.Role != UserRoles.Receptionist)
             {
@@ -140,7 +138,7 @@ namespace HospitalRegistry.Application.Services
             }
         }
 
-        public async Task DeleteAccount(Guid accountId)
+        public async Task DeleteAccountAsync(Guid accountId)
         {
             var user = await _userManager.FindByIdAsync(accountId.ToString());
 

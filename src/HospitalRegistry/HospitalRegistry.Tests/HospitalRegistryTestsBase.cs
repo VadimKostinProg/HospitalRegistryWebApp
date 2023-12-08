@@ -3,6 +3,7 @@ using HospitalRegistry.Application.DTO;
 using HospitalRegistry.Application.Enums;
 using HospitalReqistry.Application.RepositoryContracts;
 using HospitalReqistry.Domain.Entities;
+using Microsoft.AspNetCore.Identity;
 using Moq;
 
 namespace HospitalRegistry.Tests;
