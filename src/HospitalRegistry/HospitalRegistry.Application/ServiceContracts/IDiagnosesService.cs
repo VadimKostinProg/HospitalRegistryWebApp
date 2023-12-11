@@ -6,7 +6,7 @@ namespace HospitalRegistry.Application.ServiceContracts
     /// Service for managing the diagnoses.
     /// </summary>
     public interface IDiagnosesService : 
-        ICRUDService<DiagnosisAddRequest, DiagnosisUpdateRequest, DiagnosisResponse>, 
+        ICRUDService<DiagnosisCreateRequest, DiagnosisUpdateRequest, DiagnosisResponse>, 
         IRecoverable
     {
         /// <summary>

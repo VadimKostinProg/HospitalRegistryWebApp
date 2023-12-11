@@ -31,6 +31,7 @@ public class DoctorAddRequest
 
     [Required]
     [MaxLength(30)]
+    [EmailAddress]
     public string Email { get; set; } = null!;
 
     [Required] 

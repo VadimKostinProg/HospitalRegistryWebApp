@@ -32,6 +32,7 @@ namespace HospitalRegistry.API.Middlewares
                 case KeyNotFoundException notFoundException:
                     code = HttpStatusCode.NotFound;
                     break;
+                case InvalidOperationException:
                 case ArgumentNullException:
                 case ArgumentException argumentException:
                     code = HttpStatusCode.BadRequest;

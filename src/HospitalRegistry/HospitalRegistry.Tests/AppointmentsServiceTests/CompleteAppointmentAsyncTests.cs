@@ -41,7 +41,7 @@ public class CompleteAppointmentAsyncTests : AppointmentsServiceTestsBase
         // Arrange
         var request = fixture.Create<AppointmentCompleteRequest>();
 
-        repositoryMock.Setup(x => x.GetByIdAsync<Appointment>(It.IsAny<Guid>(), true))
+        repositoryMock.Setup(x => x.GetByIdAsync<Appointment>(It.IsAny<Guid>(), false))
             .ReturnsAsync(null as Appointment);
 
         // Assert
@@ -66,7 +66,7 @@ public class CompleteAppointmentAsyncTests : AppointmentsServiceTestsBase
             .With(x => x.Id, appointment.Id)
             .Create();
 
-        repositoryMock.Setup(x => x.GetByIdAsync<Appointment>(appointment.Id, true))
+        repositoryMock.Setup(x => x.GetByIdAsync<Appointment>(appointment.Id, false))
             .ReturnsAsync(appointment);
 
         // Assert
@@ -91,7 +91,7 @@ public class CompleteAppointmentAsyncTests : AppointmentsServiceTestsBase
             .With(x => x.Id, appointment.Id)
             .Create();
 
-        repositoryMock.Setup(x => x.GetByIdAsync<Appointment>(appointment.Id, true))
+        repositoryMock.Setup(x => x.GetByIdAsync<Appointment>(appointment.Id, false))
             .ReturnsAsync(appointment);
 
         // Assert
@@ -115,9 +115,9 @@ public class CompleteAppointmentAsyncTests : AppointmentsServiceTestsBase
             .With(x => x.Id, appointment.Id)
             .Create();
 
-        repositoryMock.Setup(x => x.GetByIdAsync<Appointment>(appointment.Id, true))
+        repositoryMock.Setup(x => x.GetByIdAsync<Appointment>(appointment.Id, false))
             .ReturnsAsync(appointment);
-        repositoryMock.Setup(x => x.GetByIdAsync<Diagnosis>(request.DiagnosisId, true))
+        repositoryMock.Setup(x => x.GetByIdAsync<Diagnosis>(request.DiagnosisId, false))
             .ReturnsAsync(null as Diagnosis);
 
         // Assert
@@ -146,9 +146,9 @@ public class CompleteAppointmentAsyncTests : AppointmentsServiceTestsBase
             .With(x => x.DiagnosisId, diagnosis.Id)
             .Create();
 
-        repositoryMock.Setup(x => x.GetByIdAsync<Appointment>(appointment.Id, true))
+        repositoryMock.Setup(x => x.GetByIdAsync<Appointment>(appointment.Id, false))
             .ReturnsAsync(appointment);
-        repositoryMock.Setup(x => x.GetByIdAsync<Diagnosis>(diagnosis.Id, true))
+        repositoryMock.Setup(x => x.GetByIdAsync<Diagnosis>(diagnosis.Id, false))
             .ReturnsAsync(diagnosis);
 
         // Assert
@@ -177,9 +177,9 @@ public class CompleteAppointmentAsyncTests : AppointmentsServiceTestsBase
             .With(x => x.Conclusion, string.Empty)
             .Create();
 
-        repositoryMock.Setup(x => x.GetByIdAsync<Appointment>(appointment.Id, true))
+        repositoryMock.Setup(x => x.GetByIdAsync<Appointment>(appointment.Id, false))
             .ReturnsAsync(appointment);
-        repositoryMock.Setup(x => x.GetByIdAsync<Diagnosis>(diagnosis.Id, true))
+        repositoryMock.Setup(x => x.GetByIdAsync<Diagnosis>(diagnosis.Id, false))
             .ReturnsAsync(diagnosis);
 
         // Assert
@@ -219,9 +219,9 @@ public class CompleteAppointmentAsyncTests : AppointmentsServiceTestsBase
         };
         userManagerMock.Setup(x => x.GetUserAsync(It.IsAny<ClaimsPrincipal>()))
             .ReturnsAsync(user);
-        repositoryMock.Setup(x => x.GetByIdAsync<Appointment>(appointment.Id, true))
+        repositoryMock.Setup(x => x.GetByIdAsync<Appointment>(appointment.Id, false))
             .ReturnsAsync(appointment);
-        repositoryMock.Setup(x => x.GetByIdAsync<Diagnosis>(diagnosis.Id, true))
+        repositoryMock.Setup(x => x.GetByIdAsync<Diagnosis>(diagnosis.Id, false))
             .ReturnsAsync(diagnosis);
 
         // Assert
@@ -262,9 +262,9 @@ public class CompleteAppointmentAsyncTests : AppointmentsServiceTestsBase
         userManagerMock.Setup(x => x.GetUserAsync(It.IsAny<ClaimsPrincipal>()))
             .ReturnsAsync(user);
 
-        repositoryMock.Setup(x => x.GetByIdAsync<Appointment>(appointment.Id, true))
+        repositoryMock.Setup(x => x.GetByIdAsync<Appointment>(appointment.Id, false))
             .ReturnsAsync(appointment);
-        repositoryMock.Setup(x => x.GetByIdAsync<Diagnosis>(diagnosis.Id, true))
+        repositoryMock.Setup(x => x.GetByIdAsync<Diagnosis>(diagnosis.Id, false))
             .ReturnsAsync(diagnosis);
 
         // Assert

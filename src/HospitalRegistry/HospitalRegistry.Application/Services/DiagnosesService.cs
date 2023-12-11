@@ -64,7 +64,7 @@ namespace HospitalRegistry.Application.Services
             return diagnosis.ToDiagnosisResponse();
         }
 
-        public async Task<DiagnosisResponse> CreateAsync(DiagnosisAddRequest request)
+        public async Task<DiagnosisResponse> CreateAsync(DiagnosisCreateRequest request)
         {
             // Validating request
             if (request is null)
@@ -72,6 +72,9 @@ namespace HospitalRegistry.Application.Services
 
             if (string.IsNullOrEmpty(request.Name))
                 throw new ArgumentException("Diagnosis name cannot be blank.");
+
+            if (await _repository.ContainsAsync<Diagnosis>(x => x.Name == request.Name && x.IsDeleted == false))
+                throw new ArgumentException("Diagnosis with such name already exists.");
 
             // Adding new diagnosis
             var diagnosis = request.ToDiagnosis();
@@ -82,15 +85,22 @@ namespace HospitalRegistry.Application.Services
 
         public async Task<DiagnosisResponse> UpdateAsync(DiagnosisUpdateRequest request)
         {
-            // Validating request
+            // Validating request   
             if (request is null)
                 throw new ArgumentNullException("Diagnosis to update is null.");
 
-            if (!(await _repository.ContainsAsync<Diagnosis>(x => x.Id == request.Id)))
-                throw new KeyNotFoundException("Diagnosis with such id does not exist.");
-
             if (string.IsNullOrEmpty(request.Name))
                 throw new ArgumentException("Diagnosis name cannot be blank.");
+
+            var diagnosisToUpdate = await _repository.FirstOrDefaultAsync<Diagnosis>(x => 
+                x.Id == request.Id && x.IsDeleted == false);
+
+            if (diagnosisToUpdate is null)
+                throw new KeyNotFoundException("Diagnosis with such id does not exist.");
+
+            if (await _repository.ContainsAsync<Diagnosis>(x => x.Id != request.Id && 
+                x.Name == request.Name && x.IsDeleted == false))
+                throw new ArgumentException("Diagnoses with the same name already exists.");
 
             // Updating the diagnosis
             var diagnosis = request.ToDiagnosis();
@@ -130,6 +140,11 @@ namespace HospitalRegistry.Application.Services
             if (!diagnosis.IsDeleted)
             {
                 throw new ArgumentException("Diagnosis is not deleted.");
+            }
+
+            if (await _repository.ContainsAsync<Diagnosis>(x => x.Name == diagnosis.Name && x.IsDeleted == false))
+            {
+                throw new InvalidOperationException("Diagnosis with the name of the diagnosis to recover alreay exists.");
             }
 
             diagnosis.IsDeleted = false;

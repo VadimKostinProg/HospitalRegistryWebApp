@@ -77,7 +77,7 @@ public class GetAppointmentsHistoryOfDoctorAsyncTests : AppointmentsServiceTests
 
         repositoryMock.Setup(x => x.ContainsAsync<Doctor>(It.IsAny<Expression<Func<Doctor, bool>>>()))
             .ReturnsAsync(true);
-        repositoryMock.Setup(x => x.GetAsync<Appointment>(It.IsAny<ISpecification<Appointment>>(), true))
+        repositoryMock.Setup(x => x.GetAsync<Appointment>(It.IsAny<ISpecification<Appointment>>(), false))
             .ReturnsAsync(filteredAppointments);
         repositoryMock.Setup(x => x.CountAsync<Appointment>(It.IsAny<Expression<Func<Appointment, bool>>>()))
             .ReturnsAsync(appointments.Count());

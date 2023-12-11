@@ -13,7 +13,7 @@ public class CancelAppointmentAsyncTests : AppointmentsServiceTestsBase
         // Arrange
         var idToPass = Guid.NewGuid();
 
-        repositoryMock.Setup(x => x.GetByIdAsync<Appointment>(idToPass, true))
+        repositoryMock.Setup(x => x.GetByIdAsync<Appointment>(idToPass, false))
             .ReturnsAsync(null as Appointment);
 
         // Assert
@@ -36,7 +36,7 @@ public class CancelAppointmentAsyncTests : AppointmentsServiceTestsBase
         appointment.Status = AppointmentStatus.Canceled.ToString();
         var idToPass = appointment.Id;
 
-        repositoryMock.Setup(x => x.GetByIdAsync<Appointment>(idToPass, true))
+        repositoryMock.Setup(x => x.GetByIdAsync<Appointment>(idToPass, false))
             .ReturnsAsync(appointment);
 
         // Assert
@@ -59,7 +59,7 @@ public class CancelAppointmentAsyncTests : AppointmentsServiceTestsBase
         var appointment = GetTestCompletedAppointments(doctor, patient, diagnosis, new TimeOnly(12, 0), new TimeOnly(15, 0)).First();
         var idToPass = appointment.Id;
 
-        repositoryMock.Setup(x => x.GetByIdAsync<Appointment>(idToPass, true))
+        repositoryMock.Setup(x => x.GetByIdAsync<Appointment>(idToPass, false))
             .ReturnsAsync(appointment);
 
         // Assert
@@ -81,7 +81,7 @@ public class CancelAppointmentAsyncTests : AppointmentsServiceTestsBase
         var appointment = GetTestScheduledAppointments(doctor, patient, DateOnly.FromDateTime(DateTime.UtcNow.AddDays(2)), new TimeOnly(12, 0)).First();
         var idToPass = appointment.Id;
 
-        repositoryMock.Setup(x => x.GetByIdAsync<Appointment>(idToPass, true))
+        repositoryMock.Setup(x => x.GetByIdAsync<Appointment>(idToPass, false))
             .ReturnsAsync(appointment);
 
         // Assert

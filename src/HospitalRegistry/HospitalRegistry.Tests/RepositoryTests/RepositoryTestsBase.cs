@@ -8,19 +8,19 @@ namespace HospitalRegistry.Tests.RepositoryTests;
 
 public abstract class RepositoryTestsBase : HospitalRegistryTestsBase
 {
-	protected readonly ApplicationContext context;
+    protected readonly ApplicationContext context;
     protected readonly IAsyncRepository repository;
 	protected readonly List<Doctor> doctorsList;
 
 	public RepositoryTestsBase()
 	{
-		var options = new DbContextOptionsBuilder<ApplicationContext>()
-			.UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-			.Options;
+        var options = new DbContextOptionsBuilder<ApplicationContext>()
+            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+            .Options;
 
-		context = new ApplicationContext(options);
+        context = new ApplicationContext(options);
 
-		doctorsList = GetTestDoctors().ToList();
+        doctorsList = GetTestDoctors().ToList();
 
         doctorsList[0].Name = doctorsList[1].Name = doctorsList[2].Name = "test name";
 

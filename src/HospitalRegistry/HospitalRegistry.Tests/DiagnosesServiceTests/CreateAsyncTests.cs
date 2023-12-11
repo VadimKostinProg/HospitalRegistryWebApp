@@ -12,7 +12,7 @@ public class CreateAsyncTests : DiagnosesServiceTestsBase
     public async Task CreateAsync_NullPassed_ThrowsArgumentNullException()
     {
         // Arrange
-        DiagnosisAddRequest request = null;
+        DiagnosisCreateRequest request = null;
         
         // Assert
         var action = async () =>
@@ -28,7 +28,7 @@ public class CreateAsyncTests : DiagnosesServiceTestsBase
     public async Task CreateAsync_InvalidName_ThrowsArgumentException()
     {
         // Arrange
-        var request = new DiagnosisAddRequest()
+        var request = new DiagnosisCreateRequest()
         {
             Name = string.Empty
         };
@@ -47,7 +47,7 @@ public class CreateAsyncTests : DiagnosesServiceTestsBase
     public async Task CreateAsync_ValidObject_SuccessfullCreating()
     {
         // Arrange
-        var request = fixture.Create<DiagnosisAddRequest>();
+        var request = fixture.Create<DiagnosisCreateRequest>();
         repositoryMock.Setup(x => x.AddAsync(It.IsAny<Diagnosis>())).Returns(Task.CompletedTask);
         
         // Act

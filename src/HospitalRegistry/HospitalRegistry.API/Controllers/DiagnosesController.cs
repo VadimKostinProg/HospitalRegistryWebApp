@@ -35,7 +35,7 @@ namespace HospitalRegistry.API.Controllers
 
         [HttpPost]
         [Authorize(Roles = UserRoles.Admin)]
-        public async Task<ActionResult<DiagnosisResponse>> CreateNewDiagnosis([FromBody] DiagnosisAddRequest request)
+        public async Task<ActionResult<DiagnosisResponse>> CreateNewDiagnosis([FromBody] DiagnosisCreateRequest request)
         {
             return Ok(await _diagnosesService.CreateAsync(request));
         }

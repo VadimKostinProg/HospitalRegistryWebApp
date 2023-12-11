@@ -32,7 +32,7 @@ public class GetByIdAsyncTests : DiagnosesServiceTestsBase
         // Arrange
         var diagnosis = GetTestDiagnosis();
         var idToPass = diagnosis.Id;
-        repositoryMock.Setup(x => x.FirstOrDefaultAsync<Diagnosis>(It.IsAny<Expression<Func<Diagnosis, bool>>>(), true))
+        repositoryMock.Setup(x => x.FirstOrDefaultAsync<Diagnosis>(It.IsAny<Expression<Func<Diagnosis, bool>>>(), false))
             .ReturnsAsync(diagnosis);
         
         // Act

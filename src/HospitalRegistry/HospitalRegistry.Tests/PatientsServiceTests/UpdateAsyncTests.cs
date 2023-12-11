@@ -116,7 +116,8 @@ public class UpdateAsyncTests : PatientsServiceTestsBase
             .With(x => x.DateOfBirth, DateOnly.FromDateTime(DateTime.Now.AddYears(2)))
             .Create();
 
-        repositoryMock.Setup(x => x.ContainsAsync(It.IsAny<Expression<Func<Patient, bool>>>())).ReturnsAsync(true);
+        repositoryMock.Setup(x => x.ContainsAsync(It.IsAny<Expression<Func<Patient, bool>>>()))
+            .ReturnsAsync(true);
 
         // Assert
         var action = async () =>
@@ -136,7 +137,8 @@ public class UpdateAsyncTests : PatientsServiceTestsBase
             .With(x => x.DateOfBirth, new DateOnly(2000, 1, 1))
             .Create();
 
-        repositoryMock.Setup(x => x.ContainsAsync(It.IsAny<Expression<Func<Patient, bool>>>())).ReturnsAsync(true);
+        repositoryMock.Setup(x => x.ContainsAsync(It.IsAny<Expression<Func<Patient, bool>>>()))
+            .ReturnsAsync(true);
         repositoryMock.Setup(x => x.UpdateAsync(It.IsAny<Patient>())).Returns(Task.CompletedTask);
 
         // Act

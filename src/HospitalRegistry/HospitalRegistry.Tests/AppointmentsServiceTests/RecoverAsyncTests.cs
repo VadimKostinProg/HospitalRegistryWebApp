@@ -15,7 +15,7 @@ public class RecoverAsyncTests : AppointmentsServiceTestsBase
         // Arrange
         var idToPass = Guid.NewGuid();
 
-        repositoryMock.Setup(x => x.GetByIdAsync<Appointment>(idToPass, true))
+        repositoryMock.Setup(x => x.GetByIdAsync<Appointment>(idToPass, false))
             .ReturnsAsync(null as Appointment);
 
         // Assert
@@ -37,7 +37,7 @@ public class RecoverAsyncTests : AppointmentsServiceTestsBase
         var appointment = GetTestScheduledAppointments(doctor, patient, DateOnly.FromDateTime(DateTime.UtcNow.AddDays(2)), new TimeOnly(12, 0)).First();
         var idToPass = appointment.Id;
 
-        repositoryMock.Setup(x => x.GetByIdAsync<Appointment>(idToPass, true))
+        repositoryMock.Setup(x => x.GetByIdAsync<Appointment>(idToPass, false))
             .ReturnsAsync(appointment);
 
         // Assert
@@ -64,7 +64,7 @@ public class RecoverAsyncTests : AppointmentsServiceTestsBase
         appointment.Status = AppointmentStatus.Canceled.ToString();
         appointment.DateAndTime = DateTime.UtcNow.AddMinutes(-delay);
 
-        repositoryMock.Setup(x => x.GetByIdAsync<Appointment>(idToPass, true))
+        repositoryMock.Setup(x => x.GetByIdAsync<Appointment>(idToPass, false))
             .ReturnsAsync(appointment);
 
         // Assert
@@ -88,7 +88,7 @@ public class RecoverAsyncTests : AppointmentsServiceTestsBase
 
         appointment.Status = AppointmentStatus.Canceled.ToString();
 
-        repositoryMock.Setup(x => x.GetByIdAsync<Appointment>(idToPass, true))
+        repositoryMock.Setup(x => x.GetByIdAsync<Appointment>(idToPass, false))
             .ReturnsAsync(appointment);
         repositoryMock.Setup(x => x.ContainsAsync(It.IsAny<Expression<Func<Appointment, bool>>>()))
             .ReturnsAsync(true);
@@ -114,7 +114,7 @@ public class RecoverAsyncTests : AppointmentsServiceTestsBase
 
         appointment.Status = AppointmentStatus.Canceled.ToString();
 
-        repositoryMock.Setup(x => x.GetByIdAsync<Appointment>(idToPass, true))
+        repositoryMock.Setup(x => x.GetByIdAsync<Appointment>(idToPass, false))
             .ReturnsAsync(appointment);
         repositoryMock.Setup(x => x.ContainsAsync(It.IsAny<Expression<Func<Appointment, bool>>>()))
             .ReturnsAsync(false);

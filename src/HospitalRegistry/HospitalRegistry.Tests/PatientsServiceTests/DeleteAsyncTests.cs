@@ -11,7 +11,7 @@ public class DeleteAsyncTests : PatientsServiceTestsBase
     {
         // Arrange
         var idToPass = Guid.NewGuid();
-        repositoryMock.Setup(x => x.GetByIdAsync<Patient>(idToPass, true))
+        repositoryMock.Setup(x => x.GetByIdAsync<Patient>(idToPass, false))
             .ReturnsAsync(null as Patient);
         
         // Assert

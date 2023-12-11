@@ -26,11 +26,11 @@ public class RepositoryBase : IAsyncRepository
         return await context.Set<T>().CountAsync(predicate);
     }
 
-    public virtual async Task<IEnumerable<T>> GetAsync<T>(ISpecification<T> specification, bool disableTracking = true) where T : EntityBase
+    public virtual async Task<IEnumerable<T>> GetAsync<T>(ISpecification<T> specification, bool disableTracking = false) where T : EntityBase
     {
         var entities = context.Set<T>().AsQueryable();
 
-        if (!disableTracking)
+        if (disableTracking)
         {
             entities = entities.AsNoTracking();
         }
@@ -40,11 +40,11 @@ public class RepositoryBase : IAsyncRepository
         return await entities.ToListAsync();
     }
 
-    public virtual async Task<IEnumerable<T>> GetFilteredAsync<T>(Expression<Func<T, bool>> predicate, bool disableTracking = true) where T : EntityBase
+    public virtual async Task<IEnumerable<T>> GetFilteredAsync<T>(Expression<Func<T, bool>> predicate, bool disableTracking = false) where T : EntityBase
     {
         var entities = context.Set<T>().Where(predicate);
 
-        if (!disableTracking)
+        if (disableTracking)
         {
             entities = entities.AsNoTracking();
         }
@@ -52,11 +52,11 @@ public class RepositoryBase : IAsyncRepository
         return await entities.ToListAsync();
     }
 
-    public virtual async Task<T?> GetByIdAsync<T>(Guid id, bool disableTracking = true) where T : EntityBase
+    public virtual async Task<T?> GetByIdAsync<T>(Guid id, bool disableTracking = false) where T : EntityBase
     {
         var query = context.Set<T>().AsQueryable();
 
-        if (!disableTracking)
+        if (disableTracking)
         {
             query = query.AsNoTracking();
         }
@@ -64,7 +64,7 @@ public class RepositoryBase : IAsyncRepository
         return await query.FirstOrDefaultAsync(x => x.Id == id);
     }
 
-    public virtual async Task<T?> FirstOrDefaultAsync<T>(Expression<Func<T, bool>> expression, bool disableTracking = true) where T : EntityBase
+    public virtual async Task<T?> FirstOrDefaultAsync<T>(Expression<Func<T, bool>> expression, bool disableTracking = false) where T : EntityBase
     {
         var query = context.Set<T>().AsQueryable();
 
@@ -78,7 +78,7 @@ public class RepositoryBase : IAsyncRepository
 
     public virtual async Task<bool> ContainsAsync<T>(Expression<Func<T, bool>> expression) where T : EntityBase
     {
-        return (await context.Set<T>().Where(expression).ToListAsync()).Count > 0;
+        return await context.Set<T>().CountAsync(expression) > 0;
     }
 
     public virtual async Task AddAsync<T>(T entity) where T : EntityBase

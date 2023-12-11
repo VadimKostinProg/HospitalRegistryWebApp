@@ -6,7 +6,7 @@ namespace HospitalRegistry.Application.DTO;
 /// <summary>
 /// DTO for updating name of existant diagnosis request.
 /// </summary>
-public class DiagnosisUpdateRequest : DiagnosisAddRequest
+public class DiagnosisUpdateRequest : DiagnosisCreateRequest
 {
     [Required]
     public Guid Id { get; set; }

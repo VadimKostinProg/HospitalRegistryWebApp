@@ -22,7 +22,8 @@ namespace HospitalRegistry.Tests.DoctorsServiceTests
             // Arrange
             var doctors = GetTestDoctors(50).AsQueryable();
             var filteredDoctors = doctors.Where(doctor => doctor.Specialty == specialty.ToString()).AsQueryable();
-            repositoryMock.Setup(x => x.GetFilteredAsync(It.IsAny<Expression<Func<Doctor, bool>>>(), true)).ReturnsAsync(filteredDoctors);
+            repositoryMock.Setup(x => x.GetFilteredAsync(It.IsAny<Expression<Func<Doctor, bool>>>(), false))
+                .ReturnsAsync(filteredDoctors);
 
             // Act
             var actual = await service.GetBySpecialtyAsync(specialty);

@@ -6,7 +6,7 @@ namespace HospitalRegistry.Application.DTO;
 /// <summary>
 /// DTO for creating new diagnosis request.
 /// </summary>
-public class DiagnosisAddRequest
+public class DiagnosisCreateRequest
 {
     [Required]
     [MaxLength(50)]

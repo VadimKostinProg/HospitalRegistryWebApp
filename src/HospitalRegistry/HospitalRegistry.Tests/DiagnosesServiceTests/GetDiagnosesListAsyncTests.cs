@@ -50,7 +50,7 @@ public class GetDiagnosesListAsyncTests : DiagnosesServiceTestsBase
             .Take(pageSize)
             .ToList();
 
-        repositoryMock.Setup(x => x.GetAsync<Diagnosis>(It.IsAny<ISpecification<Diagnosis>>(), true))
+        repositoryMock.Setup(x => x.GetAsync<Diagnosis>(It.IsAny<ISpecification<Diagnosis>>(), false))
             .ReturnsAsync(diagnosesToReturn);
         repositoryMock.Setup(x => x.CountAsync<Diagnosis>(It.IsAny<Expression<Func<Diagnosis, bool>>>()))
             .ReturnsAsync(filteredDiagnoses.Count);

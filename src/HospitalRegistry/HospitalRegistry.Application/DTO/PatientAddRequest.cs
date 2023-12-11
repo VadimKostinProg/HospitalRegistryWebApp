@@ -25,9 +25,11 @@ public class PatientAddRequest
 
     [Required]
     [MaxLength(30)]
+    [EmailAddress]
     public string Email { get; set; } = null!;
 
-    [Required] 
+    [Required]
+    [Phone]
     public string PhoneNumber { get; set; } = null!;
 
     public virtual Patient ToPatient()

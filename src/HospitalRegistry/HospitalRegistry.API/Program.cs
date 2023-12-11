@@ -106,7 +106,10 @@ app.UseHsts();
 app.UseAuthentication();
 app.UseAuthorization();
 
-SeedData();
+if (builder.Configuration.GetValue<bool>("AllowSeedData"))
+{
+    SeedData();
+}
 
 app.MapControllers();
 
@@ -124,3 +127,5 @@ void SeedData()
     var userInitializer = scope.ServiceProvider.GetRequiredService<IUserInitializer>();
     userInitializer.Initialize();
 }
+
+public partial class Program { }

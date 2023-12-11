@@ -14,7 +14,7 @@ namespace HospitalRegistry.Tests.DoctorsServiceTests
         {
             // Arrange
             var idToPass = Guid.NewGuid();
-            repositoryMock.Setup(x => x.FirstOrDefaultAsync<Doctor>(It.IsAny<Expression<Func<Doctor, bool>>>(), true))
+            repositoryMock.Setup(x => x.FirstOrDefaultAsync<Doctor>(It.IsAny<Expression<Func<Doctor, bool>>>(), false))
                 .ReturnsAsync(null as Doctor);
 
             // Assert
@@ -33,7 +33,7 @@ namespace HospitalRegistry.Tests.DoctorsServiceTests
             // Arrange
             var doctor = GetTestDoctor();
             var idToPass = doctor.Id;
-            repositoryMock.Setup(x => x.FirstOrDefaultAsync<Doctor>(It.IsAny<Expression<Func<Doctor, bool>>>(), true))
+            repositoryMock.Setup(x => x.FirstOrDefaultAsync<Doctor>(It.IsAny<Expression<Func<Doctor, bool>>>(), false))
                 .ReturnsAsync(doctor);
 
             // Act

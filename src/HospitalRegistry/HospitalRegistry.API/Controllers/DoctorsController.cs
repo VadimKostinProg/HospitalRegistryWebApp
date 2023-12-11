@@ -1,8 +1,6 @@
 ﻿using HospitalRegistry.Application.Constants;
 using HospitalRegistry.Application.DTO;
-using HospitalRegistry.Application.Helpers;
 using HospitalRegistry.Application.ServiceContracts;
-using HospitalRegistry.Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

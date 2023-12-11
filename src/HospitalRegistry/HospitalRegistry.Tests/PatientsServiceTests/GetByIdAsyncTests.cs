@@ -12,7 +12,7 @@ public class GetByIdAsyncTests : PatientsServiceTestsBase
     {
         // Arrange
         var idToPass = Guid.NewGuid();
-        repositoryMock.Setup(x => x.FirstOrDefaultAsync<Patient>(It.IsAny<Expression<Func<Patient, bool>>>(), true))
+        repositoryMock.Setup(x => x.FirstOrDefaultAsync<Patient>(It.IsAny<Expression<Func<Patient, bool>>>(), false))
             .ReturnsAsync(null as Patient);
         
         // Assert
@@ -31,7 +31,7 @@ public class GetByIdAsyncTests : PatientsServiceTestsBase
         // Arrange
         var patient = GetTestPatient();
         var idToPass = patient.Id;
-        repositoryMock.Setup(x => x.FirstOrDefaultAsync<Patient>(It.IsAny<Expression<Func<Patient, bool>>>(), true))
+        repositoryMock.Setup(x => x.FirstOrDefaultAsync<Patient>(It.IsAny<Expression<Func<Patient, bool>>>(), false))
             .ReturnsAsync(patient);
         
         // Act

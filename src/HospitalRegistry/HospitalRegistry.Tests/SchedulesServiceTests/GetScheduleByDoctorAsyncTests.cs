@@ -14,7 +14,7 @@ public class GetScheduleByDoctorAsyncTests : SchedulesServiceTestsBase
     {
         // Arrange
         var idToPass = Guid.NewGuid();
-        repositoryMock.Setup(x => x.FirstOrDefaultAsync<Doctor>(It.IsAny<Expression<Func<Doctor, bool>>>(), true))
+        repositoryMock.Setup(x => x.FirstOrDefaultAsync<Doctor>(It.IsAny<Expression<Func<Doctor, bool>>>(), false))
             .ReturnsAsync(null as Doctor);
         
         // Assert
@@ -39,7 +39,7 @@ public class GetScheduleByDoctorAsyncTests : SchedulesServiceTestsBase
             .With(x => x.DateOfBirth, "01.01.2000")
             .With(x => x.Appointments, new List<Appointment>())
             .Create();
-        repositoryMock.Setup(x => x.FirstOrDefaultAsync<Doctor>(It.IsAny<Expression<Func<Doctor, bool>>>(), true))
+        repositoryMock.Setup(x => x.FirstOrDefaultAsync<Doctor>(It.IsAny<Expression<Func<Doctor, bool>>>(), false))
             .ReturnsAsync(doctor);
         
         // Act
@@ -64,7 +64,7 @@ public class GetScheduleByDoctorAsyncTests : SchedulesServiceTestsBase
             .With(x => x.Appointments, new List<Appointment>())
             .Create();
         var dayOfWeek = 1;
-        repositoryMock.Setup(x => x.FirstOrDefaultAsync<Doctor>(It.IsAny<Expression<Func<Doctor, bool>>>(), true))
+        repositoryMock.Setup(x => x.FirstOrDefaultAsync<Doctor>(It.IsAny<Expression<Func<Doctor, bool>>>(), false))
             .ReturnsAsync(doctor);
         
         // Act
