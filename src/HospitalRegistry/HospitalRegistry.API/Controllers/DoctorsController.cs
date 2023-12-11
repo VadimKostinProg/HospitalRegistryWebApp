@@ -33,7 +33,7 @@ namespace HospitalRegistry.API.Controllers
         }
 
         [HttpGet("{id}")]
-        [AllowAnonymous]
+        [Authorize]
         public async Task<ActionResult<DoctorResponse>> GetDoctorById([FromRoute] Guid id)
         {
             return Ok(await _doctorsService.GetByIdAsync(id));

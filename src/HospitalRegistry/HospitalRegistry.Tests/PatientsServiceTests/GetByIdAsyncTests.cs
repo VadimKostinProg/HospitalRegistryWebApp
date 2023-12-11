@@ -1,6 +1,7 @@
 using FluentAssertions;
 using HospitalReqistry.Domain.Entities;
 using Moq;
+using System.Linq.Expressions;
 
 namespace HospitalRegistry.Tests.PatientsServiceTests;
 
@@ -11,7 +12,7 @@ public class GetByIdAsyncTests : PatientsServiceTestsBase
     {
         // Arrange
         var idToPass = Guid.NewGuid();
-        repositoryMock.Setup(x => x.GetByIdAsync<Patient>(idToPass, true))
+        repositoryMock.Setup(x => x.FirstOrDefaultAsync<Patient>(It.IsAny<Expression<Func<Patient, bool>>>(), true))
             .ReturnsAsync(null as Patient);
         
         // Assert
@@ -30,7 +31,7 @@ public class GetByIdAsyncTests : PatientsServiceTestsBase
         // Arrange
         var patient = GetTestPatient();
         var idToPass = patient.Id;
-        repositoryMock.Setup(x => x.GetByIdAsync<Patient>(idToPass, true))
+        repositoryMock.Setup(x => x.FirstOrDefaultAsync<Patient>(It.IsAny<Expression<Func<Patient, bool>>>(), true))
             .ReturnsAsync(patient);
         
         // Act

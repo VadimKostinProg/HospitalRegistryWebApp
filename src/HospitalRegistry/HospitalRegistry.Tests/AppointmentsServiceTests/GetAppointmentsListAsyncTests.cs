@@ -51,7 +51,7 @@ public class GetAppointmentsListAsyncTests : AppointmentsServiceTestsBase
             .ReturnsAsync(true);
         repositoryMock.Setup(x => x.ContainsAsync<Diagnosis>(It.IsAny<Expression<Func<Diagnosis, bool>>>()))
             .ReturnsAsync(true);
-        repositoryMock.Setup(x => x.GetAsync<Appointment>(It.IsAny<ISpecification<Appointment>>(), false))
+        repositoryMock.Setup(x => x.GetAsync<Appointment>(It.IsAny<ISpecification<Appointment>>(), true))
             .ReturnsAsync(appointments);
         repositoryMock.Setup(x => x.CountAsync<Appointment>(It.IsAny<Expression<Func<Appointment, bool>>>()))
             .ReturnsAsync(appointments.Count);

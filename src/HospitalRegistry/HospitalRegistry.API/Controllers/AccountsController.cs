@@ -19,7 +19,8 @@ namespace HospitalRegistry.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<AccountResponse>>> GetAccountsList([FromQuery] AccountSpecificationsDTO specifications)
+        [Authorize(Roles = $"{UserRoles.Admin}, {UserRoles.Receptionist}")]
+        public async Task<ActionResult<ListModel<AccountResponse>>> GetAccountsList([FromQuery] AccountSpecificationsDTO specifications)
         {
             return Ok(await _userAccountsService.GetAccountsListAsync(specifications));
         }
@@ -54,6 +55,15 @@ namespace HospitalRegistry.API.Controllers
             await _userAccountsService.LogoutAsync();
 
             return Ok();
+        }
+
+        [HttpDelete("{id}")]
+        [Authorize(Roles = UserRoles.Admin)]
+        public async Task<ActionResult<string>> DeleteAccount([FromRoute] Guid id)
+        {
+            await _userAccountsService.DeleteAccountAsync(id);
+
+            return Ok("Account has been deleted successfully.");
         }
     }
 }

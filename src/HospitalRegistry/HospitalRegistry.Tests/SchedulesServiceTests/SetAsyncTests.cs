@@ -35,7 +35,7 @@ public class SetAsyncTests : SchedulesServiceTestsBase
             .With(x => x.DoctorId, doctorId)
             .With(x => x.Schedule, testSchedule)
             .Create();
-        repositoryMock.Setup(x => x.GetByIdAsync<Doctor>(doctorId, true))
+        repositoryMock.Setup(x => x.FirstOrDefaultAsync<Doctor>(It.IsAny<Expression<Func<Doctor, bool>>>(), true))
             .ReturnsAsync(null as Doctor);
         
         // Assert
@@ -63,7 +63,7 @@ public class SetAsyncTests : SchedulesServiceTestsBase
             .With(x => x.DoctorId, doctorId)
             .With(x => x.Schedule, newSchedule)
             .Create();
-        repositoryMock.Setup(x => x.GetByIdAsync<Doctor>(doctorId, false))
+        repositoryMock.Setup(x => x.FirstOrDefaultAsync<Doctor>(It.IsAny<Expression<Func<Doctor, bool>>>(), true))
             .ReturnsAsync(doctor);
 
         // Assert
@@ -93,7 +93,7 @@ public class SetAsyncTests : SchedulesServiceTestsBase
             .With(x => x.DoctorId, doctorId)
             .With(x => x.Schedule, newSchedule)
             .Create();
-        repositoryMock.Setup(x => x.GetByIdAsync<Doctor>(doctorId, false))
+        repositoryMock.Setup(x => x.FirstOrDefaultAsync<Doctor>(It.IsAny<Expression<Func<Doctor, bool>>>(), true))
             .ReturnsAsync(doctor);
 
         // Assert
@@ -123,7 +123,7 @@ public class SetAsyncTests : SchedulesServiceTestsBase
             .With(x => x.DoctorId, doctorId)
             .With(x => x.Schedule, newSchedule)
             .Create();
-        repositoryMock.Setup(x => x.GetByIdAsync<Doctor>(doctorId, false))
+        repositoryMock.Setup(x => x.FirstOrDefaultAsync<Doctor>(It.IsAny<Expression<Func<Doctor, bool>>>(), true))
             .ReturnsAsync(doctor);
         repositoryMock.Setup(x => x.DeleteRangeAsync(testSchedule))
             .ReturnsAsync(testSchedule.Count());

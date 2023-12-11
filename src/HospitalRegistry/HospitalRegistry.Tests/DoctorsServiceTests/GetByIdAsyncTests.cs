@@ -3,6 +3,7 @@ using Azure.Core;
 using FluentAssertions;
 using HospitalReqistry.Domain.Entities;
 using Moq;
+using System.Linq.Expressions;
 
 namespace HospitalRegistry.Tests.DoctorsServiceTests
 {
@@ -13,7 +14,8 @@ namespace HospitalRegistry.Tests.DoctorsServiceTests
         {
             // Arrange
             var idToPass = Guid.NewGuid();
-            repositoryMock.Setup(x => x.GetByIdAsync<Doctor>(idToPass, true)).ReturnsAsync(null as Doctor);
+            repositoryMock.Setup(x => x.FirstOrDefaultAsync<Doctor>(It.IsAny<Expression<Func<Doctor, bool>>>(), true))
+                .ReturnsAsync(null as Doctor);
 
             // Assert
             var action = async () =>
@@ -31,7 +33,8 @@ namespace HospitalRegistry.Tests.DoctorsServiceTests
             // Arrange
             var doctor = GetTestDoctor();
             var idToPass = doctor.Id;
-            repositoryMock.Setup(x => x.GetByIdAsync<Doctor>(idToPass, true)).ReturnsAsync(doctor);
+            repositoryMock.Setup(x => x.FirstOrDefaultAsync<Doctor>(It.IsAny<Expression<Func<Doctor, bool>>>(), true))
+                .ReturnsAsync(doctor);
 
             // Act
             var response = await service.GetByIdAsync(idToPass);

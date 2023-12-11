@@ -5,6 +5,7 @@ using HospitalReqistry.Application.RepositoryContracts;
 using HospitalReqistry.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Moq;
+using System.Data;
 
 namespace HospitalRegistry.Tests;
 
@@ -204,5 +205,27 @@ public abstract class HospitalRegistryTestsBase
                 Diagnosis = diagnosis
             };
         }
+    }
+
+    public IEnumerable<ApplicationUser> GetTestUsers(ApplicationRole role, int count = 10)
+    {
+        for (int i = 0; i < count; i++)
+            yield return GetTestUser(role);
+    }
+
+    public ApplicationUser GetTestUser(ApplicationRole role)
+    {
+        var applicationUser = new ApplicationUser
+        {
+            Id = Guid.NewGuid(),
+            FullName = fixture.Create<string>(),
+            Email = fixture.Create<string>(),
+            UserRoles = new List<IdentityUserRole<Guid>>()
+            {
+                new IdentityUserRole<Guid>() { RoleId = role.Id }
+            }
+        };
+
+        return applicationUser;
     }
 }

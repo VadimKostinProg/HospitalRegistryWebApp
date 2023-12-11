@@ -142,7 +142,7 @@ namespace HospitalRegistry.Application.Services
 
         public async Task<DoctorResponse> GetByIdAsync(Guid id)
         {
-            var doctor = await _repository.GetByIdAsync<Doctor>(id);
+            var doctor = await _repository.FirstOrDefaultAsync<Doctor>(x => x.Id == id && x.IsDeleted == false);
 
             if (doctor is null)
                 throw new KeyNotFoundException("Doctor with such id does not exists.");

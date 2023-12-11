@@ -35,15 +35,23 @@ namespace HospitalRegistry.Application.Services
             if (specifications is null)
                 throw new ArgumentNullException("Specifications are null.");
 
+            if (string.IsNullOrEmpty(specifications.Role))
+                throw new ArgumentNullException("Role cannot be blank.");
+
+            if (!await _roleManager.RoleExistsAsync(specifications.Role))
+                throw new KeyNotFoundException("Role with such name does not exists.");
+
             var specification = await this.GetSpecification(specifications);
 
-            var accounts = await _userManager.Users
+            var allUsersInRole = (await _userManager.GetUsersInRoleAsync(specifications.Role)).AsQueryable();
+
+            var accounts = allUsersInRole
                 .ApplySpecifications<ApplicationUser>(specification)
-                .ToListAsync();
+                .ToList();
 
             var totalCount = specification.Predicate is null ?
-                await _userManager.Users.CountAsync() :
-                await _userManager.Users.CountAsync(specification.Predicate);
+                allUsersInRole.Count() :
+                allUsersInRole.Count(specification.Predicate);
 
             var totalPages = (int)Math.Ceiling((double)totalCount / specification.Take);
 
@@ -79,16 +87,6 @@ namespace HospitalRegistry.Application.Services
             if (!string.IsNullOrEmpty(specificationsDTO.SearchTerm))
                 builder.With(x => x.FullName.Contains(specificationsDTO.SearchTerm) || 
                     x.Email.Contains(specificationsDTO.SearchTerm));
-
-            if (!string.IsNullOrEmpty(specificationsDTO.Role))
-            {
-                var role = await _roleManager.FindByNameAsync(specificationsDTO.Role);
-
-                if (role is not null)
-                {
-                    builder.With(x => x.UserRoles.First().RoleId == role.Id);
-                }
-            }
 
             if (!string.IsNullOrEmpty(specificationsDTO.SortField))
             {

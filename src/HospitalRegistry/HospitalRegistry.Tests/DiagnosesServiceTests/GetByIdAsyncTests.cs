@@ -2,6 +2,7 @@ using AutoFixture;
 using FluentAssertions;
 using HospitalReqistry.Domain.Entities;
 using Moq;
+using System.Linq.Expressions;
 
 namespace HospitalRegistry.Tests.DiagnosesServiceTests;
 
@@ -12,7 +13,8 @@ public class GetByIdAsyncTests : DiagnosesServiceTestsBase
     {
         // Attange
         var idToPass = Guid.NewGuid();
-        repositoryMock.Setup(x => x.GetByIdAsync<Diagnosis>(idToPass, true)).ReturnsAsync(null as Diagnosis);
+        repositoryMock.Setup(x => x.FirstOrDefaultAsync<Diagnosis>(It.IsAny<Expression<Func<Diagnosis, bool>>>(), true))
+            .ReturnsAsync(null as Diagnosis);
         
         // Assert
         var action = async () =>
@@ -30,7 +32,7 @@ public class GetByIdAsyncTests : DiagnosesServiceTestsBase
         // Arrange
         var diagnosis = GetTestDiagnosis();
         var idToPass = diagnosis.Id;
-        repositoryMock.Setup(x => x.GetByIdAsync<Diagnosis>(idToPass, true))
+        repositoryMock.Setup(x => x.FirstOrDefaultAsync<Diagnosis>(It.IsAny<Expression<Func<Diagnosis, bool>>>(), true))
             .ReturnsAsync(diagnosis);
         
         // Act

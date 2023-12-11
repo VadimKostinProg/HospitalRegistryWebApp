@@ -1,3 +1,4 @@
+using HospitalRegistry.API.Middlewares;
 using HospitalRegistry.Application;
 using HospitalRegistry.Application.Initializers;
 using HospitalRegistry.Infrastructure;
@@ -108,6 +109,8 @@ app.UseAuthorization();
 SeedData();
 
 app.MapControllers();
+
+app.UseExceptionsHandler();
 
 app.Run();
 

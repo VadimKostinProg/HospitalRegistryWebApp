@@ -98,7 +98,7 @@ public class AppointmentsService : IAppointmentsService
 
     private async Task<ListModel<AppointmentResponse>> GetAppointmentsListBySpecificationAsync(ISpecification<Appointment> specification)
     {
-        var appointments = await _repository.GetAsync<Appointment>(specification, disableTracking: false);
+        var appointments = await _repository.GetAsync<Appointment>(specification);
 
         var totalCount = specification.Predicate is null ?
             await _repository.CountAsync<Appointment>() :
@@ -129,7 +129,7 @@ public class AppointmentsService : IAppointmentsService
 
     public async Task<AppointmentResponse> GetAppointmentByIdAsync(Guid id)
     {
-        var appointment = await _repository.GetByIdAsync<Appointment>(id, disableTracking: false);
+        var appointment = await _repository.GetByIdAsync<Appointment>(id);
 
         if (appointment is null)
         {
@@ -218,8 +218,9 @@ public class AppointmentsService : IAppointmentsService
         // Filling slots as all range of schedule slots between dates.
         var allSlots = FillScheduleForDates(schedule, startDate, endDate, doctor.Specialty);
 
-        // Filtering only free slots
-        var freeSlots = allSlots.Where(x => !AppointmnetAlreadyExistsForTimeSlot(appointments, x));
+        // Filtering only free slots and appointment type
+        var freeSlots = allSlots.Where(x => x.AppointmentType == appointmentType &&
+            !AppointmnetAlreadyExistsForTimeSlot(appointments, x));
 
         return freeSlots;
     }

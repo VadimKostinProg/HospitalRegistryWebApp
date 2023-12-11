@@ -54,7 +54,7 @@ namespace HospitalRegistry.Application.Services
 
         public async Task<DiagnosisResponse> GetByIdAsync(Guid id)
         {
-            var diagnosis = await _repository.GetByIdAsync<Diagnosis>(id);
+            var diagnosis = await _repository.FirstOrDefaultAsync<Diagnosis>(x => x.Id == id && x.IsDeleted == false);
 
             if (diagnosis is null)
             {

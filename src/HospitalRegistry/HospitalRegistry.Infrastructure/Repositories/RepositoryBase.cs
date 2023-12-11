@@ -56,7 +56,7 @@ public class RepositoryBase : IAsyncRepository
     {
         var query = context.Set<T>().AsQueryable();
 
-        if (disableTracking)
+        if (!disableTracking)
         {
             query = query.AsNoTracking();
         }

@@ -73,7 +73,7 @@ public class PatientsService : IPatientsService
 
     public async Task<PatientResponse> GetByIdAsync(Guid id)
     {
-        var patient = await _repository.GetByIdAsync<Patient>(id);
+        var patient = await _repository.FirstOrDefaultAsync<Patient>(x => x.Id == id && x.IsDeleted == false);
 
         if (patient is null)
             throw new KeyNotFoundException("Patient with such id does not exist.");

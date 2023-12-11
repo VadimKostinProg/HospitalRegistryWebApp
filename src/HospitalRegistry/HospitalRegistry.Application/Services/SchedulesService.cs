@@ -17,7 +17,7 @@ public class SchedulesService : ISchedulesService
 
     public async Task<ScheduleDTO> GetScheduleByDoctorAsync(Guid doctorId, int? dayOfWeek = null)
     {
-        var doctor = await _repository.GetByIdAsync<Doctor>(doctorId, disableTracking: false);
+        var doctor = await _repository.FirstOrDefaultAsync<Doctor>(x => x.Id == doctorId && x.IsDeleted == false);
 
         if (doctor is null)
             throw new KeyNotFoundException("Doctor with such id does not exists.");
@@ -49,7 +49,8 @@ public class SchedulesService : ISchedulesService
         if (request is null)
             throw new ArgumentNullException("Schedule to set is null.");
 
-        var doctor = await _repository.GetByIdAsync<Doctor>(request.DoctorId, disableTracking: false);
+        var doctor = await _repository.FirstOrDefaultAsync<Doctor>(x => x.Id == request.DoctorId && 
+                                                                        x.IsDeleted == false);
 
         if (doctor is null)
             throw new KeyNotFoundException("Doctor with such Id does not exist.");
