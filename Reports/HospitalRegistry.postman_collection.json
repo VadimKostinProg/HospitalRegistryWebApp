@@ -1,0 +1,903 @@
+{
+	"info": {
+		"_postman_id": "adf88c1b-5616-4342-b697-580c823165a8",
+		"name": "HospitalRegistry",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "25700645",
+		"_collection_link": "https://gold-satellite-76141.postman.co/workspace/Team-Workspace~cd50bc51-6d34-4b67-81b9-01ac612ac675/collection/25700645-adf88c1b-5616-4342-b697-580c823165a8?action=share&source=collection_link&creator=25700645"
+	},
+	"item": [
+		{
+			"name": "Diagnoses",
+			"item": [
+				{
+					"name": "GET - Diagnoses List",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{base_url}}/diagnoses"
+					},
+					"response": []
+				},
+				{
+					"name": "GET - Diagnoses By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{base_url}}/diagnoses/d8601429-b9c2-45e8-9b24-9fed90a9901d"
+					},
+					"response": []
+				},
+				{
+					"name": "GET - Deleted Diagnoses List",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{admin-token}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "{{base_url}}/diagnoses/deleted"
+					},
+					"response": []
+				},
+				{
+					"name": "POST - Create Diagnoses",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{admin-token}}"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"new diagnosis\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{base_url}}/diagnoses"
+					},
+					"response": []
+				},
+				{
+					"name": "PUT - Update Diagnoses",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{admin-token}}"
+							}
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"78aee7fc-a127-4e06-a5bd-8a491db21506\",\r\n    \"name\": \"Cold\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{base_url}}/diagnoses"
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE - Delete Diagnosis",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{admin-token}}"
+							}
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": "{{base_url}}/diagnoses/67c3f82e-1214-49e9-a3f7-1b125c3a0e47"
+					},
+					"response": []
+				},
+				{
+					"name": "Post Recover Diagnosis",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{admin-token}}"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"url": "{{base_url}}/diagnoses/67c3f82e-1214-49e9-a3f7-1b125c3a0e47/recover"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Doctors",
+			"item": [
+				{
+					"name": "GET - Doctors List",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{admin-token}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "{{base_url}}/doctors"
+					},
+					"response": []
+				},
+				{
+					"name": "GET - Doctors By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{admin-token}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "{{base_url}}/doctors/29dc783b-b167-4d4e-8a13-eb2e3ec27f85"
+					},
+					"response": []
+				},
+				{
+					"name": "GET - Deleted Doctors List",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{admin-token}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "{{base_url}}/doctors/deleted"
+					},
+					"response": []
+				},
+				{
+					"name": "POST - Create Doctor",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{admin-token}}"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"DoctorName7\",\r\n  \"surname\": \"DoctorSurname7\",\r\n  \"patronymic\": \"DoctorPatronymic7\",\r\n  \"dateOfBirth\": \"2001-01-01\",\r\n  \"specialty\": \"Dermatologist\",\r\n  \"email\": \"testDoctorEmail7@gmail.com\",\r\n  \"phoneNumber\": \"+380959999999\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{base_url}}/doctors"
+					},
+					"response": []
+				},
+				{
+					"name": "PUT - Edit Doctor",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{admin-token}}"
+							}
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"907202d9-c8f3-4b13-9660-054d4cefa01b\",\r\n    \"name\": \"DoctorName6\",\r\n    \"surname\": \"DoctorSurname6\",\r\n    \"patronymic\": \"DoctorPatronymic6\",\r\n    \"dateOfBirth\": \"2001-01-01\",\r\n    \"specialty\": \"Dermatologist\",\r\n    \"email\": \"testDoctorEmail6@gmail.com\",\r\n    \"phoneNumber\": \"+380959999999\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{base_url}}/doctors"
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE - Delete Doctor",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{admin-token}}"
+							}
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": "{{base_url}}/doctors/29dc783b-b167-4d4e-8a13-eb2e3ec27f85"
+					},
+					"response": []
+				},
+				{
+					"name": "POST - Recover Doctor",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{admin-token}}"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"url": "{{base_url}}/doctors/29dc783b-b167-4d4e-8a13-eb2e3ec27f85/recover"
+					},
+					"response": []
+				},
+				{
+					"name": "GET - Shedule",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{admin-token}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "{{base_url}}/doctors/29dc783b-b167-4d4e-8a13-eb2e3ec27f85/schedule"
+					},
+					"response": []
+				},
+				{
+					"name": "POST - Set Schedule",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{admin-token}}"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"doctorId\": \"29dc783b-b167-4d4e-8a13-eb2e3ec27f85\",\r\n    \"schedule\": [\r\n        {\r\n            \"startTime\": \"11:00:00\",\r\n            \"endTime\": \"11:30:00\",\r\n            \"dayOfWeek\": 1,\r\n            \"appointmentType\": \"Consultation\"\r\n        },\r\n        {\r\n            \"startTime\": \"11:30:00\",\r\n            \"endTime\": \"12:00:00\",\r\n            \"dayOfWeek\": 1,\r\n            \"appointmentType\": \"Consultation\"\r\n        },\r\n        {\r\n            \"startTime\": \"12:00:00\",\r\n            \"endTime\": \"13:00:00\",\r\n            \"dayOfWeek\": 1,\r\n            \"appointmentType\": \"HealthVisit\"\r\n        },\r\n        {\r\n            \"startTime\": \"13:00:00\",\r\n            \"endTime\": \"13:30:00\",\r\n            \"dayOfWeek\": 1,\r\n            \"appointmentType\": \"Consultation\"\r\n        },\r\n        {\r\n            \"startTime\": \"13:30:00\",\r\n            \"endTime\": \"14:00:00\",\r\n            \"dayOfWeek\": 1,\r\n            \"appointmentType\": \"Consultation\"\r\n        },\r\n        {\r\n            \"startTime\": \"14:00:00\",\r\n            \"endTime\": \"15:00:00\",\r\n            \"dayOfWeek\": 1,\r\n            \"appointmentType\": \"HealthVisit\"\r\n        },\r\n        {\r\n            \"startTime\": \"11:00:00\",\r\n            \"endTime\": \"11:30:00\",\r\n            \"dayOfWeek\": 2,\r\n            \"appointmentType\": \"Consultation\"\r\n        },\r\n        {\r\n            \"startTime\": \"11:30:00\",\r\n            \"endTime\": \"12:00:00\",\r\n            \"dayOfWeek\": 2,\r\n            \"appointmentType\": \"Consultation\"\r\n        },\r\n        {\r\n            \"startTime\": \"12:00:00\",\r\n            \"endTime\": \"13:00:00\",\r\n            \"dayOfWeek\": 2,\r\n            \"appointmentType\": \"HealthVisit\"\r\n        },\r\n        {\r\n            \"startTime\": \"13:00:00\",\r\n            \"endTime\": \"13:30:00\",\r\n            \"dayOfWeek\": 2,\r\n            \"appointmentType\": \"Consultation\"\r\n        },\r\n        {\r\n            \"startTime\": \"13:30:00\",\r\n            \"endTime\": \"14:00:00\",\r\n            \"dayOfWeek\": 2,\r\n            \"appointmentType\": \"Consultation\"\r\n        },\r\n        {\r\n            \"startTime\": \"14:00:00\",\r\n            \"endTime\": \"15:00:00\",\r\n            \"dayOfWeek\": 2,\r\n            \"appointmentType\": \"HealthVisit\"\r\n        },\r\n        {\r\n            \"startTime\": \"11:00:00\",\r\n            \"endTime\": \"11:30:00\",\r\n            \"dayOfWeek\": 3,\r\n            \"appointmentType\": \"Consultation\"\r\n        },\r\n        {\r\n            \"startTime\": \"11:30:00\",\r\n            \"endTime\": \"12:00:00\",\r\n            \"dayOfWeek\": 3,\r\n            \"appointmentType\": \"Consultation\"\r\n        },\r\n        {\r\n            \"startTime\": \"12:00:00\",\r\n            \"endTime\": \"13:00:00\",\r\n            \"dayOfWeek\": 3,\r\n            \"appointmentType\": \"HealthVisit\"\r\n        },\r\n        {\r\n            \"startTime\": \"13:00:00\",\r\n            \"endTime\": \"13:30:00\",\r\n            \"dayOfWeek\": 3,\r\n            \"appointmentType\": \"Consultation\"\r\n        },\r\n        {\r\n            \"startTime\": \"13:30:00\",\r\n            \"endTime\": \"14:00:00\",\r\n            \"dayOfWeek\": 3,\r\n            \"appointmentType\": \"Consultation\"\r\n        },\r\n        {\r\n            \"startTime\": \"14:00:00\",\r\n            \"endTime\": \"15:00:00\",\r\n            \"dayOfWeek\": 3,\r\n            \"appointmentType\": \"HealthVisit\"\r\n        },\r\n        {\r\n            \"startTime\": \"11:00:00\",\r\n            \"endTime\": \"11:30:00\",\r\n            \"dayOfWeek\": 4,\r\n            \"appointmentType\": \"Consultation\"\r\n        },\r\n        {\r\n            \"startTime\": \"11:30:00\",\r\n            \"endTime\": \"12:00:00\",\r\n            \"dayOfWeek\": 4,\r\n            \"appointmentType\": \"Consultation\"\r\n        },\r\n        {\r\n            \"startTime\": \"12:00:00\",\r\n            \"endTime\": \"13:00:00\",\r\n            \"dayOfWeek\": 4,\r\n            \"appointmentType\": \"HealthVisit\"\r\n        },\r\n        {\r\n            \"startTime\": \"13:00:00\",\r\n            \"endTime\": \"13:30:00\",\r\n            \"dayOfWeek\": 4,\r\n            \"appointmentType\": \"Consultation\"\r\n        },\r\n        {\r\n            \"startTime\": \"13:30:00\",\r\n            \"endTime\": \"14:00:00\",\r\n            \"dayOfWeek\": 4,\r\n            \"appointmentType\": \"Consultation\"\r\n        },\r\n        {\r\n            \"startTime\": \"14:00:00\",\r\n            \"endTime\": \"15:00:00\",\r\n            \"dayOfWeek\": 4,\r\n            \"appointmentType\": \"HealthVisit\"\r\n        },\r\n        {\r\n            \"startTime\": \"11:00:00\",\r\n            \"endTime\": \"11:30:00\",\r\n            \"dayOfWeek\": 5,\r\n            \"appointmentType\": \"Consultation\"\r\n        },\r\n        {\r\n            \"startTime\": \"11:30:00\",\r\n            \"endTime\": \"12:00:00\",\r\n            \"dayOfWeek\": 5,\r\n            \"appointmentType\": \"Consultation\"\r\n        },\r\n        {\r\n            \"startTime\": \"12:00:00\",\r\n            \"endTime\": \"13:00:00\",\r\n            \"dayOfWeek\": 5,\r\n            \"appointmentType\": \"HealthVisit\"\r\n        },\r\n        {\r\n            \"startTime\": \"13:00:00\",\r\n            \"endTime\": \"13:30:00\",\r\n            \"dayOfWeek\": 5,\r\n            \"appointmentType\": \"Consultation\"\r\n        },\r\n        {\r\n            \"startTime\": \"13:30:00\",\r\n            \"endTime\": \"14:00:00\",\r\n            \"dayOfWeek\": 5,\r\n            \"appointmentType\": \"Consultation\"\r\n        },\r\n        {\r\n            \"startTime\": \"14:00:00\",\r\n            \"endTime\": \"15:00:00\",\r\n            \"dayOfWeek\": 5,\r\n            \"appointmentType\": \"HealthVisit\"\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{base_url}}/doctors/schedule"
+					},
+					"response": []
+				},
+				{
+					"name": "GET - Appointments History",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{doctor-token}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "{{base_url}}/doctors/29dc783b-b167-4d4e-8a13-eb2e3ec27f85/appointments/history"
+					},
+					"response": []
+				},
+				{
+					"name": "GET - Scheduled Appointments",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{doctor-token}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "{{base_url}}/doctors/29dc783b-b167-4d4e-8a13-eb2e3ec27f85/appointments/scheduled"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Patients",
+			"item": [
+				{
+					"name": "GET - Patients List",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{admin-token}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "{{base_url}}/patients"
+					},
+					"response": []
+				},
+				{
+					"name": "GET - Patient By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{admin-token}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "{{base_url}}/patients/b476e80d-d4a8-4579-a427-45d7afeb1e8c"
+					},
+					"response": []
+				},
+				{
+					"name": "GET - Deleted Patients List",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{admin-token}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "{{base_url}}/patients/deleted"
+					},
+					"response": []
+				},
+				{
+					"name": "POST - Create Patient",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{admin-token}}"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"PatientName6\",\r\n  \"surname\": \"PatientSurname6\",\r\n  \"patronymic\": \"PatientPatronymic6\",\r\n  \"dateOfBirth\": \"2001-01-01\",\r\n  \"email\": \"patientEmail6@gmail.com\",\r\n  \"phoneNumber\": \"+380959999999\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{base_url}}/patients"
+					},
+					"response": []
+				},
+				{
+					"name": "PUT - Update Patient",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{admin-token}}"
+							}
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"e171ea41-439a-44eb-8b40-318be56b2627\",\r\n    \"name\": \"PatientName6\",\r\n    \"surname\": \"PatientSurname6\",\r\n    \"patronymic\": \"PatientPatronymic6\",\r\n    \"dateOfBirth\": \"2001-01-01\",\r\n    \"email\": \"patientEmail6@gmail.com\",\r\n    \"phoneNumber\": \"+380959999999\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{base_url}}/patients"
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE - Delete Patient",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{admin-token}}"
+							}
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": "{{base_url}}/patients/b476e80d-d4a8-4579-a427-45d7afeb1e8c"
+					},
+					"response": []
+				},
+				{
+					"name": "POST - Recover Doctor",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{admin-token}}"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"url": "{{base_url}}/patients/b476e80d-d4a8-4579-a427-45d7afeb1e8c/recover"
+					},
+					"response": []
+				},
+				{
+					"name": "GET - Appointments History",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{patient-token}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "{{base_url}}/patients/ee210537-0cc1-489e-a1dc-dd62c78860dd/appointments/history"
+					},
+					"response": []
+				},
+				{
+					"name": "GET - Scheduled Appointments",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{patient-token}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "{{base_url}}/patients/ee210537-0cc1-489e-a1dc-dd62c78860dd/appointments/scheduled"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Appointments",
+			"item": [
+				{
+					"name": "GET - Appointment List",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{admin-token}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/appointments?pageSize=2&pageNumber=1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"appointments"
+							],
+							"query": [
+								{
+									"key": "pageSize",
+									"value": "2"
+								},
+								{
+									"key": "pageNumber",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST - Set Appointment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{admin-token}}"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"dateAndTime\": \"2023-12-13T13:30:00\",\r\n  \"doctorId\": \"29dc783b-b167-4d4e-8a13-eb2e3ec27f85\",\r\n  \"patientId\": \"ee210537-0cc1-489e-a1dc-dd62c78860dd\",\r\n  \"extraClinicalData\": \"test clinicla data\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{base_url}}/appointments"
+					},
+					"response": []
+				},
+				{
+					"name": "GET - Appointment By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{admin-token}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "{{base_url}}/appointments/0b9dc0d0-11f4-4325-8392-f04a986d101f"
+					},
+					"response": []
+				},
+				{
+					"name": "GET - Free Slots",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{admin-token}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/appointments/free-slots?startDate=2023-12-13&endDate=2023-12-13&appointmentType=Consultation&doctorId=29dc783b-b167-4d4e-8a13-eb2e3ec27f85",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"appointments",
+								"free-slots"
+							],
+							"query": [
+								{
+									"key": "startDate",
+									"value": "2023-12-13"
+								},
+								{
+									"key": "endDate",
+									"value": "2023-12-13"
+								},
+								{
+									"key": "appointmentType",
+									"value": "Consultation"
+								},
+								{
+									"key": "doctorId",
+									"value": "29dc783b-b167-4d4e-8a13-eb2e3ec27f85"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT - Complete Appointment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{doctor-token}}"
+							}
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": \"d4e41f52-85c1-4a55-a1f3-0fae8752f0df\",\r\n  \"diagnosisId\": \"bf03d8d9-2abd-4c7b-a3d9-8adc85e06224\",\r\n  \"conclusion\": \"test conclusion\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{base_url}}/appointments"
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE - Cancel Appointment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{admin-token}}"
+							}
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": "{{base_url}}/appointments/d4e41f52-85c1-4a55-a1f3-0fae8752f0df"
+					},
+					"response": []
+				},
+				{
+					"name": "POST - Recover Appointmnet",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{admin-token}}"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"url": "{{base_url}}/appointments/d4e41f52-85c1-4a55-a1f3-0fae8752f0df/recover"
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE - Clear Canceled Appointments",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{admin-token}}"
+							}
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": "{{base_url}}/appointments/canceled"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Accounts",
+			"item": [
+				{
+					"name": "POST - Login Admin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set('admin-token', pm.response.json().token)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"vadkostinxm@gmail.com\",\r\n    \"password\": \"12345678HospitalRegistry\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{base_url}}/accounts/login"
+					},
+					"response": []
+				},
+				{
+					"name": "POST - Login Doctor",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set('doctor-token', pm.response.json().token)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"testDoctorEmail1@gmail.com\",\r\n    \"password\": \"DoctorPassword1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{base_url}}/accounts/login"
+					},
+					"response": []
+				},
+				{
+					"name": "POST - Login Patient",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set('patient-token', pm.response.json().token)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"patientEmail1@gmail.com\",\r\n    \"password\": \"PatientPassword1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{base_url}}/accounts/login"
+					},
+					"response": []
+				},
+				{
+					"name": "POST - Register Doctor",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set('doctor-token', pm.response.json().token)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"DoctorName1\",\r\n  \"surname\": \"DoctorSurname1\",\r\n  \"patronymic\": \"DoctorPatronymic1\",\r\n  \"email\": \"testDoctorEmail1@gmail.com\",\r\n  \"role\": \"Doctor\",\r\n  \"password\": \"DoctorPassword1\",\r\n  \"confirmPassword\": \"DoctorPassword1\",\r\n  \"userKey\": \"29dc783b-b167-4d4e-8a13-eb2e3ec27f85\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{base_url}}//accounts/register"
+					},
+					"response": []
+				},
+				{
+					"name": "POST - Register Patient",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set('doctor-token', pm.response.json().token)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"DoctorName1\",\r\n  \"surname\": \"DoctorSurname1\",\r\n  \"patronymic\": \"DoctorPatronymic1\",\r\n  \"email\": \"testDoctorEmail1@gmail.com\",\r\n  \"role\": \"Doctor\",\r\n  \"password\": \"DoctorPassword1\",\r\n  \"confirmPassword\": \"DoctorPassword1\",\r\n  \"userKey\": \"29dc783b-b167-4d4e-8a13-eb2e3ec27f85\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{base_url}}//accounts/register"
+					},
+					"response": []
+				},
+				{
+					"name": "GET - Accounts List",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{admin-token}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/accounts?role=Doctor",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"accounts"
+							],
+							"query": [
+								{
+									"key": "role",
+									"value": "Doctor"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET - Logout",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{admin-token}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "{{base_url}}/accounts/logout"
+					},
+					"response": []
+				},
+				{
+					"name": "POST - Create Account",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{admin-token}}"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"ReceptionistName2\",\r\n  \"surname\": \"ReceptionistSurname2\",\r\n  \"patronymic\": \"ReceptionistPatronymic2\",\r\n  \"email\": \"receptionistEmail2@gmail.com\",\r\n  \"role\": \"Receptionist\",\r\n  \"password\": \"receptionistPassword2\",\r\n  \"confirmPassword\": \"receptionistPassword2\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{base_url}}/accounts"
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE - Delete Account",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{admin-token}}"
+							}
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": "{{base_url}}/accounts/c99deeb9-c360-4b44-8c55-734787332f4c"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
